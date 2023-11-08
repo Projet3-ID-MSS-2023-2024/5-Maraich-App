@@ -1,2 +1,42 @@
-Application/.vs/
-Application/.idea/
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# Compiled output
+/Application/dist
+/Application/tmp
+/Application/out-tsc
+/Application/bazel-out
+
+# Node
+/Application/node_modules
+/Application/npm-debug.log
+/Application/yarn-error.log
+
+# IDEs and editors
+/Application/.idea/
+/Application/.project
+/Application/.classpath
+/Application/.c9/
+/Application/*.launch
+/Application/.settings/
+/Application/*.sublime-workspace
+
+# Visual Studio Code
+/Application/.vscode/*
+!/Application/.vscode/settings.json
+!/Application/.vscode/tasks.json
+!/Application/.vscode/launch.json
+!/Application/.vscode/extensions.json
+/Application/.history/*
+
+# Miscellaneous
+/Application/.angular/cache
+/Application/.sass-cache/
+/Application/.connect.lock
+/Application/.coverage
+/Application/.libpeerconnection.log
+/Application/testem.log
+/Application/.typings
+
+# System files
+/Application/.DS_Store
+/Application/Thumbs.db
