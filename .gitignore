@@ -12,7 +12,7 @@
 /Application/yarn-error.log
 
 # IDEs and editors
-/Application/.idea/
+Application/.idea/
 /Application/.project
 /Application/.classpath
 /Application/.c9/
