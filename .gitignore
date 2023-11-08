@@ -21,7 +21,7 @@
 /Application/*.sublime-workspace
 
 # Visual Studio Code
-/Application/.vscode/*
+Application/.vscode/*
 /Application/.vscode/settings.json
 /Application/.vscode/tasks.json
 /Application/.vscode/launch.json
