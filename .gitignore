@@ -12,7 +12,7 @@
 /Application/yarn-error.log
 
 # IDEs and editors
-Application/.idea/
+.idea/
 /Application/.project
 /Application/.classpath
 /Application/.c9/
@@ -21,7 +21,7 @@ Application/.idea/
 /Application/*.sublime-workspace
 
 # Visual Studio Code
-/Application/.vscode/
+/Application/Frontend/.vscode/
 /Application/.history/*
 
 # Miscellaneous
