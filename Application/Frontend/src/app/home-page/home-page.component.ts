@@ -1,15 +1,13 @@
-import { Component, Input } from '@angular/core';
-import { ShopService } from './shop.service';
-import { Shop } from './Shop';
+import { Component } from '@angular/core';
+import { Shop } from '../model/shop';
+import { ShopService } from '../service/shop.service';
 
 @Component({
-  selector: 'app-card-list',
-  templateUrl: './card-list.component.html',
-  styleUrls: [
-    './card-list.component.css'
-  ]
+  selector: 'app-home-page',
+  templateUrl: './home-page.component.html',
+  styleUrls: ['./home-page.component.css']
 })
-export class CardListComponent {
+export class HomePageComponent {
 
   shops: Shop[] = [];
 
@@ -25,4 +23,5 @@ export class CardListComponent {
       }
     );
   }
+
 }

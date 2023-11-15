@@ -5,15 +5,15 @@ import {CardModule} from 'primeng/card';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CardListComponent } from './card-list/card-list.component';
 import { HttpClientModule } from '@angular/common/http';
+import { HomePageComponent } from './home-page/home-page.component';
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    CardListComponent
+    HomePageComponent
   ],
   imports: [
     BrowserModule,
