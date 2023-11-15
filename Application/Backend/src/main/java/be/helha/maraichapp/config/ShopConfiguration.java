@@ -27,11 +27,11 @@ public class ShopConfiguration {
     @Bean
     public List<Shop> initializeShop(ShopRepository shopRepository, List<Users> users) {
         List<Shop> shops = new ArrayList<>(5);
-        shops.add(new Shop("Chez Robert","Rue de potier 3","6200","Châtelet","lolilol","des bon légumes bien frais",users.get(0)));
-        shops.add(new Shop("Chez Norbert","Rue de potier 5","6200","Châtelet","lolilol","des bon légumes bien frais",users.get(1)));
-        shops.add(new Shop("Chez Patrick","Rue de potier 1","6200","Châtelet","lolilol","des bon légumes bien frais",users.get(2)));
-        shops.add(new Shop("Chez Franck","Rue de potier 2","6200","Châtelet","lolilol","des bon légumes bien frais",users.get(3)));
-        shops.add(new Shop("Chez Roger","Rue de potier 4","6200","Châtelet","lolilol","des bon légumes bien frais",users.get(4)));
+        shops.add(new Shop("Chez Robert","robert@gmail.com","Rue de potier 3","6200","Châtelet","carrot.jpg","des bon légumes bien frais",users.get(0)));
+        shops.add(new Shop("Chez Norbert", "norbert@gmail.com","Rue de potier 5","6200","Châtelet","inchident.jpg","des bon légumes bien frais",users.get(1)));
+        shops.add(new Shop("Chez Patrick","patrick@gmail.com","Rue de potier 1","6200","Châtelet","carrot.jpg","des bon légumes bien frais",users.get(2)));
+        shops.add(new Shop("Chez Franck","franck@gmail.com","Rue de potier 2","6200","Châtelet","carrot.jpg","des bon légumes bien frais",users.get(3)));
+        shops.add(new Shop("Chez Roger","roger@gmail.com","Rue de potier 4","6200","Châtelet","carrot.jpg","des bon légumes bien frais",users.get(4)));
         shops.forEach(s -> s.setIdShop((shopRepository.save(s).getIdShop())));
         return shops;
     }
