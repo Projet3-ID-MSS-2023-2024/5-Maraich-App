@@ -35,7 +35,13 @@ public class UserService implements UserDetailsService {
 
         String cryptpwd = this.passwordEncoder.encode(users.getPassword());
         users.setPassword(cryptpwd);
-        Rank rank = rankRepository.findByName(RankEnum.CUSTOMER).orElseThrow(() -> new RuntimeException("Rank initialization issue"));
+        RankEnum rankEnum;
+        if(userRepository.findAll().isEmpty())
+            rankEnum = RankEnum.ADMINISTRATOR;
+        else
+            rankEnum = RankEnum.CUSTOMER;
+
+        Rank rank = rankRepository.findByName(rankEnum).orElseThrow(() -> new RuntimeException("Rank initialization issue"));
         users.setRank(rank);
         users = this.userRepository.save(users);
         this.validationService.createValidationProcess(users);
