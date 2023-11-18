@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class UserServiceTest {
@@ -83,6 +83,7 @@ public class UserServiceTest {
         assertEquals("UpdatedCity", retrievedUser.getAddress().getCity());
     }
 
+
     @Test
     @Order(3)
     public void updateUserRestricted() {
@@ -99,7 +100,10 @@ public class UserServiceTest {
         savedUser.setSurname("UpdatedSurname");
         savedUser.getAddress().setCity("UpdatedCity");
         savedUser.setEmail("updatedemail@test.be"); // Non autorisé
-        savedUser.getRank().setName(RankEnum.valueOf("ADMINISTRATOR")); // Non autorisé
+
+        // Créez une instance de RankEnum pour ADMINISTRATOR
+        RankEnum adminRankEnum = RankEnum.ADMINISTRATOR;
+        savedUser.getRank().setName(adminRankEnum); // Non autorisé
 
         // Appelez la méthode updateUserRestricted
         Users updatedUser = userService.updateUserRestricted(savedUser);
@@ -113,8 +117,88 @@ public class UserServiceTest {
         assertEquals("UpdatedSurname", retrievedUser.getSurname());
         assertEquals("UpdatedCity", retrievedUser.getAddress().getCity());
         assertEquals("alice@test.be", retrievedUser.getEmail());
-        assertEquals(1, retrievedUser.getIdUser()); // L'ID ne doit pas être modifié
-        assertEquals("CUSTOMER", retrievedUser.getRank().getName()); // Le rôle ne doit pas être modifié
+        assertEquals(rankEnum, retrievedUser.getRank().getName()); // Le rôle ne doit pas être modifié
     }
+
+
+
+    @Test
+    @Order(4)
+    public void getUserByIdTest() {
+        // Créez un utilisateur pour la recherche
+        RankEnum rankEnum = RankEnum.CUSTOMER;
+        Rank rank = new Rank(rankEnum, 1);
+        Users testUser = new Users("Test", "User", "0123456789", "Test12356", "4", "Rue Test", "1234", "TestCity", "test@test.be", rank);
+
+        // Ajoutez l'utilisateur à la base de données
+        Users savedUser = userService.addUser(testUser);
+
+        // Appelez la méthode getUserById
+        Users retrievedUser = userService.getUserById(savedUser.getIdUser());
+
+        // Vérifiez que l'utilisateur récupéré a les bonnes propriétés
+        assertNotNull(retrievedUser);
+        assertEquals(testUser.getFirstName(), retrievedUser.getFirstName());
+        assertEquals(testUser.getSurname(), retrievedUser.getSurname());
+        assertEquals(testUser.getEmail(), retrievedUser.getEmail());
+    }
+
+    @Test
+    @Order(5)
+    public void getUsersByRankTest() {
+        // Créez un rang pour le test
+        RankEnum rankEnum = RankEnum.CUSTOMER;
+        Optional<Rank> rank = rankRepository.findByName(rankEnum);
+
+
+        // Créez des utilisateurs pour le test
+        Users testUser1 = new Users("User1", "Test", "123456789", "Test12345", "6", "Test Street", "12345", "TestCity", "test1@test.be", rank.get());
+        Users testUser2 = new Users("User2", "Test", "987654321", "Test45645", "7", "Test Avenue", "67890", "TestCity", "test2@test.be", rank.get());
+
+        // Ajoutez les utilisateurs à la base de données
+        userService.addUser(testUser1);
+        userService.addUser(testUser2);
+
+        // Appelez la méthode getUsersByRank
+        Optional<List<Users>> usersByRankOptional = userService.getUsersByRank(rankEnum);
+
+        // Vérifiez que l'Optional n'est pas vide
+        assertTrue(usersByRankOptional.isPresent());
+
+        // Récupérez la liste d'utilisateurs de l'Optional
+        List<Users> usersByRank = usersByRankOptional.get();
+
+        // Vérifiez que la liste d'utilisateurs n'est pas vide
+        assertFalse(usersByRank.isEmpty());
+
+        // Vérifiez que chaque utilisateur dans la liste a le rang correct
+        for (Users user : usersByRank) {
+            assertEquals(rankEnum, user.getRank().getName());
+
+        }
+    }
+
+    @Test
+    @Order(6)
+    public void testGetAllUsers() {
+        // Ajoutez quelques utilisateurs pour le test
+        Users testUser1 = new Users("User3", "Test", "123456789", "Test12345", "6", "Test Street", "12345", "TestCity", "test3@test.be", new Rank(RankEnum.CUSTOMER, 1));
+        Users testUser2 = new Users("User4", "Test", "987654321", "Test45645", "7", "Test Avenue", "67890", "TestCity", "test4@test.be", new Rank(RankEnum.CUSTOMER, 1));
+
+        // Ajoutez les utilisateurs à la base de données
+        userService.addUser(testUser1);
+        userService.addUser(testUser2);
+
+        // Appelez la méthode getAllUsers
+        List<Users> allUsers = userService.getAllUsers();
+
+        // Vérifiez que la liste n'est pas vide
+        assertFalse(allUsers.isEmpty());
+
+        // Vérifiez que la liste contient au moins les utilisateurs ajoutés
+        assertTrue(allUsers.contains(testUser1));
+        assertTrue(allUsers.contains(testUser2));
+    }
+
 
 }

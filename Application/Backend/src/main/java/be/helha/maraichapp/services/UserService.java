@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -170,5 +171,35 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    //rechercher un user avec un id
+    @Transactional
+    public Users getUserById(int id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + id));//on lève une exception si pas trouvé
+    }
+
+    @Transactional
+    public Optional<List<Users>> getUsersByRank(RankEnum rankEnum) {
+        Rank rank = rankRepository.findByName(rankEnum)
+                .orElseThrow(() -> new EntityNotFoundException("Rank not found with name: " + rankEnum));
+
+        List<Users> usersList = userRepository.findByRank(rank);
+
+        if (usersList == null || usersList.isEmpty()) {
+            throw new EntityNotFoundException("Users not found with rank: " + rankEnum);
+        }
+
+        return Optional.of(usersList);
+    }
+
+    //retourne tout les users
+    public List<Users> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+
+
 
 }
+
+
