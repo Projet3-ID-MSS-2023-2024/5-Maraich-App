@@ -3,6 +3,7 @@ package be.helha.maraichapp.services;
 import be.helha.maraichapp.repositories.*;
 import be.helha.maraichapp.models.*;
 import be.helha.maraichapp.repositories.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,7 +12,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.xml.crypto.Data;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Optional;
@@ -32,7 +32,7 @@ public class UserService implements UserDetailsService {
 
 
     public void inscription(Users users) {
-        boolean dataIsOk = dataVerification(users);
+        boolean dataIsOk = dataUserVerification(users);
 
         String cryptpwd = this.passwordEncoder.encode(users.getPassword());
         users.setPassword(cryptpwd);
@@ -65,11 +65,11 @@ public class UserService implements UserDetailsService {
         return this.userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("None match this email address"));
     }
 
-    public boolean dataVerification(Users users) {
+    public boolean dataUserVerification(Users users) {
         final String emailRegex = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
         final String passwordRegex = "^(?=.*[A-Z])(?=.*\\d).{8,}$";
-        final String lettersOnlyRegex = "^[a-zA-Z ]+$";
-        final String lettersAndDigitOnlyRegex = "^[a-zA-Z0-9]+$";
+        final String lettersOnlyRegex = "^[A-Za-zÀ-ÿ'\\- ]+$";
+        final String lettersAndDigitOnlyRegex = "^[a-zA-Z0-9 ]+$";
 
         if (!Pattern.compile(emailRegex).matcher(users.getEmail()).matches()) {
             throw new RuntimeException("Your email is invalid");
@@ -77,9 +77,10 @@ public class UserService implements UserDetailsService {
 
         Optional<Users> usersOptional = this.userRepository.findByEmail(users.getEmail());
 
-        if (usersOptional.isPresent()) {
+        if (usersOptional.isPresent() && !Integer.valueOf(usersOptional.get().getIdUser()).equals(users.getIdUser())) {
             throw new RuntimeException("Your email is already used");
         }
+
 
         if (!Pattern.compile(passwordRegex).matcher(users.getPassword()).matches()) {
             throw new RuntimeException("The password must contain minimum: 8 characters, 1 uppercase and 1 digit");
@@ -107,17 +108,67 @@ public class UserService implements UserDetailsService {
     @Transactional
     public Users addUser(Users user) {
         //on vérifie si les données sont valide
-        boolean dataIsOk = dataVerification(user);
+        boolean dataIsOk = dataUserVerification(user);
+        if (!dataIsOk) {
+            throw new RuntimeException("Invalid user data");
+        }
+        //on chiffre le mdp
+        String cryptpwd = this.passwordEncoder.encode(user.getPassword());
+        user.setPassword(cryptpwd);
+
+        RankEnum rankEnum = RankEnum.CUSTOMER;
+
+        //on vérifie que le role existe bien en BDD
+        Rank rank = rankRepository.findByName(rankEnum).orElseThrow(() -> new RuntimeException("Rank initialization issue"));
+        user.setRank(rank); //on set le role au user
+        return userRepository.save(user);
+    }
+
+    // Mettre à jour un user existant
+    @Transactional
+    public Users updateUserAdmin(Users user) {
+        // Vérifie si les données sont valides
+        boolean dataIsOk = dataUserVerification(user);
         if (!dataIsOk) {
             throw new RuntimeException("Invalid user data");
         }
 
-            RankEnum rankEnum = RankEnum.CUSTOMER;
-            //on vérifie que le role existe bien en BDD
-            Rank rank = rankRepository.findByName(rankEnum).orElseThrow(() -> new RuntimeException("Rank initialization issue"));
-            user.setRank(rank); //on set le role au user
+        // Vérifie si l'utilisateur existe
+        Optional<Users> existingUser = userRepository.findById(user.getIdUser());
+        if (existingUser.isPresent()) {
             return userRepository.save(user);
+        } else {
+            throw new EntityNotFoundException("User not found with ID: " + user.getIdUser());
+        }
+    }
+
+    @Transactional
+    public Users updateUserRestricted(Users updatedUser) {
+        // Vérifie si les données sont valides
+        boolean dataIsOk = dataUserVerification(updatedUser);
+        if (!dataIsOk) {
+            throw new RuntimeException("Invalid user data");
         }
 
+        // Vérifie si l'utilisateur existe
+        Optional<Users> existingUserOptional = userRepository.findById(updatedUser.getIdUser());
 
+        if (existingUserOptional.isPresent()) {
+            Users existingUser = existingUserOptional.get();
+
+            // Restreint les modifications autorisées
+            existingUser.setFirstName(updatedUser.getFirstName());
+            existingUser.setSurname(updatedUser.getSurname());
+            existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
+            existingUser.setPassword(updatedUser.getPassword());
+            existingUser.setAddress(updatedUser.getAddress());
+
+            // Met à jour l'utilisateur
+            return userRepository.save(existingUser);
+        } else {
+            throw new EntityNotFoundException("User not found with ID: " + updatedUser.getIdUser());
+        }
     }
+
+
+}
