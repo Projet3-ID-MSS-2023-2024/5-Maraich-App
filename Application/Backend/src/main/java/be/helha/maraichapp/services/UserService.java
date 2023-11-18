@@ -3,6 +3,7 @@ package be.helha.maraichapp.services;
 import be.helha.maraichapp.repositories.*;
 import be.helha.maraichapp.models.*;
 import be.helha.maraichapp.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,13 +31,13 @@ public class UserService implements UserDetailsService {
     private ValidationRepository validationRepository;
 
 
-    public void inscription(Users users){
+    public void inscription(Users users) {
         boolean dataIsOk = dataVerification(users);
 
         String cryptpwd = this.passwordEncoder.encode(users.getPassword());
         users.setPassword(cryptpwd);
         RankEnum rankEnum;
-        if(userRepository.findAll().isEmpty())
+        if (userRepository.findAll().isEmpty())
             rankEnum = RankEnum.ADMINISTRATOR;
         else
             rankEnum = RankEnum.CUSTOMER;
@@ -49,7 +50,7 @@ public class UserService implements UserDetailsService {
 
     public void activation(Map<String, String> activation) {
         Validation validation = this.validationService.readWithCode(activation.get("code"));
-        if(Instant.now().isAfter(validation.getExpirationDate())){
+        if (Instant.now().isAfter(validation.getExpirationDate())) {
             throw new RuntimeException("Your validation code has expired");
         }
         Users usersActiver = this.userRepository.findById(validation.getUsers().getIdUser()).orElseThrow(() -> new RuntimeException("Unknown user"));
@@ -64,40 +65,59 @@ public class UserService implements UserDetailsService {
         return this.userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("None match this email address"));
     }
 
-    public boolean dataVerification(Users users){
+    public boolean dataVerification(Users users) {
         final String emailRegex = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
         final String passwordRegex = "^(?=.*[A-Z])(?=.*\\d).{8,}$";
-        final String lettersOnlyRegex = "^[a-zA-Z]+$";
+        final String lettersOnlyRegex = "^[a-zA-Z ]+$";
         final String lettersAndDigitOnlyRegex = "^[a-zA-Z0-9]+$";
 
-        if(!Pattern.compile(emailRegex).matcher(users.getEmail()).matches()){
+        if (!Pattern.compile(emailRegex).matcher(users.getEmail()).matches()) {
             throw new RuntimeException("Your email is invalid");
         }
 
         Optional<Users> usersOptional = this.userRepository.findByEmail(users.getEmail());
 
-        if(usersOptional.isPresent()){
+        if (usersOptional.isPresent()) {
             throw new RuntimeException("Your email is already used");
         }
 
-        if(!Pattern.compile(passwordRegex).matcher(users.getPassword()).matches()){
+        if (!Pattern.compile(passwordRegex).matcher(users.getPassword()).matches()) {
             throw new RuntimeException("The password must contain minimum: 8 characters, 1 uppercase and 1 digit");
         }
         Pattern pattern = Pattern.compile(lettersOnlyRegex);
-        if(!pattern.matcher(users.getAddress().getCity()).matches()
-                && !pattern.matcher(users.getAddress().getRoad()).matches()){
+        if (!pattern.matcher(users.getAddress().getCity()).matches()
+                && !pattern.matcher(users.getAddress().getRoad()).matches()) {
             throw new RuntimeException("The street and the city can only contain letters");
         }
 
-        if(!pattern.matcher(users.getFirstName()).matches()
-                && !pattern.matcher(users.getSurname()).matches()){
+        if (!pattern.matcher(users.getFirstName()).matches()
+                && !pattern.matcher(users.getSurname()).matches()) {
             throw new RuntimeException("Name and surname can only contain letters");
         }
 
-        if(!Pattern.compile(lettersAndDigitOnlyRegex).matcher(users.getAddress().getNumber()).matches()
-                && !Pattern.compile(lettersAndDigitOnlyRegex).matcher(users.getAddress().getPostCode()).matches()){
+        if (!Pattern.compile(lettersAndDigitOnlyRegex).matcher(users.getAddress().getNumber()).matches()
+                && !Pattern.compile(lettersAndDigitOnlyRegex).matcher(users.getAddress().getPostCode()).matches()) {
             throw new RuntimeException("Postal code and house number can only contain numbers and letters");
         }
         return true;
     }
-}
+
+
+    // Ajouter un nouvel user (niveau admin)
+    @Transactional
+    public Users addUser(Users user) {
+        //on vérifie si les données sont valide
+        boolean dataIsOk = dataVerification(user);
+        if (!dataIsOk) {
+            throw new RuntimeException("Invalid user data");
+        }
+
+            RankEnum rankEnum = RankEnum.CUSTOMER;
+            //on vérifie que le role existe bien en BDD
+            Rank rank = rankRepository.findByName(rankEnum).orElseThrow(() -> new RuntimeException("Rank initialization issue"));
+            user.setRank(rank); //on set le role au user
+            return userRepository.save(user);
+        }
+
+
+    }
