@@ -6,11 +6,14 @@ import be.helha.maraichapp.models.Users;
 import be.helha.maraichapp.repositories.RankRepository;
 import be.helha.maraichapp.repositories.UserRepository;
 import be.helha.maraichapp.services.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,8 +29,19 @@ public class UserServiceTest {
 
     private UserService userService;
     @Autowired
-
     private UserRepository userRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    @AfterEach
+    public void cleanup() {
+        // Supprimez tous les utilisateurs après chaque test
+        List<Users> allUsers = userService.getAllUsers();
+        for (Users user : allUsers) {
+            userService.deleteUserById(user.getIdUser());
+        }
+    }
 
     @Test
     @Order(1)
@@ -118,6 +132,7 @@ public class UserServiceTest {
         assertEquals("UpdatedCity", retrievedUser.getAddress().getCity());
         assertEquals("alice@test.be", retrievedUser.getEmail());
         assertEquals(rankEnum, retrievedUser.getRank().getName()); // Le rôle ne doit pas être modifié
+
     }
 
 
@@ -141,6 +156,7 @@ public class UserServiceTest {
         assertEquals(testUser.getFirstName(), retrievedUser.getFirstName());
         assertEquals(testUser.getSurname(), retrievedUser.getSurname());
         assertEquals(testUser.getEmail(), retrievedUser.getEmail());
+
     }
 
     @Test
@@ -198,6 +214,61 @@ public class UserServiceTest {
         // Vérifiez que la liste contient au moins les utilisateurs ajoutés
         assertTrue(allUsers.contains(testUser1));
         assertTrue(allUsers.contains(testUser2));
+    }
+
+    @Test
+    @Order(7)
+    public void testDeleteUserById() {
+        // Créez un utilisateur pour la suppression
+        RankEnum rankEnum = RankEnum.CUSTOMER;
+        Rank rank = new Rank(rankEnum, 1);
+        Users testUser = new Users("UserToDelete", "Test", "123456789", "Test12345", "8", "Test Street", "12345", "TestCity", "testToDelete@test.be", rank);
+
+        // Ajoutez l'utilisateur à la base de données
+        Users savedUser = userService.addUser(testUser);
+
+        // Appelez la méthode deleteUserById pour supprimer l'utilisateur ajouté
+        userService.deleteUserById(savedUser.getIdUser());
+
+        // Appelez la méthode getUserById pour vérifier si l'utilisateur a été supprimé
+        assertThrows(EntityNotFoundException.class, () -> userService.getUserById(savedUser.getIdUser()));
+
+        // Appelez la méthode getAllUsers pour vérifier la taille de la liste après la suppression
+        List<Users> allUsersAfterDeletion = userService.getAllUsers();
+        assertEquals(0, allUsersAfterDeletion.size());
+    }
+
+    @Test
+    @Order(8)
+    public void updateUserRestrictedWithPasswordChangeTest() {
+        // Créez un utilisateur pour la mise à jour
+        RankEnum rankEnum = RankEnum.CUSTOMER;
+        Rank rank = new Rank(rankEnum, 1);
+        Users testUser = new Users("Alice", "Smith", "0987654321", "HELHa789", "3", "Rue des Roses", "2000", "Anvers", "alice@test.be", rank);
+
+        // Ajoutez l'utilisateur à la base de données
+        Users savedUser = userService.addUser(testUser);
+
+
+        savedUser.setFirstName("UpdatedFirstName");
+        savedUser.setSurname("UpdatedSurname");
+        savedUser.setPhoneNumber("9876543210");
+        savedUser.setPassword("NewPassword123"); // Nouveau mot de passe;
+
+        // Appelez la méthode updateUserRestricted
+        Users resultUser = userService.updateUserRestricted(savedUser);
+
+        // Vérifiez que l'utilisateur mis à jour a les bonnes propriétés
+        assertNotNull(resultUser);
+        assertEquals("UpdatedFirstName", resultUser.getFirstName());
+        assertEquals("UpdatedSurname", resultUser.getSurname());
+        assertEquals("9876543210", resultUser.getPhoneNumber());
+
+        // Vérifiez que le mot de passe a été mis à jour
+        assertNotEquals(savedUser.getPassword(), resultUser.getPassword());
+
+        // Vérifiez que le mot de passe mis à jour est correct
+        assertTrue(passwordEncoder.matches("NewPassword123", resultUser.getPassword()));
     }
 
 

@@ -161,8 +161,14 @@ public class UserService implements UserDetailsService {
             existingUser.setFirstName(updatedUser.getFirstName());
             existingUser.setSurname(updatedUser.getSurname());
             existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
-            existingUser.setPassword(updatedUser.getPassword());
             existingUser.setAddress(updatedUser.getAddress());
+
+            // Vérifie si le mot de passe a changé
+            if (!existingUser.getPassword().equals(updatedUser.getPassword())) {
+                // Hachez le nouveau mot de passe
+                String hashedPassword = passwordEncoder.encode(updatedUser.getPassword());
+                existingUser.setPassword(hashedPassword);
+            }
 
             // Met à jour l'utilisateur
             return userRepository.save(existingUser);
@@ -195,6 +201,16 @@ public class UserService implements UserDetailsService {
     //retourne tout les users
     public List<Users> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    // Supprimer un utilisateur depuis son ID
+    @Transactional
+    public void deleteUserById(int id) {
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+        } else {
+            throw new EntityNotFoundException("User not found with ID: " + id);
+        }
     }
 
 
