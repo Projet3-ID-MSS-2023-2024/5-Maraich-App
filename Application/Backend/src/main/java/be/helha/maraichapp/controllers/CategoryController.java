@@ -1,7 +1,7 @@
 package be.helha.maraichapp.controllers;
 
 import be.helha.maraichapp.models.Category;
-import be.helha.maraichapp.repositories.CategoryRepository;
+import be.helha.maraichapp.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,22 +12,20 @@ import java.util.List;
 public class CategoryController {
 
     @Autowired
-    CategoryRepository categoryRepository;
+    CategoryService categoryService;
 
     @GetMapping("/getAll")
-    public List<Category> getShop(){ return categoryRepository.findAll(); }
+    public List<Category> getCategory(){ return categoryService.getAllCategories(); }
 
-    @PostMapping("newCategory")
-    public Category addCategory(@RequestBody Category category) { return categoryRepository.save(category);}
+    @PostMapping("/new")
+    public Category addCategory(@RequestBody Category category) { return categoryService.addCategory(category);}
 
-    @PutMapping("update")
+    @PutMapping("/update")
     public Category updateCategory(@RequestBody Category category){
-        if (categoryRepository.existsById(category.getIdCategory()))
-            return categoryRepository.save(category);
-        return null;
+        return categoryService.updateCategory(category);
     }
 
     @DeleteMapping
-    @RequestMapping("delete/{id}")
-    public void deleteCategory(@PathVariable("id") int id) { categoryRepository.deleteById(id);}
+    @RequestMapping("/delete/{id}")
+    public void deleteCategory(@PathVariable("id") int id) { categoryService.deleteCategoryById(id);}
 }
