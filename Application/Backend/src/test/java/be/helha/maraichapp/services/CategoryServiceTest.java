@@ -74,8 +74,8 @@ public class CategoryServiceTest {
     @Test
     @Order(3)
     @Transactional
-    public void getUserByIdTest(){
-        // Création d'un user pour la recherche
+    public void getCategoryByIdTest(){
+        // Création d'un category pour la recherche
         Category testCategory = new Category("Nourriture");
 
         // Ajoutez la catégorie à la base de données
@@ -112,7 +112,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    @Order(7)
+    @Order(5)
     public void testDeleteCategoryById(){
         // Créez une catégorie pour la suppression
         Category testCategory = new Category("Nourriture");
