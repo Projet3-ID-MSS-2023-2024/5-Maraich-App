@@ -27,11 +27,9 @@ import static org.springframework.http.HttpMethod.POST;
 public class SpringSecurityConfig {
 
     @Autowired
-    JwtFilter jwtFilter;
-    @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, JwtFilter jwtFilter) throws Exception {
         return
                 httpSecurity
                         .csrf(AbstractHttpConfigurer::disable)

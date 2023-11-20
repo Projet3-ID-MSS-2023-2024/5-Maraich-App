@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+
 public class Users implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,9 +45,19 @@ public class Users implements UserDetails {
     public Users(String firstName, String surname, String phoneNumber, String password, String number, String road, String postCode, String city, String email, Rank rank) {
         this.firstName = firstName;
         this.surname = surname;
-        this.isActif = true;
+        this.isActif = false;
         this.password = password;
         this.rank = rank;
+        this.phoneNumber = phoneNumber;
+        this.address = new Address(road,postCode,city, number);
+        this.email = email;
+    }
+
+    public Users(String firstName, String surname, String phoneNumber, String password, String number, String road, String postCode, String city, String email) {
+        this.firstName = firstName;
+        this.surname = surname;
+        this.isActif = false;
+        this.password = password;
         this.phoneNumber = phoneNumber;
         this.address = new Address(road,postCode,city, number);
         this.email = email;

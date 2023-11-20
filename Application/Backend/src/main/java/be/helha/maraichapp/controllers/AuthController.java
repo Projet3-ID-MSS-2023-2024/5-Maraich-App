@@ -52,13 +52,7 @@ public class AuthController {
 
     @PostMapping(path = "connection")
     public Map<String, String> connection(@RequestBody AuthentificationDTO authentificationDTO) {
-        Authentication authentificate = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authentificationDTO.email(), authentificationDTO.password())
-            );
-
-        if(authentificate.isAuthenticated()) {
-            return this.jwtService.generate(authentificationDTO.email());
-        }
-        return null;
+        return this.jwtService.connection(authentificationDTO);
     }
+
 }

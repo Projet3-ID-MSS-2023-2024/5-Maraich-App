@@ -1,5 +1,6 @@
 package be.helha.maraichapp.config;
 
+import be.helha.maraichapp.dto.AuthentificationDTO;
 import be.helha.maraichapp.models.*;
 import be.helha.maraichapp.repositories.JwtRepository;
 import be.helha.maraichapp.services.UserService;
@@ -12,6 +13,9 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +35,8 @@ public class JwtService {
     public static final String BEARER = "bearer";
     @Autowired
     JwtRepository jwtRepository;
+    @Autowired
+        AuthenticationManager authenticationManager;
     private final String ENCRYPTION_KEY = "39a3d3ef7523663f81f23906dba75c9425c256cb55dc6d05f5cc75e5b524786d";
     @Autowired
     private UserService userService;
@@ -116,6 +122,17 @@ public class JwtService {
     public void removeUselessJwt() {
         log.info("Delete tokens at {}", Instant.now());
         this.jwtRepository.deleteAllByIsExpiredAndIsDisable(true, true);
+    }
+
+    public Map<String, String> connection(AuthentificationDTO authentificationDTO) {
+        Authentication authentificate = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authentificationDTO.email(), authentificationDTO.password())
+        );
+
+        if(authentificate.isAuthenticated()) {
+            return generate(authentificationDTO.email());
+        }
+        return null;
     }
 }
 
