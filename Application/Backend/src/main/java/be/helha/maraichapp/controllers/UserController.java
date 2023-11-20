@@ -2,52 +2,30 @@ package be.helha.maraichapp.controllers;
 
 import be.helha.maraichapp.models.RankEnum;
 import be.helha.maraichapp.models.Users;
-import be.helha.maraichapp.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
-@RestController
-@RequestMapping("/users")
-public class UserController {
-    @Autowired
-    private UserService userService;
-
+public interface UserController {
 
     @GetMapping("/get/{id}")
-    public Users getUserById(@PathVariable int id) {
-        return userService.getUserById(id);
-    }
+    Users getUserById(@PathVariable int id);
 
     @GetMapping("/getByRank/{rank}")
-    public List<Users> getUsersByRank(@PathVariable RankEnum rank) {
-        return userService.getUsersByRank(rank).orElse(null);
-    }
+    List<Users> getUsersByRank(@PathVariable RankEnum rank);
 
     @GetMapping("/getAll")
-    public List<Users> getAllUsers() {
-        return userService.getAllUsers();
-    }
+    List<Users> getAllUsers();
 
     @PostMapping("/newUser")
-    public Users addUser(@RequestBody Users user) {
-        return userService.addUser(user);
-    }
+    Users addUser(@RequestBody Users user);
 
     @PutMapping("/update/admin")
-    public Users updateUserAdmin(@RequestBody Users user) {
-        return userService.updateUserAdmin(user);
-    }
+    Users updateUserAdmin(@RequestBody Users user);
 
     @PutMapping("/update/restricted")
-    public Users updateUserRestricted(@RequestBody Users updatedUser) {
-        return userService.updateUserRestricted(updatedUser);
-    }
+    Users updateUserRestricted(@RequestBody Users updatedUser);
 
     @DeleteMapping("/delete/{id}")
-    public void deleteUserById(@PathVariable int id) {
-        userService.deleteUserById(id);
-    }
+    void deleteUserById(@PathVariable int id);
 }

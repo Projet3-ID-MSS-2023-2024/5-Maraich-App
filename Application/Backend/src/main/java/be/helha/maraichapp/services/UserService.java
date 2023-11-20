@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService implements UserDetailsService,UserServiceInterface {
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -106,6 +106,7 @@ public class UserService implements UserDetailsService {
 
 
     // Ajouter un nouvel user (niveau admin)
+    @Override
     @Transactional
     public Users addUser(Users user) {
         //on vérifie si les données sont valide
@@ -126,6 +127,7 @@ public class UserService implements UserDetailsService {
     }
 
     // Mettre à jour un user existant
+    @Override
     @Transactional
     public Users updateUserAdmin(Users user) {
         // Vérifie si les données sont valides
@@ -153,6 +155,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    @Override
     @Transactional
     public Users updateUserRestricted(Users updatedUser) {
         // Vérifie si les données sont valides
@@ -188,12 +191,14 @@ public class UserService implements UserDetailsService {
     }
 
     //rechercher un user avec un id
+    @Override
     @Transactional
     public Users getUserById(int id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + id));//on lève une exception si pas trouvé
     }
 
+    @Override
     @Transactional
     public Optional<List<Users>> getUsersByRank(RankEnum rankEnum) {
         Rank rank = rankRepository.findByName(rankEnum)
@@ -209,11 +214,13 @@ public class UserService implements UserDetailsService {
     }
 
     //retourne tout les users
+    @Override
     public List<Users> getAllUsers() {
         return userRepository.findAll();
     }
 
     // Supprimer un utilisateur depuis son ID
+    @Override
     @Transactional
     public void deleteUserById(int id) {
         if (userRepository.existsById(id)) {
