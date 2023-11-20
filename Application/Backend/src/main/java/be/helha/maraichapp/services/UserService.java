@@ -135,8 +135,18 @@ public class UserService implements UserDetailsService {
         }
 
         // Vérifie si l'utilisateur existe
-        Optional<Users> existingUser = userRepository.findById(user.getIdUser());
-        if (existingUser.isPresent()) {
+        Optional<Users> existingUserOptional = userRepository.findById(user.getIdUser());
+        if (existingUserOptional.isPresent()) {
+            Users existingUser = existingUserOptional.get();
+
+            // Vérifie si le mot de passe a changé
+            if (!existingUser.getPassword().equals(user.getPassword())) {
+                // Hachez le nouveau mot de passe
+                String hashedPassword = passwordEncoder.encode(user.getPassword());
+                user.setPassword(hashedPassword);  // Met à jour le mot de passe chiffré dans l'objet user
+            }
+
+            // Met à jour l'utilisateur
             return userRepository.save(user);
         } else {
             throw new EntityNotFoundException("User not found with ID: " + user.getIdUser());
