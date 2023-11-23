@@ -13,10 +13,13 @@ import lombok.NoArgsConstructor;
 public class Address {
 
     @Column(nullable = false)
-    private String roadNumber;
+    private String road;
     @Column(nullable = false)
     private String postCode;
     @Column(nullable = false)
     private String city;
+    // The choice of String has been made for house numbers like 60A
+    @Column(nullable = false)
+    private String number;
 
 }

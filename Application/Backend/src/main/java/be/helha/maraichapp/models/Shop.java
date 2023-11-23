@@ -29,10 +29,10 @@ public class Shop {
     @JoinColumn(name = "ownerId")
     private Users owner;
 
-    public Shop(String name, String email ,String roadNumber, String postCode, String city, String picture, String description, Users owner) {
+    public Shop(String name, String email ,String road, String number, String postCode, String city, String picture, String description, Users owner) {
         this.name = name;
         this.email = email;
-        this.address = new Address(roadNumber,postCode,city);
+        this.address = new Address(road,postCode,city, number);
         this.picture = picture;
         this.description = description;
         this.owner = owner;
