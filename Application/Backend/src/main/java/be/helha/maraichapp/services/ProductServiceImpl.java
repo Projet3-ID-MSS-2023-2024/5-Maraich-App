@@ -39,7 +39,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public Product updateProduct(Product product) {
-        if (productRepository.existsById(product.getIdProduct())){
+        if (productRepository.existsById(product.getId())){
             return productRepository.save(product);
         }
         return null;

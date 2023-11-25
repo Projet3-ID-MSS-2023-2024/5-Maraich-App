@@ -28,32 +28,26 @@ public class Category {
         this.products = null;
     }
 
-    public int getIdCategory() {
-        return idCategory;
-    }
-
-    public void setIdCategory(int idCategory) {
-        this.idCategory = idCategory;
-    }
-
-    public String getNomCategory() {
-        return nomCategory;
-    }
-
-    public void setNomCategory(String nomCategory) {
-        this.nomCategory = nomCategory;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Category category = (Category) o;
-        return Objects.equals(nomCategory, category.nomCategory);
+        return idCategory == category.idCategory && Objects.equals(nomCategory, category.nomCategory);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nomCategory);
+        return Objects.hash(idCategory, nomCategory);
     }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "idCategory=" + idCategory +
+                ", nomCategory='" + nomCategory + '\'' +
+                ", products=" + (products != null ? products.size() : "null") +
+                '}';
+    }
+
 }
