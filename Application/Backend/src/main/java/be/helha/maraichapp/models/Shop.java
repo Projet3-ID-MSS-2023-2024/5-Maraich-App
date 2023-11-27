@@ -28,6 +28,21 @@ public class Shop {
     @OneToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "ownerId")
     private Users owner;
+    @Column(nullable = false)
+    private boolean shopIsOkay;
+    @Column(nullable = false)
+    private boolean enable = false;
+
+    public Shop(String name, String email ,String road, String number, String postCode, String city, String picture, String description, Users owner, boolean shopIsOkay, boolean enable) {
+        this.name = name;
+        this.email = email;
+        this.address = new Address(road,postCode,city, number);
+        this.picture = picture;
+        this.description = description;
+        this.owner = owner;
+        this.shopIsOkay = shopIsOkay;
+        this.enable = enable;
+    }
 
     public Shop(String name, String email ,String road, String number, String postCode, String city, String picture, String description, Users owner) {
         this.name = name;
@@ -36,5 +51,7 @@ public class Shop {
         this.picture = picture;
         this.description = description;
         this.owner = owner;
+        this.shopIsOkay = false;
+        this.enable = false;
     }
 }
