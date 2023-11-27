@@ -44,9 +44,13 @@ public class Order {
     /*@ManyToOne
     private Product product;*/
 
-    public Order(Calendar orderDate, float totalPrice, Calendar reedeemDate) {
+    public Order(Calendar orderDate, float totalPrice, Calendar reedeemDate, Users customer, Shop shop) {
         this.orderDate = orderDate;
         this.totalPrice = totalPrice;
         this.reedeemDate = reedeemDate;
+        this.orderIsReady = false;
+        this.isArchived = false;
+        this.customer = customer;
+        this.shop = shop;
     }
 }

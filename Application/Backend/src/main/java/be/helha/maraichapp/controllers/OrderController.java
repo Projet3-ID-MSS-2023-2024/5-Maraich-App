@@ -1,9 +1,7 @@
 package be.helha.maraichapp.controllers;
 
 import be.helha.maraichapp.models.Order;
-import be.helha.maraichapp.services.OrderService;
 import be.helha.maraichapp.services.OrderServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
