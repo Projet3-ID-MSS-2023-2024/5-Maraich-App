@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "shops")
 @NoArgsConstructor
@@ -28,6 +30,8 @@ public class Shop {
     @OneToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "ownerId")
     private Users owner;
+    @OneToMany (mappedBy = "shop")
+    private List<Order> orders;
     @Column(nullable = false)
     private boolean shopIsOkay;
     @Column(nullable = false)
