@@ -35,8 +35,8 @@ public class Users implements UserDetails {
     private String email;
     @Column(nullable = false)
     private boolean isActif = false;
-    /*@OneToMany(mappedBy = "customer")
-    private List<Order> orders;*/
+    @OneToMany(mappedBy = "customer")
+    private List<Order> orders;
     @ManyToOne(cascade={CascadeType.MERGE})
     @JoinColumn(name = "rankId")
     private Rank rank;
