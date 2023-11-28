@@ -9,12 +9,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 
 public class Users implements UserDetails {
     @Id
@@ -41,8 +43,20 @@ public class Users implements UserDetails {
     @JoinColumn(name = "rankId")
     private Rank rank;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Users users = (Users) o;
+        return idUser == users.idUser && isActif == users.isActif && Objects.equals(firstName, users.firstName) && Objects.equals(surname, users.surname) && Objects.equals(phoneNumber, users.phoneNumber) && Objects.equals(password, users.password) && Objects.equals(address, users.address) && Objects.equals(email, users.email) && Objects.equals(rank, users.rank);
+    }
 
-    public Users(String firstName, String surname, String phoneNumber, String password, String number, String road, String postCode, String city, String email, Rank rank) {
+    @Override
+    public int hashCode() {
+        return Objects.hash(idUser, firstName, surname, phoneNumber, password, address, email, isActif, rank);
+    }
+
+    public Users(String firstName, String surname, String phoneNumber, String password, String number, String road, String postCode, String city, String email, Rank rank, List<Order> orders) {
         this.firstName = firstName;
         this.surname = surname;
         this.isActif = false;
@@ -51,6 +65,7 @@ public class Users implements UserDetails {
         this.phoneNumber = phoneNumber;
         this.address = new Address(road,postCode,city, number);
         this.email = email;
+        this.orders = orders;
     }
 
     public Users(String firstName, String surname, String phoneNumber, String password, String number, String road, String postCode, String city, String email) {
@@ -62,6 +77,8 @@ public class Users implements UserDetails {
         this.address = new Address(road,postCode,city, number);
         this.email = email;
     }
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
