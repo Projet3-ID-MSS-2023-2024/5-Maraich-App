@@ -27,28 +27,33 @@ public class Shop {
     private String picture;
     @Column(nullable = false)
     private String description;
-    @OneToOne(cascade = {CascadeType.MERGE})
-    @JoinColumn(name = "ownerId")
-    private Users owner;
-    @OneToMany (mappedBy = "shop")
-    private List<Order> orders;
     @Column(nullable = false)
     private boolean shopIsOkay;
     @Column(nullable = false)
     private boolean enable = false;
+    @OneToOne(cascade = {CascadeType.MERGE})
+    @JoinColumn(name = "ownerId")
+    private Users owner;
+    @OneToMany (mappedBy = "shopSeller")
+    private List<Order> orders;
+    @OneToMany(mappedBy = "shop")
+    private List<Product> products;
 
-    public Shop(String name, String email ,String road, String number, String postCode, String city, String picture, String description, Users owner, boolean shopIsOkay, boolean enable) {
+
+    public Shop(String name, String email, Address address, String picture, String description, boolean shopIsOkay, boolean enable, Users owner, List<Order> orders, List<Product> products) {
         this.name = name;
         this.email = email;
-        this.address = new Address(road,postCode,city, number);
+        this.address = address;
         this.picture = picture;
         this.description = description;
-        this.owner = owner;
         this.shopIsOkay = shopIsOkay;
         this.enable = enable;
+        this.owner = owner;
+        this.orders = orders;
+        this.products = products;
     }
 
-    public Shop(String name, String email ,String road, String number, String postCode, String city, String picture, String description, Users owner) {
+    public Shop(String name, String email , String road, String number, String postCode, String city, String picture, String description, Users owner) {
         this.name = name;
         this.email = email;
         this.address = new Address(road,postCode,city, number);
