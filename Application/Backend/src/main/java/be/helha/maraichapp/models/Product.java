@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -28,10 +29,14 @@ public class Product {
     private double weight;
     @Column(nullable = false)
     private boolean isUnity;
-
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name="categoryId")
     private Category category;
+    @OneToMany(mappedBy = "product")
+    private List<OrderProduct> orderProducts;
+    @ManyToOne
+    @JoinColumn(name = "shopId")
+    private Shop shop;
 
     public Product(String name, double price, String description, String picturePath, int quantity, double weight, boolean isUnity, Category category) {
         this.name = name;
