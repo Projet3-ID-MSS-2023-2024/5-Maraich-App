@@ -29,7 +29,7 @@ public class OrderServiceImpl implements OrderService {
         Example<Users> customerExample = Example.of(customer, userMatcher);
         boolean customerExist = userRepository.exists(customerExample);
         // Verify if the Shop owner already exists in the database
-        Users owner = order.getShop().getOwner();
+        Users owner = order.getShopSeller().getOwner();
         Example<Users> ownerExample = Example.of(owner, userMatcher);
         boolean ownerExist = userRepository.exists(ownerExample);
         // We verify if both of them are false, we throw an exception if that's the case
