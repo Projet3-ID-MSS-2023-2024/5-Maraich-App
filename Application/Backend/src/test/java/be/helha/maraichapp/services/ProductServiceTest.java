@@ -1,10 +1,10 @@
 package be.helha.maraichapp.services;
 
-import be.helha.maraichapp.models.Category;
-import be.helha.maraichapp.models.Product;
+import be.helha.maraichapp.models.*;
 import be.helha.maraichapp.repositories.ProductRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -24,8 +24,20 @@ public class ProductServiceTest {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private ShopService shopService;
+
+    @Autowired
+    private UserService userService;
+
     private static Category testCategory;
     private static Category testCategory2;
+
+    private static Shop testShop;
+    private static Shop testShop2;
+
+    private static Users testUser;
+    private static Users testUser2;
 
     @AfterEach
     public void cleanUp(){
@@ -35,19 +47,27 @@ public class ProductServiceTest {
         }
         categoryService.deleteCategoryById(testCategory.getIdCategory());
         categoryService.deleteCategoryById(testCategory2.getIdCategory());
+        shopService.deleteShop(testShop.getIdShop());
+        shopService.deleteShop(testShop2.getIdShop());
+        userService.deleteUserById(testUser.getIdUser());
+        userService.deleteUserById(testUser2.getIdUser());
     }
 
     @BeforeEach
     public void setUpCategories() {
         testCategory = categoryService.addCategory(new Category("Légume"));
         testCategory2 = categoryService.addCategory(new Category("Fruits"));
+        testUser = userService.addUser(new Users("Celik","Esad","0483000000","Password1","40","Rue du du","6030","Charleroi","la00000@student.helha.be",null,null));
+        testShop = shopService.addShop(new Shop("Marché","la111@student.helha.be","Rue du du","40","6030","Charleroi","png.png","C'est un marché",testUser));
+        testUser2 = userService.addUser(new Users("CelikBis","EsadBis","0483000000","Password2","40","Rue du du","6030","Charleroi","la222222@student.helha.be",null,null));
+        testShop2 = shopService.addShop(new Shop("Marchée","la33@student.helha.be","Rue du du","40","6030","Charleroi","png.png","C'est un marché",testUser2));
     }
 
     @Test
     @Order(1)
     @Transactional
     public void addProductTest(){
-        Product testProduct = new Product("Carotte",15,"C'est des carottes","carotte.png",20,40,false,testCategory);
+        Product testProduct = new Product("Carotte",15,"C'est des carottes","carotte.png",20,40,false,testCategory,testShop);
 
         Product savedProduct = productService.addProduct(testProduct);
 
@@ -71,7 +91,7 @@ public class ProductServiceTest {
     @Order(2)
     @Transactional
     public void updateProductTest(){
-        Product testProduct = new Product("Carotte",15,"C'est des carottes","carotte.png",20,40,false,testCategory);
+        Product testProduct = new Product("Carotte",15,"C'est des carottes","carotte.png",20,40,false,testCategory,testShop);
 
         // On ajoute les données
         Product savedProduct = productService.addProduct(testProduct);
@@ -97,8 +117,8 @@ public class ProductServiceTest {
     @Test
     @Order(3)
     @Transactional
-    public void getProductByIdTest(){
-        Product testProduct = new Product("Carotte",15,"C'est des carottes","carotte.png",20,40,false,testCategory);
+    public void testGetProductByIdTest(){
+        Product testProduct = new Product("Carotte",15,"C'est des carottes","carotte.png",20,40,false,testCategory,testShop);
 
         Product savedProduct = productService.addProduct(testProduct);
 
@@ -116,9 +136,9 @@ public class ProductServiceTest {
 
     @Test
     @Order(4)
-    public void getAllProductTest(){
-        Product testProduct = new Product("Carotte",15,"C'est des carottes","carotte.png",20,40,false,testCategory);
-        Product testProduct2 = new Product("Patate",12,"C'est des patates","patate.png",10,80,false,testCategory);
+    public void testGetAllProductTest(){
+        Product testProduct = new Product("Carotte",15,"C'est des carottes","carotte.png",20,40,false,testCategory,testShop);
+        Product testProduct2 = new Product("Patate",12,"C'est des patates","patate.png",10,80,false,testCategory,testShop);
 
         productService.addProduct(testProduct);
         productService.addProduct(testProduct2);
@@ -133,18 +153,16 @@ public class ProductServiceTest {
 
     @Test
     @Order(5)
-    public void getAllProductByCategory(){
-        Product testProduct = new Product("Carotte",15,"C'est des carottes","carotte.png",20,40,false,testCategory);
-        Product testProduct2 = new Product("Patate",12,"C'est des patates","patate.png",10,80,false,testCategory);
-        Product testProduct3 = new Product("Pomme",10,"C'est des pommes","pomme.png",50,20,false,testCategory2);
+    public void testGetAllProductByCategory(){
+        Product testProduct = new Product("Carotte",15,"C'est des carottes","carotte.png",20,40,false,testCategory,testShop);
+        Product testProduct2 = new Product("Patate",12,"C'est des patates","patate.png",10,80,false,testCategory,testShop);
+        Product testProduct3 = new Product("Pomme",10,"C'est des pommes","pomme.png",50,20,false,testCategory2,testShop);
 
         productService.addProduct(testProduct);
         productService.addProduct(testProduct2);
         productService.addProduct(testProduct3);
 
         List<Product> productCategory1 = productService.getAllProductByCategories(testCategory);
-
-        System.out.println("Product List: " + productCategory1);
 
         assertFalse(productCategory1.isEmpty());
 
@@ -155,8 +173,28 @@ public class ProductServiceTest {
 
     @Test
     @Order(6)
+    public void testGetAllProductByShop(){
+        Product testProduct = new Product("Carotte",15,"C'est des carottes","carotte.png",20,40,false,testCategory,testShop);
+        Product testProduct2 = new Product("Patate",12,"C'est des patates","patate.png",10,80,false,testCategory,testShop);
+        Product testProduct3 = new Product("Pomme",10,"C'est des pommes","pomme.png",50,20,false,testCategory2,testShop2);
+
+        productService.addProduct(testProduct);
+        productService.addProduct(testProduct2);
+        productService.addProduct(testProduct3);
+
+        List<Product> productsShop1 = productService.getAllProductByShop(testShop);
+
+        assertFalse(productsShop1.isEmpty());
+
+        assertTrue(productsShop1.contains(testProduct));
+        assertTrue(productsShop1.contains(testProduct2));
+        assertFalse(productsShop1.contains(testProduct3));
+    }
+
+    @Test
+    @Order(7)
     public void testDeleteProduct(){
-        Product testProduct = new Product("Carotte",15,"C'est des carottes","carotte.png",20,40,false,testCategory);
+        Product testProduct = new Product("Carotte",15,"C'est des carottes","carotte.png",20,40,false,testCategory,testShop);
 
         Product savedProduct = productService.addProduct(testProduct);
 
