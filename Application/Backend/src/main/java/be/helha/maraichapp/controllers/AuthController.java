@@ -11,15 +11,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @Slf4j
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 public class AuthController {
 
@@ -32,7 +30,7 @@ public class AuthController {
     @Autowired
     private JwtService jwtService;
 
-    @PostMapping(path = "inscription")
+    @PostMapping(path = "signup")
     public void inscription(@RequestBody Users users) {
         log.info("Inscription");
         this.userService.inscription(users);
@@ -50,7 +48,7 @@ public class AuthController {
         this.jwtService.disconnection();
     }
 
-    @PostMapping(path = "connection")
+    @PostMapping(path = "login")
     public Map<String, String> connection(@RequestBody AuthentificationDTO authentificationDTO) {
         return this.jwtService.connection(authentificationDTO);
     }
