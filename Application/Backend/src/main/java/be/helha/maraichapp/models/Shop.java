@@ -36,7 +36,7 @@ public class Shop {
     private Users owner;
     @OneToMany (mappedBy = "shopSeller")
     private List<Order> orders;
-    @OneToMany(mappedBy = "shop")
+    @OneToMany(mappedBy = "shop", cascade = {CascadeType.ALL})
     private List<Product> products;
 
 
