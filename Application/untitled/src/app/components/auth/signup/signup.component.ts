@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {ButtonModule} from "primeng/button";
 import {InputTextModule} from "primeng/inputtext";
@@ -14,14 +14,14 @@ import {Address} from "../../../models/address";
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })
-export class SignupComponent {
+export class SignupComponent{
 
   firstName!: string;
   surname!: string;
   phoneNumber!: string;
   password!: string;
   passwordConfirmation!: string;
-  address!: Address;
+  address: Address = { road: '', postCode: '', city: '', number: '' };
   email!: string;
 
   onSubmitForm(){
