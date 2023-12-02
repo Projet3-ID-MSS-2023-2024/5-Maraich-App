@@ -38,7 +38,7 @@ public class Product {
     @JoinColumn(name = "shopId")
     private Shop shop;
 
-    public Product(String name, double price, String description, String picturePath, int quantity, double weight, boolean isUnity, Category category) {
+    public Product(String name, double price, String description, String picturePath, int quantity, double weight, boolean isUnity, Category category, Shop shop) {
         this.name = name;
         this.price = price;
         this.description = description;
@@ -47,6 +47,7 @@ public class Product {
         this.weight = weight;
         this.isUnity = isUnity;
         this.category = category;
+        this.shop = shop;
     }
 
     @Override
