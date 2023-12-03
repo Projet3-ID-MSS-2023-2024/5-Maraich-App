@@ -7,7 +7,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService: AuthService = inject(AuthService);
   const router: Router = inject(Router);
 
-  if (router.url !== '/login') {
+  if (router.url !== '/login' && router.url !== "/signup" && !router.url.startsWith("/activation")){
     const token = authService.getTokenFromCookie();
 
     // Only add the Authorization header if the token is available
