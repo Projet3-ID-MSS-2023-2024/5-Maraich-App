@@ -3,6 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import { JwtHelperService } from '@auth0/angular-jwt';
 import {environment} from "../../environments/environment";
+import {User} from "../models/user";
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,15 @@ export class AuthService {
   login(email: string, password: string): Observable<any> { // Appel API pour le login
     const credentials = { email, password };
     return this.http.post(`${environment.apiUrl}/login`, credentials);
+  }
+
+  signUp(user: User) : Observable<any> {
+    return this.http.post(`${environment.apiUrl}/signup`, user);
+  }
+
+  activate(code : string) : Observable<any> {
+    const credentials = { code };
+    return this.http.post(`${environment.apiUrl}/activation`, credentials);
   }
 
   logout(){ // Supprimez le cookie du token en l'expirant
