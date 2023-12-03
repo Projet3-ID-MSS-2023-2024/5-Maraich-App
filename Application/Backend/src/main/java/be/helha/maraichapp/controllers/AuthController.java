@@ -31,15 +31,15 @@ public class AuthController {
     private JwtService jwtService;
 
     @PostMapping(path = "signup")
-    public void inscription(@RequestBody Users users) {
+    public String inscription(@RequestBody Users users) {
         log.info("Inscription");
-        this.userService.inscription(users);
+        return this.userService.inscription(users);
     }
 
     @PostMapping(path = "activation")
-    public void activation(@RequestBody Map<String, String> activation) {
+    public String activation(@RequestBody Map<String, String> activation) {
         log.info("Activation");
-        this.userService.activation(activation);
+        return this.userService.activation(activation);
     }
 
     @PostMapping(path = "disconnection")
