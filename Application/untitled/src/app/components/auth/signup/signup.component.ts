@@ -8,6 +8,7 @@ import {provideRouter, Router, RouterLink} from "@angular/router";
 import {Address} from "../../../models/address";
 import {User} from "../../../models/user";
 import {PasswordModule} from "primeng/password";
+import {AuthService} from "../../../services/auth.service";
 
 @Component({
   selector: 'app-signup',
@@ -29,7 +30,8 @@ export class SignupComponent{
   addressNumberIsNotOk : boolean = false;
   addressEmailIsNotOk : boolean = false;
   passwordFeatIsOk : boolean = true;
-  constructor(private route: Router) {
+
+  constructor(private authService : AuthService, private route: Router) {
     this.user = {
       idUser: 0, // or any default value
       firstName: "",
@@ -76,12 +78,14 @@ export class SignupComponent{
     console.log(this.user);
     this.passwordFeat()
     if(this.fieldsIsValid() && this.passwordFeatIsOk){
-      console.log("tout est bon");
+      this.authService.signUp(this.user).subscribe({
+          next: (response: any) => {
+            this.route.navigate(["/connexion"]);
+          }
+        }
+      );
     }
     else console.log("un soucis");
 
-  }
-
-  ngOnInit(): void {
   }
 }
