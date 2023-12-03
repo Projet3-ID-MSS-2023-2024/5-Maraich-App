@@ -1,0 +1,22 @@
+<div class="surface-section px-4 py-8 md:px-6 lg:px-8">
+  <div class="card flex justify-content-center">
+    <p-button (click)="showDialog()" icon="pi pi-external-link" label="Show"></p-button>
+    <p-dialog header="Header" [(visible)]="visible" [style]="{ width: '50vw' }">
+      <ng-template pTemplate="header">
+        <span class="text-xl font-bold">Erreur : Code d'activation</span>
+      </ng-template>
+      <p>${{ errorMessage }}</p>
+      <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="visible = false" label="Ok" styleClass="p-button-text"></p-button>
+      </ng-template>
+    </p-dialog>
+  </div>
+  <div class="text-700 text-center">
+    <img src="../../../../assets/images/logos/vegetables.svg" alt="Image" height="150" class="mb-3">
+    <div class="text-900 font-bold text-5xl mb-3">ENTREZ VOTRE CODE D'ACTIVATION</div>
+    <div class="text-700 text-2xl mb-5">Veuillez entrer le code d'activation que vous avez reçu par e-mail ou utilisez directement le lien d'activation fourni dans ce même e-mail</div>
+    <input id="activationCode" type="text" [(ngModel)]="code" placeholder="Votre code d'activation" pInputText class="w-full mb-3" [class.ng-invalid]="codeIsNotOk" [class.ng-dirty]="codeIsNotOk">
+    <div *ngIf="codeIsNotOk" class="text-red-500 mt-2 text-left">Le code entré n'est pas valide.</div>
+    <button pButton pRipple type="submit" (click)="onSubmitCode()" label="Se connecter" icon="pi pi-check" class="mt-5 w-full"></button>
+  </div>
+</div>
