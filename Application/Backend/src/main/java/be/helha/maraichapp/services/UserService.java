@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -32,7 +33,8 @@ public class UserService implements UserDetailsService,UserServiceInterface {
     private ValidationRepository validationRepository;
 
 
-    public String inscription(Users users) {
+    public Map<String, String> inscription(Users users) {
+        Map<String, String> mapError = new HashMap<>();
         try {
             boolean dataIsOk = dataUserVerification(users);
 
@@ -48,13 +50,16 @@ public class UserService implements UserDetailsService,UserServiceInterface {
             users.setRank(rank);
             users = this.userRepository.save(users);
             this.validationService.createValidationProcess(users);
-            return "Well done!";
-        } catch (RuntimeException ru) {
-            return ru.getMessage();
+            mapError.put("message","Well done!");
+            return mapError;
+        } catch (RuntimeException re) {
+            mapError.put("message",re.getMessage());
+            return mapError;
         }
     }
 
-    public String activation(Map<String, String> activation) {
+    public Map<String, String> activation(Map<String, String> activation) {
+        Map<String, String> mapError = new HashMap<>();
         try {
             Validation validation = this.validationService.readWithCode(activation.get("code"));
             if (Instant.now().isAfter(validation.getExpirationDate())) {
@@ -65,9 +70,11 @@ public class UserService implements UserDetailsService,UserServiceInterface {
             this.userRepository.save(usersActiver);
             validation.setActivationDate(Instant.now());
             this.validationRepository.save(validation);
-            return "Well done !";
+            mapError.put("message","Well done!");
+            return mapError;
         } catch (RuntimeException re) {
-            return re.getMessage();
+            mapError.put("message",re.getMessage());
+            return mapError;
         }
     }
 
