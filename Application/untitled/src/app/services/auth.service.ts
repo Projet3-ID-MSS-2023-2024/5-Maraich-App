@@ -19,10 +19,12 @@ export class AuthService {
     return this.http.post(`${environment.apiUrl}/login`, credentials);
   }
 
+  //Call to the API to register
   signUp(user: User) : Observable<any> {
     return this.http.post(`${environment.apiUrl}/signup`, user);
   }
 
+  //Call to the API for activate a account
   activate(code : string) : Observable<any> {
     const credentials = { code };
     return this.http.post(`${environment.apiUrl}/activation`, credentials);

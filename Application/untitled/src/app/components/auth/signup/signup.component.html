@@ -28,8 +28,9 @@
             <div *ngIf="phoneNumberIsNotOk" class="text-red-500 mt-2">Le numéro de téléphone est entré invalide.</div>
 
             <label for="mail" class="block text-900 font-medium mb-2 mt-3">Email</label>
-            <input id="mail" type="email" [(ngModel)]="user.email" placeholder="Email" pInputText class="w-full" [class.ng-invalid]="addressEmailIsNotOk" [class.ng-dirty]="addressEmailIsNotOk">
+            <input id="mail" type="email" [(ngModel)]="user.email" placeholder="Email" pInputText class="w-full" [class.ng-invalid]="addressEmailIsNotOk || addressEmailIsAlreadyUse" [class.ng-dirty]="addressEmailIsNotOk || addressEmailIsAlreadyUse">
             <div *ngIf="addressEmailIsNotOk" class="text-red-500 mt-2">L'email entré est invalide.</div>
+          <div *ngIf="addressEmailIsAlreadyUse" class="text-red-500 mt-2">L'email est déjà utilisé.</div>
 
 
             <label class="block text-900 font-medium mb-2 mt-3">Mot de passe</label>
@@ -37,7 +38,7 @@
             <div *ngIf="passwordIsNotOk" class="text-red-500 mt-2">Le mot de passe doit contenir 1 majuscule, 1 chiffre et minimum 8 caractères.</div>
 
             <label class="block text-900 font-medium mb-2 mt-3">Confirmer le mot de passe</label>
-            <p-password [(ngModel)]="passwordConfirmation" placeholder="Confirmation de mot de passe" [toggleMask]="true" styleClass="w-full" [class.ng-invalid]="!passwordFeatIsOk" [class.ng-dirty]="!passwordFeatIsOk" [inputStyle]="{'width':'100%'}"></p-password>
+            <p-password [(ngModel)]="passwordConfirmation" [feedback]="false" placeholder="Confirmation de mot de passe" [toggleMask]="true" styleClass="w-full" [class.ng-invalid]="!passwordFeatIsOk" [class.ng-dirty]="!passwordFeatIsOk" [inputStyle]="{'width':'100%'}"></p-password>
             <div *ngIf="!passwordFeatIsOk" class="text-red-500 mt-2">Le mot de passe ne correspond pas.</div>
 
             <div class="flex mb-3">

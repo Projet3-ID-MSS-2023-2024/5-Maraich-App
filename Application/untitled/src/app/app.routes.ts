@@ -8,5 +8,6 @@ export const routes: Routes = [
   { path: 'inscription', component: SignupComponent },
   { path: 'activation/:code', component: ActivationComponent },
   { path: 'activation', component: ActivationComponent },
-  { path: '', redirectTo: '/connexion', pathMatch: 'full' },
+  //A rediriger vers l'accueil plus tard
+  { path: '**', redirectTo: '/connexion', pathMatch: 'full' },
 ];

@@ -30,6 +30,7 @@ export class SignupComponent{
   addressNumberIsNotOk : boolean = false;
   addressEmailIsNotOk : boolean = false;
   passwordFeatIsOk : boolean = true;
+  addressEmailIsAlreadyUse : boolean = false;
 
   constructor(private authService : AuthService, private route: Router) {
     this.user = {
@@ -44,6 +45,7 @@ export class SignupComponent{
     };
   }
 
+  // Check if all fields are valid using regular expressions
   fieldsIsValid(): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const nameRegex = /^[a-zA-ZÀ-ÿ-]+$/;
@@ -70,22 +72,28 @@ export class SignupComponent{
 
   }
 
+  // Check if password and password confirmation match
   passwordFeat(): void{
     this.passwordFeatIsOk = this.passwordConfirmation == this.user.password;
   }
 
+  // Handle form submission
   onSubmitForm(){
-    console.log(this.user);
+    this.addressEmailIsAlreadyUse = false;
     this.passwordFeat()
     if(this.fieldsIsValid() && this.passwordFeatIsOk){
       this.authService.signUp(this.user).subscribe({
           next: (response: any) => {
-            this.route.navigate(["/connexion"]);
-          }
+            if(response.message == "Well done!")
+              this.route.navigate(["/connexion"]);
+            else
+              this.addressEmailIsAlreadyUse = true;
+          },
+        error: (error) => {
+          console.log(error);
+        }
         }
       );
     }
-    else console.log("un soucis");
-
   }
 }
