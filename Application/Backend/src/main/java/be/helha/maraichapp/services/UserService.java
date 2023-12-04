@@ -31,6 +31,8 @@ public class UserService implements UserDetailsService,UserServiceInterface {
     private ValidationService validationService;
     @Autowired
     private ValidationRepository validationRepository;
+    @Autowired
+    private EmailSender emailSender;
 
 
     public Map<String, String> inscription(Users users) {
@@ -70,6 +72,7 @@ public class UserService implements UserDetailsService,UserServiceInterface {
             this.userRepository.save(usersActiver);
             validation.setActivationDate(Instant.now());
             this.validationRepository.save(validation);
+            this.emailSender.sendInscriptionIsConfirm(validation.getUsers());
             mapError.put("message","Well done!");
             return mapError;
         } catch (RuntimeException re) {
