@@ -16,7 +16,7 @@ public class ValidationService {
     @Autowired
     private ValidationRepository validationRepository;
     @Autowired
-    private NotificationService notificationService;
+    private EmailSender emailSender;
 
     public void createValidationProcess(Users users){
         Validation validation = new Validation();
@@ -30,10 +30,10 @@ public class ValidationService {
         String code = String.format("%06d", random.nextInt(999999));
         validation.setCode(code);
         this.validationRepository.save(validation);
-        this.notificationService.envoyer(validation);
+        this.emailSender.sendActivationMail(validation);
     }
 
     public Validation readWithCode(String code) {
-        return this.validationRepository.findByCode(code).orElseThrow(() -> new RuntimeException("Your validation code is invalid"));
+        return this.validationRepository.findByCode(code).orElseThrow(() -> new RuntimeException("Your validation code is invalid !"));
     }
 }
