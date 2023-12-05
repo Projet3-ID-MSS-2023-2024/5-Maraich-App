@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
-public class UserService implements UserDetailsService,UserServiceInterface {
+public class UserService implements UserDetailsService, UserServiceInterface {
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -52,10 +52,10 @@ public class UserService implements UserDetailsService,UserServiceInterface {
             users.setRank(rank);
             users = this.userRepository.save(users);
             this.validationService.createValidationProcess(users);
-            mapError.put("message","Well done!");
+            mapError.put("message", "Well done!");
             return mapError;
         } catch (RuntimeException re) {
-            mapError.put("message",re.getMessage());
+            mapError.put("message", re.getMessage());
             return mapError;
         }
     }
@@ -64,19 +64,23 @@ public class UserService implements UserDetailsService,UserServiceInterface {
         Map<String, String> mapError = new HashMap<>();
         try {
             Validation validation = this.validationService.readWithCode(activation.get("code"));
-            if (Instant.now().isAfter(validation.getExpirationDate())) {
-                throw new RuntimeException("Your validation code has expired !");
+            if (validation.getActivationDate() == null) {
+                if (Instant.now().isAfter(validation.getExpirationDate())) {
+                    throw new RuntimeException("Your validation code has expired !");
+                }
+                Users usersActiver = this.userRepository.findById(validation.getUsers().getIdUser()).orElseThrow(() -> new RuntimeException("Unknown user"));
+                usersActiver.setActif(true);
+                this.userRepository.save(usersActiver);
+                validation.setActivationDate(Instant.now());
+                this.validationRepository.save(validation);
+                this.emailSender.sendInscriptionIsConfirm(validation.getUsers());
+                mapError.put("message", "Well done!");
+            } else {
+                throw new RuntimeException("This code is already activated !");
             }
-            Users usersActiver = this.userRepository.findById(validation.getUsers().getIdUser()).orElseThrow(() -> new RuntimeException("Unknown user"));
-            usersActiver.setActif(true);
-            this.userRepository.save(usersActiver);
-            validation.setActivationDate(Instant.now());
-            this.validationRepository.save(validation);
-            this.emailSender.sendInscriptionIsConfirm(validation.getUsers());
-            mapError.put("message","Well done!");
             return mapError;
         } catch (RuntimeException re) {
-            mapError.put("message",re.getMessage());
+            mapError.put("message", re.getMessage());
             return mapError;
         }
     }
@@ -267,8 +271,6 @@ public class UserService implements UserDetailsService,UserServiceInterface {
             throw new EntityNotFoundException("User not found with ID: " + id);
         }
     }
-
-
 
 
 }
