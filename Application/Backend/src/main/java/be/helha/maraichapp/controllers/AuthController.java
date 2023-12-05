@@ -17,8 +17,6 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 public class AuthController {
 
     @Autowired
@@ -42,7 +40,7 @@ public class AuthController {
         return this.userService.activation(activation);
     }
 
-    @PostMapping(path = "disconnection")
+    @GetMapping(path = "disconnection")
     public void disconnection() {
         log.info("Disconnection");
         this.jwtService.disconnection();
