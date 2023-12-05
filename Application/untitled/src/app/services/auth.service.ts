@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {Observable, timeout} from "rxjs";
 import { JwtHelperService } from '@auth0/angular-jwt';
 import {environment} from "../../environments/environment";
 import {User} from "../models/user";
+import {CookieService} from "ngx-cookie-service";
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class AuthService {
 
 
   private jwtHelper: JwtHelperService = new JwtHelperService(); // Instanciez le JwtHelperService
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private cookieService : CookieService) {}
 
   login(email: string, password: string): Observable<any> { // Appel API pour le login
     const credentials = { email, password };
@@ -30,8 +31,10 @@ export class AuthService {
     return this.http.post(`${environment.apiUrl}/activation`, credentials);
   }
 
-  logout(){ // Supprimez le cookie du token en l'expirant
-    document.cookie = 'access_token=; Secure; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+   logout(){ // Supprimez le cookie du token en l'expirant
+    let returnObservable = this.http.get(`${environment.apiUrl}/disconnection`);
+    setTimeout(() => {this.cookieService.deleteAll()}, 2000)
+    return returnObservable;
   }
 
   getTokenFromCookie(): string | null {

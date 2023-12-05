@@ -58,6 +58,8 @@ export class ActivationComponent implements OnInit {
           this.errorMessage = "Le code d'activation entré est invalide ! Il peut ne pas exister, ou une erreur a pu être introduite lors de la saisie.";
         else if (response.message === "Your validation code has expired !")
           this.errorMessage = "Votre code est expiré !";
+        else if (response.message === "This code is already activated !")
+          this.errorMessage = "Ce code d'activation est déjà activé !";
         else this.errorMessage = response.message;
         this.visible = true;
       },
