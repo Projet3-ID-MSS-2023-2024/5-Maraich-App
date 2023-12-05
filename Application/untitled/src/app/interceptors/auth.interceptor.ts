@@ -2,12 +2,12 @@ import { HttpInterceptorFn } from '@angular/common/http';
 import {AuthService} from "../services/auth.service";
 import {inject} from "@angular/core";
 import {Router} from "@angular/router";
+import {EMPTY, Observable, of} from "rxjs";
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService: AuthService = inject(AuthService);
   const router: Router = inject(Router);
-
-  if (router.url !== '/login' && router.url !== "/signup" && !router.url.startsWith("/activation")){
+  if (router.url !== '/connexion' && router.url !== "/inscription" && !router.url.startsWith("/activation")){
     const token = authService.getTokenFromCookie();
 
     // Only add the Authorization header if the token is available
