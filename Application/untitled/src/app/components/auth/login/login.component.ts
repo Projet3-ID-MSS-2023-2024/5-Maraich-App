@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {CheckboxModule} from "primeng/checkbox";
 import {ButtonModule} from "primeng/button";
 import {RippleModule} from "primeng/ripple";
@@ -16,13 +16,13 @@ import {PasswordModule} from "primeng/password";
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent{
+export class LoginComponent {
 
   userEmail!: string;
   userPassword!: string;
   errorMessage!: string;
 
-  constructor(private authService : AuthService, private route: Router) {
+  constructor(private authService: AuthService, private route: Router) {
   }
 
   onSubmitForm() {
@@ -46,25 +46,36 @@ export class LoginComponent{
       // If everything is okay, call the login method
       this.authService.login(this.userEmail, this.userPassword).subscribe({
         next: (response: any) => {
-          // Save the token in a cookie
-          document.cookie = `access_token=${response.bearer}`;
+          if (response.message != undefined) {
+            if (response.message === "The user is not activate and the activation code has expired, a new one has been sent !") {
+              this.errorMessage = "Votre compte n'est pas vérifié et votre code d'activation a expiré. Un nouveau a été envoyé dans vos e-mails.";
+            } else if (response.message === "The user is not activate, check your mail !") {
+              this.errorMessage = "Votre compte n'est pas vérifié. Consultez vos mails";
+            } else if (response.message === "Bad credentials") {
+              this.errorMessage = 'Échec de connexion : Vérifiez votre mot de passe et/ou votre adresse mail.';
+            }
+            console.log(response.message);
+          } else {
+            // Save the token in a cookie
+            document.cookie = `access_token=${response.bearer}`;
 
-          // Navigate to the farmers display TO BE DONE
-          this.route.navigate(["/connexion"]);
+            // Navigate to the farmers display TO BE DONE
+            this.route.navigate(["/accueil"]);
+          }
+
         },
         error: (error) => {
           // Handle login errors here
+          console.log(error);
         }
       });
     } else {
-      if(this.userEmail)
+      if (this.userEmail)
         this.errorMessage = 'Échec de connexion : Veuillez fournir un mot de passe.';
       else
         this.errorMessage = 'Échec de connexion : Veuillez fournir une adresse email.';
     }
   }
-
-
 
 
 }
