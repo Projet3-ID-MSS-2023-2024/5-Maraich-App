@@ -3,6 +3,7 @@ import {LoginComponent} from "./components/auth/login/login.component";
 import {SignupComponent} from "./components/auth/signup/signup.component";
 import {ActivationComponent} from "./components/auth/activation/activation.component";
 import {AccueilComponent} from "./temp/accueil/accueil.component";
+import {HomePageComponent} from "./pages/home-page/home-page.component";
 
 export const routes: Routes = [
   { path: 'connexion', component: LoginComponent },
@@ -10,5 +11,6 @@ export const routes: Routes = [
   { path: 'activation/:code', component: ActivationComponent },
   { path: 'activation', component: ActivationComponent },
   { path: 'accueil', component: AccueilComponent },
+  { path: 'home', component: HomePageComponent },
   { path: '**', redirectTo: '/connexion', pathMatch: 'full' },
 ];
