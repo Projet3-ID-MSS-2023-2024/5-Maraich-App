@@ -61,7 +61,7 @@ public class CategoryServiceTest {
         savedCategory.setNomCategory("Vetement");
 
         // Appelez la méthode updateCategory
-        Category updatedCategory = categoryService.updateCategory(savedCategory);
+        Category updatedCategory = categoryService.updateCategory(savedCategory, savedCategory.getIdCategory());
 
         // Récupérez la catégorie mis à jour de la base de données
         Category retrievedCategory = categoryRepository.findById(updatedCategory.getIdCategory()).orElse(null);

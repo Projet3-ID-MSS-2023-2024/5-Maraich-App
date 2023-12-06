@@ -13,13 +13,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
-public class UserService implements UserDetailsService,UserServiceInterface {
+public class UserService implements UserDetailsService, UserServiceInterface {
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -30,35 +31,58 @@ public class UserService implements UserDetailsService,UserServiceInterface {
     private ValidationService validationService;
     @Autowired
     private ValidationRepository validationRepository;
+    @Autowired
+    private EmailSender emailSender;
 
 
-    public void inscription(Users users) {
-        boolean dataIsOk = dataUserVerification(users);
+    public Map<String, String> inscription(Users users) {
+        Map<String, String> mapError = new HashMap<>();
+        try {
+            boolean dataIsOk = dataUserVerification(users);
 
-        String cryptpwd = this.passwordEncoder.encode(users.getPassword());
-        users.setPassword(cryptpwd);
-        RankEnum rankEnum;
-        if (userRepository.findAll().isEmpty())
-            rankEnum = RankEnum.ADMINISTRATOR;
-        else
-            rankEnum = RankEnum.CUSTOMER;
+            String cryptpwd = this.passwordEncoder.encode(users.getPassword());
+            users.setPassword(cryptpwd);
+            RankEnum rankEnum;
+            if (userRepository.findAll().isEmpty())
+                rankEnum = RankEnum.ADMINISTRATOR;
+            else
+                rankEnum = RankEnum.CUSTOMER;
 
-        Rank rank = rankRepository.findByName(rankEnum).orElseThrow(() -> new RuntimeException("Rank initialization issue"));
-        users.setRank(rank);
-        users = this.userRepository.save(users);
-        this.validationService.createValidationProcess(users);
+            Rank rank = rankRepository.findByName(rankEnum).orElseThrow(() -> new RuntimeException("Back issue: Rank initialization issue"));
+            users.setRank(rank);
+            users = this.userRepository.save(users);
+            this.validationService.createValidationProcess(users);
+            mapError.put("message", "Well done!");
+            return mapError;
+        } catch (RuntimeException re) {
+            mapError.put("message", re.getMessage());
+            return mapError;
+        }
     }
 
-    public void activation(Map<String, String> activation) {
-        Validation validation = this.validationService.readWithCode(activation.get("code"));
-        if (Instant.now().isAfter(validation.getExpirationDate())) {
-            throw new RuntimeException("Your validation code has expired");
+    public Map<String, String> activation(Map<String, String> activation) {
+        Map<String, String> mapError = new HashMap<>();
+        try {
+            Validation validation = this.validationService.readWithCode(activation.get("code"));
+            if (validation.getActivationDate() == null) {
+                if (Instant.now().isAfter(validation.getExpirationDate())) {
+                    throw new RuntimeException("Your validation code has expired !");
+                }
+                Users usersActiver = this.userRepository.findById(validation.getUsers().getIdUser()).orElseThrow(() -> new RuntimeException("Unknown user"));
+                usersActiver.setActif(true);
+                this.userRepository.save(usersActiver);
+                validation.setActivationDate(Instant.now());
+                this.validationRepository.save(validation);
+                this.emailSender.sendInscriptionIsConfirm(validation.getUsers());
+                mapError.put("message", "Well done!");
+            } else {
+                throw new RuntimeException("This code is already activated !");
+            }
+            return mapError;
+        } catch (RuntimeException re) {
+            mapError.put("message", re.getMessage());
+            return mapError;
         }
-        Users usersActiver = this.userRepository.findById(validation.getUsers().getIdUser()).orElseThrow(() -> new RuntimeException("Unknown user"));
-        usersActiver.setActif(true);
-        this.userRepository.save(usersActiver);
-        validation.setActivationDate(Instant.now());
-        this.validationRepository.save(validation);
     }
 
     @Override
@@ -67,40 +91,58 @@ public class UserService implements UserDetailsService,UserServiceInterface {
     }
 
     public boolean dataUserVerification(Users users) {
-        final String emailRegex = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-        final String passwordRegex = "^(?=.*[A-Z])(?=.*\\d).{8,}$";
-        final String lettersOnlyRegex = "^[A-Za-zÀ-ÿ'\\- ]+$";
-        final String lettersAndDigitOnlyRegex = "^[a-zA-Z0-9 ]+$";
+        String emailRegex = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
+        String nameRegex = "^[a-zA-ZÀ-ÿ-]+$";
+        String passwordRegex = "^(?=.*[A-Z])(?=.*\\d).{8,}$";
+        String roadRegex = "^[a-zA-Z0-9\\s\\-.,'()&]+$";
+        String postCodeRegex = "^[a-zA-Z0-9\\s\\-]+$";
+        String numberRegex = "^[a-zA-Z0-9\\s\\-.,'()&]+$";
+        String cityRegex = "^[a-zA-Z\\s\\-.,'()&]+$";
+        String phoneNumberRegex = "^[0-9]+$";
 
         if (!Pattern.compile(emailRegex).matcher(users.getEmail()).matches()) {
-            throw new RuntimeException("Your email is invalid");
+            throw new RuntimeException("Your email is invalid !");
         }
 
         Optional<Users> usersOptional = this.userRepository.findByEmail(users.getEmail());
 
         if (usersOptional.isPresent() && !Integer.valueOf(usersOptional.get().getIdUser()).equals(users.getIdUser())) {
-            throw new RuntimeException("Your email is already used");
+            throw new RuntimeException("Your email is already used !");
         }
 
 
         if (!Pattern.compile(passwordRegex).matcher(users.getPassword()).matches()) {
-            throw new RuntimeException("The password must contain minimum: 8 characters, 1 uppercase and 1 digit");
-        }
-        Pattern pattern = Pattern.compile(lettersOnlyRegex);
-        if (!pattern.matcher(users.getAddress().getCity()).matches()
-                && !pattern.matcher(users.getAddress().getRoad()).matches()) {
-            throw new RuntimeException("The street and the city can only contain letters");
+            throw new RuntimeException("The password must contain minimum: 8 characters, 1 uppercase and 1 digit !");
         }
 
-        if (!pattern.matcher(users.getFirstName()).matches()
-                && !pattern.matcher(users.getSurname()).matches()) {
-            throw new RuntimeException("Name and surname can only contain letters");
+        if (!Pattern.compile(nameRegex).matcher(users.getFirstName()).matches()) {
+            throw new RuntimeException("FirstName and can only contain letters !");
         }
 
-        if (!Pattern.compile(lettersAndDigitOnlyRegex).matcher(users.getAddress().getNumber()).matches()
-                && !Pattern.compile(lettersAndDigitOnlyRegex).matcher(users.getAddress().getPostCode()).matches()) {
-            throw new RuntimeException("Postal code and house number can only contain numbers and letters");
+        if (!Pattern.compile(nameRegex).matcher(users.getSurname()).matches()) {
+            throw new RuntimeException("Surname and can only contain letters !");
         }
+
+        if (!Pattern.compile(postCodeRegex).matcher(users.getAddress().getPostCode()).matches()) {
+            throw new RuntimeException("The postal code is invalid !");
+        }
+
+        if (!Pattern.compile(numberRegex).matcher(users.getAddress().getNumber()).matches()) {
+            throw new RuntimeException("The house number is invalid !");
+        }
+
+        if (!Pattern.compile(cityRegex).matcher(users.getAddress().getCity()).matches()) {
+            throw new RuntimeException("The city is invalid !");
+        }
+
+        if (!Pattern.compile(roadRegex).matcher(users.getAddress().getRoad()).matches()) {
+            throw new RuntimeException("The road is invalid !");
+        }
+
+        if (!Pattern.compile(phoneNumberRegex).matcher(users.getPhoneNumber()).matches()) {
+            throw new RuntimeException("The phone number is invalid !");
+        }
+
         return true;
     }
 
@@ -229,8 +271,6 @@ public class UserService implements UserDetailsService,UserServiceInterface {
             throw new EntityNotFoundException("User not found with ID: " + id);
         }
     }
-
-
 
 
 }
