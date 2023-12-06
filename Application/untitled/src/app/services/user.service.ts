@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {catchError, Observable} from "rxjs";
 import {User} from "../models/user";
 import {environment} from "../../environments/environment";
 import {RankEnum} from "../models/rankEnum";
@@ -29,7 +29,14 @@ export class UserService {
   }
 
   updateUserAdmin(user: User): Observable<User> {
-    return this.http.put<User>(`${environment.apiUrl}/users/update/admin`, user);
+    const url = `${environment.apiUrl}/users/update/admin`;
+
+    return this.http.put<User>(url, user).pipe(
+      catchError((error: any) => {
+        console.error(`Erreur lors de la mise à jour de l'utilisateur : ${error.message || error}`);
+        throw error; // relancez l'erreur pour que le composant appelant puisse également la traiter
+      })
+    );
   }
 
   updateUserRestricted(updatedUser: User): Observable<User> {

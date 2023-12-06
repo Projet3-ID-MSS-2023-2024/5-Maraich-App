@@ -2,8 +2,8 @@
     <p-toast></p-toast>
     <p-toolbar styleClass="mb-4 gap-2">
         <ng-template pTemplate="left">
-            <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
-            <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedUsers()" [disabled]="!selectedUsers || !selectedUsers.length"></button>
+            <button pButton pRipple label="Ajouter" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+            <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedUsers()" [disabled]="!selectedUsers || !selectedUsers.length"></button>
         </ng-template>
 
         <ng-template pTemplate="right">
@@ -22,7 +22,7 @@
         [(selection)]="selectedUsers"
         [rowHover]="true"
         dataKey="idUser"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        currentPageReportTemplate="Page {currentPage} sur {totalPages}"
         [showCurrentPageReport]="true"
     >
         <ng-template pTemplate="caption">
@@ -73,38 +73,142 @@
                 </td>
             </tr>
         </ng-template>
-        <ng-template pTemplate="summary">
-            <div class="flex align-items-center justify-content-between">Il y a au total {{ users ? users.length : 0 }} utilisateurs.</div>
-        </ng-template>
+      <ng-template pTemplate="summary">
+        <div class="flex align-items-center justify-content-between">
+          Il {{ users && users.length !== 1 ? 'y a au total ' + users.length + ' utilisateurs.' : (users && users.length === 1 ? 'y a un seul utilisateur.' : 'n\'y a aucun utilisateur.') }}
+        </div>
+      </ng-template>
+
     </p-table>
 </div>
 
-<p-dialog [(visible)]="userDialog" [style]="{ width: '450px' }" header="Détails de l'utilisateur" [modal]="true" styleClass="p-fluid">
+<p-dialog [(visible)]="userDialog" [style]="{ width: '600px' }" header="Détails de l'utilisateur" [modal]="true" styleClass="p-fluid">
 
-    <ng-template pTemplate="content">
-        <div class="field">
-            <label for="surname">Nom</label>
-            <input type="text" pInputText id="surname" [(ngModel)]="user.surname" required autofocus />
-            <small class="p-error" *ngIf="submitted && !user.surname">Le nom est requis.</small>
-        </div>
-        <div class="field">
-            <label for="firstName">Prénom</label>
-            <input type="text" pInputText id="firstName" [(ngModel)]="user.firstName" required autofocus />
-            <small class="p-error" *ngIf="submitted && !user.firstName">Le prénom est requis.</small>
-        </div>
-        <div class="field">
-            <label for="email">Email</label>
-            <input type="email" pInputText id="email" [(ngModel)]="user.email" required autofocus />
-            <small class="p-error" *ngIf="submitted && !user.email">L'email est requis.</small>
-        </div>
+  <ng-template pTemplate="content">
+    <p-toast></p-toast>
+    <p-steps [model]="items" [activeIndex]="currentStepIndex" [readonly]="false"></p-steps>
 
-    </ng-template>
+    <div *ngIf="currentStepIndex === 0">
+      <div class="field">
+        <label for="surname">Nom</label>
+        <input type="text" pInputText id="surname" [(ngModel)]="user.surname" required autofocus />
+        <small class="p-error" *ngIf="submitted && !user.surname">Le nom est requis.</small>
+      </div>
+      <div class="field">
+        <label for="firstName">Prénom</label>
+        <input type="text" pInputText id="firstName" [(ngModel)]="user.firstName" required autofocus />
+        <small class="p-error" *ngIf="submitted && !user.firstName">Le prénom est requis.</small>
+      </div>
+      <div class="field" *ngIf="!isEditMode()">
+        <label for="email">Email</label>
+        <input  type="email" pInputText id="email" [(ngModel)]="user.email" [disabled]="isEditMode()" required autofocus />
+        <!-- Autres validations et messages d'erreur ici... -->
+      </div>
 
-    <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveUser()"></button>
-    </ng-template>
+      <div class="field">
+        <label for="phone">Numéro de téléphone</label>
+        <p-inputMask mask="09 99 99 99 99" [(ngModel)]="user.phoneNumber" placeholder="09 99 99 99 99" id="phone"></p-inputMask>
+        <small class="p-error" *ngIf="submitted && !user.phoneNumber">Le numéro de téléphone est requis.</small>
+      </div>
+
+
+      <div class="field">
+        <label for="password">Mot de passe</label>
+        <ng-container *ngIf="!isEditMode(); else editModeTemplate">
+          <p-password [(ngModel)]="user.password" [promptLabel]="'Entrez le mot de passe'" id="password"
+                      [weakLabel]="'Faible'" [mediumLabel]="'Moyen'" [strongLabel]="'Fort'" [toggleMask]="true"
+                      *ngIf="!isEditMode(); else editModeTemplate">
+          </p-password>
+        </ng-container>
+
+        <ng-template #editModeTemplate>
+          <button *ngIf="!showPasswordInputField" pButton pRipple label="Modifier mot de passe" class="p-button"
+                  (click)="btnPwdSubmitted() "></button>
+          <p-password *ngIf="showPasswordInputField" [(ngModel)]="user.password" [promptLabel]="'Entrez le mot de passe'"
+                      [weakLabel]="'Faible'" [mediumLabel]="'Moyen'" [strongLabel]="'Fort'" [toggleMask]="true">
+            <!-- Existing password template... -->
+          </p-password>
+        </ng-template>
+
+        <small class="p-error" *ngIf="submitted && user.password && !isPasswordValid">
+          Le mot de passe ne respecte pas les critères requis.
+        </small>
+      </div>
+
+
+
+
+
+
+
+    </div>
+
+
+    <div *ngIf="currentStepIndex === 1">
+      <div class="field">
+        <label for="addressRoad">Adresse</label>
+        <input type="text" pInputText id="addressRoad" [(ngModel)]="user.address.road" required />
+        <small class="p-error" *ngIf="submitted && !user.address.road">La rue est requise.</small>
+      </div>
+      <div class="field">
+        <label for="addressPostCode">Code postal</label>
+        <input type="text" pInputText id="addressPostCode" [(ngModel)]="user.address.postCode" required />
+        <small class="p-error" *ngIf="submitted && !user.address.postCode">Le code postal est requis.</small>
+      </div>
+      <div class="field">
+        <label for="addressCity">Ville</label>
+        <input type="text" pInputText id="addressCity" [(ngModel)]="user.address.city" required />
+        <small class="p-error" *ngIf="submitted && !user.address.city">La ville est requise.</small>
+      </div>
+      <div class="field">
+        <label for="addressNumber">Numéro d'adresse</label>
+        <input type="text" pInputText id="addressNumber" [(ngModel)]="user.address.number" required />
+        <small class="p-error" *ngIf="submitted && !user.address.number">Le numéro d'adresse est requis.</small>
+      </div>
+    </div>
+
+    <div *ngIf="currentStepIndex === 2" class="text-center d-flex align-items-center justify-content-center">
+      <br>
+      <div class="field">
+        <label class="label"><b>Nom:</b></label>
+        <div class="info">{{ user.surname }}</div>
+      </div>
+      <div class="field">
+        <label class="label"><b>Prénom:</b></label>
+        <div class="info">{{ user.firstName }}</div>
+      </div>
+      <div class="field">
+        <label class="label"><b>Email:</b></label>
+        <div class="info">{{ user.email }}</div>
+      </div>
+      <div class="field">
+        <label class="label"><b>Numéro de téléphone:</b></label>
+        <div class="info">{{ user.phoneNumber }}</div>
+      </div>
+      <div class="field">
+        <label class="label"><b>Adresse:</b></label>
+        <div class="info">{{ user.address | adressFormat }}</div>
+      </div>
+    </div>
+
+
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button *ngIf="currentStepIndex > 0" pButton pRipple label="Précédent" icon="pi pi-chevron-left" class="p-button-text" (click)="previousStep()"></button>
+    <button *ngIf="!isLastStep()" pButton pRipple label="Suivant" icon="pi pi-check"
+            class="p-button-text" (click)="validatePersonalStep()" >
+    </button>
+
+    <button *ngIf="isLastStep()" pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveUser()" ></button>
+  </ng-template>
+
+
 
 </p-dialog>
 
-<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
+
+
+
+<p-confirmDialog [style]="{ width: '450px' }" acceptLabel="Confirmer" rejectLabel="Annuler"></p-confirmDialog>
