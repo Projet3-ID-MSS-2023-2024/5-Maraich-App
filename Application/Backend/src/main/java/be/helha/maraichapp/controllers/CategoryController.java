@@ -17,6 +17,9 @@ public class CategoryController {
     @GetMapping("/getAll")
     public List<Category> getCategory(){ return categoryService.getAllCategories(); }
 
+    @GetMapping("/get/{id}")
+    public Category getCategoryById(@PathVariable("id") int id){ return categoryService.getCategoryById(id); }
+
     @PostMapping("/new")
     public Category addCategory(@RequestBody Category category) { return categoryService.addCategory(category);}
 
