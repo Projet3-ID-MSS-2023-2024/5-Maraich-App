@@ -17,6 +17,11 @@
             <td>{{ category.nomCategory}}</td>
             <td style="width: 1%; white-space: nowrap;">
                 <p-button
+                        icon="pi pi-pencil"
+                        (click)="showEdit(category.idCategory)"
+                        styleClass="p-button-text p-button-success"
+                ></p-button>
+                <p-button
                     icon="pi pi-trash"
                     (click)="showDelete(category.idCategory)"
                     styleClass="p-button-text p-button-danger">

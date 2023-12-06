@@ -8,6 +8,7 @@ import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {AddCategoriesComponent} from "../add-categories/add-categories.component";
 import {DeleteCategoriesComponent} from "../delete-categories/delete-categories.component";
 import {config} from "rxjs";
+import {UpdateCategoriesComponent} from "../update-categories/update-categories.component";
 
 @Component({
   selector: 'app-list-categories',
@@ -50,6 +51,13 @@ export class ListCategoriesComponent implements OnInit{
     this.ref = this.dialogService.open(DeleteCategoriesComponent, {
         header: 'Supprimez une catégorie',
         data: {ref: this.ref, id : id,  refreshCategories: this.refreshCategories.bind(this)}
+      });
+  }
+
+  showEdit(id: number){
+      this.ref = this.dialogService.open(UpdateCategoriesComponent, {
+          header: 'Modifiez une catégorie',
+          data: {ref: this.ref, id : id,  refreshCategories: this.refreshCategories.bind(this)}
       });
   }
 }
