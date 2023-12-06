@@ -38,7 +38,7 @@ public class Users implements UserDetails {
     @Column(nullable = false)
     private boolean isActif = false;
     @OneToMany(mappedBy = "customer")
-    private List<Order> orders;
+    private List<Orders> orders;
     @ManyToOne(cascade={CascadeType.MERGE})
     @JoinColumn(name = "rankId")
     private Rank rank;
@@ -56,7 +56,7 @@ public class Users implements UserDetails {
         return Objects.hash(idUser, firstName, surname, phoneNumber, password, address, email, isActif, rank);
     }
 
-    public Users(String firstName, String surname, String phoneNumber, String password, String number, String road, String postCode, String city, String email, Rank rank, List<Order> orders) {
+    public Users(String firstName, String surname, String phoneNumber, String password, String number, String road, String postCode, String city, String email, Rank rank, List<Orders> orders) {
         this.firstName = firstName;
         this.surname = surname;
         this.isActif = false;

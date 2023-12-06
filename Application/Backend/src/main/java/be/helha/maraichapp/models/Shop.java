@@ -35,12 +35,12 @@ public class Shop {
     @JoinColumn(name = "ownerId")
     private Users owner;
     @OneToMany (mappedBy = "shopSeller")
-    private List<Order> orders;
+    private List<Orders> orders;
     @OneToMany(mappedBy = "shop")
     private List<Product> products;
 
 
-    public Shop(String name, String email, Address address, String picture, String description, boolean shopIsOkay, boolean enable, Users owner, List<Order> orders, List<Product> products) {
+    public Shop(String name, String email, Address address, String picture, String description, boolean shopIsOkay, boolean enable, Users owner, List<Orders> orders, List<Product> products) {
         this.name = name;
         this.email = email;
         this.address = address;

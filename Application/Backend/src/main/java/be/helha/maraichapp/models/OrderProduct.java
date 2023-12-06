@@ -14,7 +14,7 @@ public class OrderProduct {
 
     @ManyToOne
     @MapsId("orderId")
-    private Order order;
+    private Orders orders;
 
     @ManyToOne
     @MapsId("productId")

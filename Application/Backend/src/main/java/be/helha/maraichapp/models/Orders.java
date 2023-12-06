@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Order {
+public class Orders {
 
     @Id
     @GeneratedValue
@@ -43,7 +43,7 @@ public class Order {
     @OneToMany(mappedBy = "order")
     private List<OrderProduct> orderProducts;
 
-    public Order(Calendar orderDate, float totalPrice, Calendar reedeemDate, Users customer, Shop shopSeller) {
+    public Orders(Calendar orderDate, float totalPrice, Calendar reedeemDate, Users customer, Shop shopSeller) {
         this.orderDate = orderDate;
         this.totalPrice = totalPrice;
         this.reedeemDate = reedeemDate;
