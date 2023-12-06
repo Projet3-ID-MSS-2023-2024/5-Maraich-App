@@ -17,14 +17,14 @@ public class Requests {
     private int Id;
 
     @ManyToOne
-    @JoinColumn(name="shopId")
-    private Shop shopSeller;
+    @JoinColumn(name="userId")
+    private Users user;
 
     @Column (nullable = false)
     private String requestBody;
 
-    public Requests(Shop shopSeller, String requestBody) {
-        this.shopSeller = shopSeller;
+    public Requests(Users user, String requestBody) {
+        this.user = user;
         this.requestBody = requestBody;
     }
 }

@@ -42,6 +42,8 @@ public class Users implements UserDetails {
     @ManyToOne(cascade={CascadeType.MERGE})
     @JoinColumn(name = "rankId")
     private Rank rank;
+    @OneToMany(mappedBy = "user")
+    private List<Requests> requests;
 
     @Override
     public boolean equals(Object o) {
