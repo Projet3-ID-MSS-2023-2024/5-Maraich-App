@@ -35,4 +35,8 @@ export class DeleteCategoriesComponent {
       refreshCategories();
     }
   }
+
+  close(){
+      this.ref.close();
+  }
 }

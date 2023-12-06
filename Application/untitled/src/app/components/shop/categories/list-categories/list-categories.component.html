@@ -8,6 +8,7 @@
         <tr>
             <th>Id</th>
             <th>Nom</th>
+            <th></th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-category>
@@ -21,6 +22,11 @@
                     styleClass="p-button-text p-button-danger">
                 </p-button>
             </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr>
+            <td colspan="3">Il n'y a aucune catégorie existante</td>
         </tr>
     </ng-template>
     <ng-template pTemplate="paginatorleft">
