@@ -11,7 +11,7 @@ export interface User {
   address: Address;
   email: string;
   rank : Rank;
-  isActif: boolean;
+  actif: boolean;
   orders : Order[];
 
 

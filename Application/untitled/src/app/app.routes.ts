@@ -15,6 +15,7 @@ export const routes: Routes = [
   { path: 'accueil', component: AccueilComponent },
   { path: 'addCategory', component: AddCategoriesComponent},
   { path: 'listCategories', component: ListCategoriesComponent},
-  { path: '**', redirectTo: '/connexion', pathMatch: 'full' },
   { path: 'admin/user', component: UserManagementComponent},
+  { path: '**', redirectTo: '/connexion', pathMatch: 'full' },
+
 ];

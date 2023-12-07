@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {catchError, Observable} from "rxjs";
+import {catchError, map, Observable} from "rxjs";
 import {User} from "../models/user";
 import {environment} from "../../environments/environment";
 import {RankEnum} from "../models/rankEnum";
@@ -20,9 +20,30 @@ export class UserService {
     return this.http.get<User[]>(`${environment.apiUrl}/users/getByRank/${rank}`);
   }
 
-  getAllUsers(): Observable<User[]> {
-    return this.http.get<User[]>(`${environment.apiUrl}/users/getAll`);
-  }
+
+
+    getAllUsers(): Observable<User[]> {
+        const url = `${environment.apiUrl}/users/getAll`;
+
+        return this.http.get<any[]>(url).pipe(
+            map(usersData => usersData.map(user => this.mapToUserModel(user)))
+        );
+    }
+
+    private mapToUserModel(data: any): User {
+        return {
+            idUser: data.idUser,
+            firstName: data.firstName,
+            surname: data.surname,
+            phoneNumber: data.phoneNumber,
+            password: data.password,
+            address: data.address,
+            email: data.email,
+            rank: data.rank,
+            actif: data.actif,
+            orders: data.orders
+        };
+    }
 
   addUser(user: User): Observable<User> {
     return this.http.post<User>(`${environment.apiUrl}/users/newUser`, user);

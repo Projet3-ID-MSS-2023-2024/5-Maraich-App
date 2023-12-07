@@ -220,8 +220,8 @@ export class UserManagementComponent implements OnInit{
    * Couleur à mettre pour actif ou inactif
    * @param status
    */
-  getStatusSeverity(isActif: boolean): string | any {
-    return isActif ? 'danger' : 'success';
+  getStatusSeverity(actif: boolean): string | any {
+    return actif ? 'success' : 'danger';
   }
 
   getRankSeverity(rank: RankEnum): string | any {
@@ -247,6 +247,7 @@ export class UserManagementComponent implements OnInit{
       }
     );
   }
+
 
   formStep(){
     this.items = [

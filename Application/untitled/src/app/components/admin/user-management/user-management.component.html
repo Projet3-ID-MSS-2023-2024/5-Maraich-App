@@ -17,7 +17,7 @@
         [value]="users"
         [rows]="10"
         [paginator]="true"
-        [globalFilterFields]="['surname', 'email','phoneNumber', 'address','rank', 'isActif']"
+        [globalFilterFields]="['surname', 'email','phoneNumber', 'address','rank', 'actif']"
         [tableStyle]="{ 'min-width': '75rem' }"
         [(selection)]="selectedUsers"
         [rowHover]="true"
@@ -46,7 +46,7 @@
                 <th pSortableColumn="phoneNumber">Numéro de téléphone <p-sortIcon field="phoneNumber"></p-sortIcon></th>
                 <th pSortableColumn="address">Adresse <p-sortIcon field="address"></p-sortIcon></th>
                 <th pSortableColumn="rank">Rôle <p-sortIcon field="rank"></p-sortIcon></th>
-                <th pSortableColumn="isActif" style="min-width:10rem">Status <p-sortIcon field="isActif"></p-sortIcon></th>
+                <th pSortableColumn="actif" style="min-width:10rem">Status <p-sortIcon field="actif"></p-sortIcon></th>
                 <th></th>
             </tr>
         </ng-template>
@@ -65,7 +65,7 @@
                 </td>
 
                 <td>
-                    <p-tag [value]="user.isActif ? 'Inactif' : 'Actif'" [severity]="getStatusSeverity(user.isActif)"></p-tag>
+                    <p-tag [value]="user.actif ? 'Actif' : 'Inactif'" [severity]="getStatusSeverity(user.actif)"></p-tag>
                 </td>
                 <td>
                     <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editUser(user)"></button>
@@ -107,7 +107,7 @@
 
       <div class="field">
         <label for="phone">Numéro de téléphone</label>
-        <p-inputMask mask="09 99 99 99 99" [(ngModel)]="user.phoneNumber" placeholder="09 99 99 99 99" id="phone"></p-inputMask>
+        <p-inputMask mask="0999999999" [(ngModel)]="user.phoneNumber" placeholder="09 99 99 99 99" id="phone"></p-inputMask>
         <small class="p-error" *ngIf="submitted && !user.phoneNumber">Le numéro de téléphone est requis.</small>
       </div>
 
