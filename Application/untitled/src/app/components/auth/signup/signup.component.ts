@@ -1,14 +1,14 @@
-import {Component, importProvidersFrom, Input, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {ButtonModule} from "primeng/button";
 import {InputTextModule} from "primeng/inputtext";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RippleModule} from "primeng/ripple";
-import {provideRouter, Router, RouterLink} from "@angular/router";
-import {Address} from "../../../models/address";
+import {Router, RouterLink} from "@angular/router";
 import {User} from "../../../models/user";
 import {PasswordModule} from "primeng/password";
 import {AuthService} from "../../../services/auth.service";
+import {RankEnum} from "../../../models/rankEnum";
 
 @Component({
   selector: 'app-signup',
@@ -41,7 +41,9 @@ export class SignupComponent{
       password: "",
       address: { road: "", city: "", postCode: "", number: "" }, // Initialize nested object
       email: "",
-      isActif: true,
+      actif: true,
+        orders : [],
+        rank : {idRank : 0, name : RankEnum.CUSTOMER, priorityLevel : 0}
     };
   }
 

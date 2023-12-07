@@ -34,11 +34,14 @@ public class UserService implements UserDetailsService, UserServiceInterface {
     @Autowired
     private EmailSender emailSender;
 
+    @Autowired
+    private JwtRepository jwtRepository;
+
 
     public Map<String, String> inscription(Users users) {
         Map<String, String> mapError = new HashMap<>();
         try {
-            boolean dataIsOk = dataUserVerification(users);
+            boolean dataIsOk = dataUserVerification(users, true);
 
             String cryptpwd = this.passwordEncoder.encode(users.getPassword());
             users.setPassword(cryptpwd);
@@ -90,7 +93,7 @@ public class UserService implements UserDetailsService, UserServiceInterface {
         return this.userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("None match this email address"));
     }
 
-    public boolean dataUserVerification(Users users) {
+    public boolean dataUserVerification(Users users, boolean checkMailUsed) {
         String emailRegex = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
         String nameRegex = "^[a-zA-ZÀ-ÿ-]+$";
         String passwordRegex = "^(?=.*[A-Z])(?=.*\\d).{8,}$";
@@ -106,7 +109,7 @@ public class UserService implements UserDetailsService, UserServiceInterface {
 
         Optional<Users> usersOptional = this.userRepository.findByEmail(users.getEmail());
 
-        if (usersOptional.isPresent() && !Integer.valueOf(usersOptional.get().getIdUser()).equals(users.getIdUser())) {
+        if (checkMailUsed && usersOptional.isPresent() && !Integer.valueOf(usersOptional.get().getIdUser()).equals(users.getIdUser())) {
             throw new RuntimeException("Your email is already used !");
         }
 
@@ -152,7 +155,7 @@ public class UserService implements UserDetailsService, UserServiceInterface {
     @Transactional
     public Users addUser(Users user) {
         //on vérifie si les données sont valide
-        boolean dataIsOk = dataUserVerification(user);
+        boolean dataIsOk = dataUserVerification(user, true);
         if (!dataIsOk) {
             throw new RuntimeException("Invalid user data");
         }
@@ -165,7 +168,9 @@ public class UserService implements UserDetailsService, UserServiceInterface {
         //on vérifie que le role existe bien en BDD
         Rank rank = rankRepository.findByName(rankEnum).orElseThrow(() -> new RuntimeException("Rank initialization issue"));
         user.setRank(rank); //on set le role au user
-        return userRepository.save(user);
+        Users users = userRepository.save(user);
+        this.validationService.createValidationProcess(users);
+        return users;
     }
 
     // Mettre à jour un user existant
@@ -173,7 +178,7 @@ public class UserService implements UserDetailsService, UserServiceInterface {
     @Transactional
     public Users updateUserAdmin(Users user) {
         // Vérifie si les données sont valides
-        boolean dataIsOk = dataUserVerification(user);
+        boolean dataIsOk = dataUserVerification(user, false);
         if (!dataIsOk) {
             throw new RuntimeException("Invalid user data");
         }
@@ -201,7 +206,7 @@ public class UserService implements UserDetailsService, UserServiceInterface {
     @Transactional
     public Users updateUserRestricted(Users updatedUser) {
         // Vérifie si les données sont valides
-        boolean dataIsOk = dataUserVerification(updatedUser);
+        boolean dataIsOk = dataUserVerification(updatedUser, false);
         if (!dataIsOk) {
             throw new RuntimeException("Invalid user data");
         }
@@ -266,6 +271,9 @@ public class UserService implements UserDetailsService, UserServiceInterface {
     @Transactional
     public void deleteUserById(int id) {
         if (userRepository.existsById(id)) {
+            jwtRepository.deleteByUserId(id);//pour eviter les erreur clé étrangère
+            validationRepository.deleteByUserId(id);
+
             userRepository.deleteById(id);
         } else {
             throw new EntityNotFoundException("User not found with ID: " + id);
@@ -274,5 +282,4 @@ public class UserService implements UserDetailsService, UserServiceInterface {
 
 
 }
-
 
