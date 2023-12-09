@@ -21,11 +21,12 @@ import {InputMaskModule} from "primeng/inputmask";
 import {StepsModule} from "primeng/steps";
 import {PasswordModule} from "primeng/password";
 import {DividerModule} from "primeng/divider";
+import {KeyFilterModule} from "primeng/keyfilter";
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, ToastModule, ToolbarModule, ButtonModule, FileUploadModule, TableModule, InputTextModule, RippleModule, TagModule, AdressFormatPipe, RankFormatPipe, DialogModule, FormsModule, ConfirmDialogModule, InputMaskModule, StepsModule, PasswordModule, DividerModule],
+  imports: [CommonModule, ToastModule, ToolbarModule, ButtonModule, FileUploadModule, TableModule, InputTextModule, RippleModule, TagModule, AdressFormatPipe, RankFormatPipe, DialogModule, FormsModule, ConfirmDialogModule, InputMaskModule, StepsModule, PasswordModule, DividerModule, KeyFilterModule],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.css',
   providers: [MessageService , ConfirmationService],
@@ -44,6 +45,12 @@ export class UserManagementComponent implements OnInit{
   currentStepIndex: number | any;
 
 
+//regex
+  nameRegex : RegExp = /^[a-zA-ZÀ-ÿ-]+$/;
+  roadRegex = /^[a-zA-Z0-9\s\-.,'()&]+$/;
+  postCodeRegex = /^[a-zA-Z0-9\s\-]+$/;
+  numberRegex = /^[a-zA-Z0-9\s\-.,'()&]+$/;
+  cityRegex = /^[a-zA-Z\s\-.,'()&]+$/;
 
 
   constructor(

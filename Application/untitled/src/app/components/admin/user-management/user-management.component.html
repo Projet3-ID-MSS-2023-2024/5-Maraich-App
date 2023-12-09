@@ -91,12 +91,12 @@
     <div *ngIf="currentStepIndex === 0">
       <div class="field">
         <label for="surname">Nom</label>
-        <input type="text" pInputText id="surname" [(ngModel)]="user.surname" required autofocus />
+        <input type="text" pInputText id="surname" [(ngModel)]="user.surname" [pKeyFilter]="nameRegex" required autofocus />
         <small class="p-error" *ngIf="submitted && !user.surname">Le nom est requis.</small>
       </div>
       <div class="field">
         <label for="firstName">Prénom</label>
-        <input type="text" pInputText id="firstName" [(ngModel)]="user.firstName" required autofocus />
+        <input type="text" pInputText id="firstName" [(ngModel)]="user.firstName" [pKeyFilter]="nameRegex" required autofocus />
         <small class="p-error" *ngIf="submitted && !user.firstName">Le prénom est requis.</small>
       </div>
       <div class="field" *ngIf="!isEditMode()">
@@ -147,22 +147,22 @@
     <div *ngIf="currentStepIndex === 1">
       <div class="field">
         <label for="addressRoad">Adresse</label>
-        <input type="text" pInputText id="addressRoad" [(ngModel)]="user.address.road" required />
+        <input type="text" pInputText id="addressRoad" [(ngModel)]="user.address.road" [pKeyFilter]="roadRegex" required />
         <small class="p-error" *ngIf="submitted && !user.address.road">La rue est requise.</small>
       </div>
       <div class="field">
         <label for="addressPostCode">Code postal</label>
-        <input type="text" pInputText id="addressPostCode" [(ngModel)]="user.address.postCode" required />
+        <input type="text" pInputText id="addressPostCode" [(ngModel)]="user.address.postCode" [pKeyFilter]="postCodeRegex" required />
         <small class="p-error" *ngIf="submitted && !user.address.postCode">Le code postal est requis.</small>
       </div>
       <div class="field">
         <label for="addressCity">Ville</label>
-        <input type="text" pInputText id="addressCity" [(ngModel)]="user.address.city" required />
+        <input type="text" pInputText id="addressCity" [(ngModel)]="user.address.city" [pKeyFilter]="cityRegex" required />
         <small class="p-error" *ngIf="submitted && !user.address.city">La ville est requise.</small>
       </div>
       <div class="field">
         <label for="addressNumber">Numéro d'adresse</label>
-        <input type="text" pInputText id="addressNumber" [(ngModel)]="user.address.number" required />
+        <input type="text" pInputText id="addressNumber" [(ngModel)]="user.address.number" [pKeyFilter]="numberRegex" required />
         <small class="p-error" *ngIf="submitted && !user.address.number">Le numéro d'adresse est requis.</small>
       </div>
     </div>
