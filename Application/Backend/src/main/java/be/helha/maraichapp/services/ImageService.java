@@ -1,5 +1,6 @@
 package be.helha.maraichapp.services;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -14,6 +15,7 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 @Service
+@Getter
 public class ImageService {
 
     @Value("${file.path}")
@@ -21,7 +23,7 @@ public class ImageService {
 
     public String saveFile(MultipartFile file){
         try {
-            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
             Path targetLocation = Paths.get(uploadDirectory).resolve(fileName);
 
@@ -38,7 +40,7 @@ public class ImageService {
             Path file = Paths.get(uploadDirectory).resolve(fileName);
             Resource resource = new UrlResource(file.toUri());
 
-            if (resource.exists() && resource.isReadable()){
+            if (resource.exists()){
                 return resource;
             }else {
                 return null;
@@ -55,6 +57,10 @@ public class ImageService {
         }catch (IOException e){
             throw new RuntimeException("Failed to delete this: " + fileName);
         }
+    }
+
+    public boolean fileExists(String fileName){
+        return Files.exists(Paths.get(getUploadDirectory(), fileName));
     }
 
 }
