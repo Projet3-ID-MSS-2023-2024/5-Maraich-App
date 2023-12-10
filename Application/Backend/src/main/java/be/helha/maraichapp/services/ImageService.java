@@ -48,4 +48,13 @@ public class ImageService {
         }
     }
 
+    public void deleteFile(String fileName){
+        try {
+            Path filePath = Paths.get(uploadDirectory).resolve(fileName);
+            Files.deleteIfExists(filePath);
+        }catch (IOException e){
+            throw new RuntimeException("Failed to delete this: " + fileName);
+        }
+    }
+
 }
