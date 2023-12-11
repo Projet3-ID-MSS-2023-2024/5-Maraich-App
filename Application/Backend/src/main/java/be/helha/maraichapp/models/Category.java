@@ -29,11 +29,12 @@ public class Category {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Category category = (Category) o;
-        return idCategory == category.idCategory && Objects.equals(nomCategory, category.nomCategory);
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Category category = (Category) obj;
+        return idCategory == category.idCategory &&
+                Objects.equals(nomCategory, category.nomCategory);
     }
 
     @Override
