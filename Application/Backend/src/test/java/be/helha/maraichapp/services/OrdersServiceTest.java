@@ -26,16 +26,22 @@ public class OrdersServiceTest {
     @AfterEach
     public void cleanUp() {
         List<Orders> allOrders = orderService.getAllOrders();
-        for (Orders orders : allOrders) {
-            orderService.deleteOrderById(orders.getId());
+        if (!allOrders.isEmpty()) {
+            for (Orders orders : allOrders) {
+                orderService.deleteOrderById(orders.getId());
+            }
         }
         List<Shop> allShops = shopService.getShop();
-        for (Shop shop: allShops) {
-            shopService.deleteShop(shop.getIdShop());
+        if (!allShops.isEmpty()) {
+            for (Shop shop: allShops) {
+                shopService.deleteShop(shop.getIdShop());
+            }
         }
         List<Users> allUsers = userService.getAllUsers();
-        for (Users user: allUsers) {
-            userService.deleteUserById(user.getIdUser());
+        if (!allUsers.isEmpty()) {
+            for (Users user: allUsers) {
+                userService.deleteUserById(user.getIdUser());
+            }
         }
     }
 
@@ -46,6 +52,9 @@ public class OrdersServiceTest {
         Users testUser = new Users("Bilal",  "Maachi", "0456212365","HELHa123", "1","Rue des potiers", "6200","Châtelet", "bilal@test.be");
         Shop testShop = new Shop("Chez Robert", "robert@gmail.com", "Rue de potier", "3", "6200", "Châtelet", "carrot.jpg", "des bon légumes bien frais", testUser);
         Orders testOrders = new Orders(Calendar.getInstance(), 50, Calendar.getInstance(),testUser, testShop);
+        // Adding Users and Shop to the database
+        userService.addUser(testUser);
+        shopService.addShop(testShop);
         Orders savedOrders = orderService.addOrder(testOrders);
 
         // We verify if the retrieved order from the database is the same order as the saved one before :
@@ -62,12 +71,15 @@ public class OrdersServiceTest {
         Users testUser = new Users("Bilal",  "Maachi", "0456212365","HELHa123", "1","Rue des potiers", "6200","Châtelet", "bilal@test.be");
         Shop testShop = new Shop("Chez Robert", "robert@gmail.com", "Rue de potier", "3", "6200", "Châtelet", "carrot.jpg", "des bon légumes bien frais", testUser);
         Orders testOrders = new Orders(Calendar.getInstance(), 50, Calendar.getInstance(),testUser, testShop);
-        // Adding the test order to the database
+        // Adding the test order,user and shop to the database
+        userService.addUser(testUser);
+        shopService.addShop(testShop);
         Orders savedOrders = orderService.addOrder(testOrders);
 
         // Modifying order datas (changing user)
         Users testUser2 = new Users("Logan",  "Dumont", "0456212365","HELHa123", "1","Rue des potiers", "6200","Châtelet", "logan@test.be");
         savedOrders.setCustomer(testUser2);
+        userService.addUser(testUser2);
         // Updating the user
         Orders updateOrder = orderService.updateOrder(savedOrders);
 
@@ -92,7 +104,11 @@ public class OrdersServiceTest {
         Shop testShop2 = new Shop("Chez Logan", "logan@gmail.com", "Rue de potier", "3", "6200", "Châtelet", "carrot.jpg", "des bon légumes bien frais", testUser2);
         Orders testOrder2 = new Orders(Calendar.getInstance(), 50, Calendar.getInstance(),testUser2, testShop2);
 
-        // Adding orders to the database
+        // Adding users,shops and orders to the database
+        userService.addUser(testUser1);
+        userService.addUser(testUser2);
+        shopService.addShop(testShop1);
+        shopService.addShop(testShop2);
         orderService.addOrder(testOrder1);
         orderService.addOrder(testOrder2);
 
@@ -112,7 +128,9 @@ public class OrdersServiceTest {
         Shop testShop = new Shop("Chez Robert", "robert@gmail.com", "Rue de potier", "3", "6200", "Châtelet", "carrot.jpg", "des bon légumes bien frais", testUser);
         Orders testOrder = new Orders(Calendar.getInstance(), 50, Calendar.getInstance(),testUser, testShop);
 
-        // Add the order to the database
+        // Add the user, shop and order to the database
+        userService.addUser(testUser);
+        shopService.addShop(testShop);
         Orders savedOrder = orderService.addOrder(testOrder);
 
         // Call the getOrderById method
@@ -132,7 +150,9 @@ public class OrdersServiceTest {
         Shop testShop = new Shop("Chez Robert", "robert@gmail.com", "Rue de potier", "3", "6200", "Châtelet", "carrot.jpg", "des bon légumes bien frais", testUser);
         Orders testOrder = new Orders(Calendar.getInstance(), 50, Calendar.getInstance(),testUser, testShop);
 
-        // Add the order to the database
+        // Add the user, shop and order to the database
+        userService.addUser(testUser);
+        shopService.addShop(testShop);
         Orders savedOrder = orderService.addOrder(testOrder);
 
         // Delete the order from the database

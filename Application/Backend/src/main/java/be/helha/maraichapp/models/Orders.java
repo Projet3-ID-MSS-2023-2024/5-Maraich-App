@@ -40,7 +40,7 @@ public class Orders {
     @ManyToOne
     @JoinColumn(name="shopId")
     private Shop shopSeller;
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "orders")
     private List<OrderProduct> orderProducts;
 
     public Orders(Calendar orderDate, float totalPrice, Calendar reedeemDate, Users customer, Shop shopSeller) {

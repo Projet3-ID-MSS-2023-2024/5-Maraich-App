@@ -22,18 +22,15 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Orders addOrder(Orders orders) {
-        ExampleMatcher userMatcher = ExampleMatcher.matching();
         // Verify if the customer already exists in the database
         Users customer = orders.getCustomer();
-        Example<Users> customerExample = Example.of(customer, userMatcher);
-        boolean customerExist = userRepository.exists(customerExample);
+        if (!userRepository.existsById(customer.getIdUser())) {
+            throw new RuntimeException("Customer doesn't exist in the database");
+        }
         // Verify if the Shop owner already exists in the database
         Users owner = orders.getShopSeller().getOwner();
-        Example<Users> ownerExample = Example.of(owner, userMatcher);
-        boolean ownerExist = userRepository.exists(ownerExample);
-        // We verify if both of them are false, we throw an exception if that's the case
-        if (!ownerExist && !customerExist) {
-            throw new RuntimeException("Customer or Owner doesn't exists in the database");
+        if (!userRepository.existsById(owner.getIdUser())) {
+            throw new RuntimeException("Owner doesn't exist in the database");
         }
         return this.orderRepository.save(orders);
     }

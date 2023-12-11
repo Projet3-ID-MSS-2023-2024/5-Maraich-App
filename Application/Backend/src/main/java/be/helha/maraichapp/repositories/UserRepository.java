@@ -11,6 +11,6 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<Users,Integer> {
     public Optional<Users> findByEmail(String email);
     public List<Users> findByRank(Rank rank);
-    @Query("FROM Users u WHERE u = :users")
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM Users u WHERE u = :users")
     public boolean existsInDatabase(Users users);
 }
