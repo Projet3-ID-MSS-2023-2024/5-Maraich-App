@@ -2,6 +2,7 @@ package be.helha.maraichapp.services;
 
 import be.helha.maraichapp.models.Category;
 import be.helha.maraichapp.models.Product;
+import be.helha.maraichapp.models.Shop;
 import be.helha.maraichapp.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,11 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public List<Product> getAllProduct() {
         return productRepository.findAll();
+    }
+
+    @Override
+    public List<Product> getAllProductByShop(Shop shop) {
+        return productRepository.findProductByShop(shop);
     }
 
     @Override

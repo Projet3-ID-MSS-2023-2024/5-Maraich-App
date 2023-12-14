@@ -1,6 +1,10 @@
 package be.helha.maraichapp.services;
 
+import be.helha.maraichapp.models.Rank;
+import be.helha.maraichapp.models.RankEnum;
 import be.helha.maraichapp.models.Shop;
+import be.helha.maraichapp.models.Users;
+import be.helha.maraichapp.repositories.RankRepository;
 import be.helha.maraichapp.repositories.ShopRepository;
 import be.helha.maraichapp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +21,10 @@ public class ShopService {
     ShopRepository shopRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    UserService userService;
+    @Autowired
+    RankRepository rankRepository;
 
     public List<Shop> getShop(){
         return shopRepository.findAll();
@@ -34,10 +42,13 @@ public class ShopService {
 
     public Shop addShop(Shop shop){
         boolean dataIsOk = dataShopVerification(shop);
+        Users usersDB;
 
         if (!dataIsOk) throw new RuntimeException("Invalid data");
         if (shopRepository.existsByName(shop.getName())) throw new RuntimeException("Shop's name already used");
-
+        usersDB = shop.getOwner();
+        usersDB.setRank(rankRepository.findByName(RankEnum.MARAICHER).orElseThrow(()-> new RuntimeException("Unknown rank")));
+        userService.updateUserAdmin(usersDB);
         return shopRepository.save(shop);
     }
 
@@ -51,12 +62,15 @@ public class ShopService {
 
     public void deleteShop(int id) {
         Optional<Shop> shopDB = shopRepository.findById(id);
+        Users usersDB;
         if (shopDB.isPresent()){
-            shopDB.get().setEnable(false);
-            shopRepository.save(shopDB.get());
+            shopRepository.deleteById(id);
+            usersDB = shopDB.get().getOwner();
+            usersDB.setRank(rankRepository.findByName(RankEnum.CUSTOMER).orElseThrow(()-> new RuntimeException("Unknown rank")));
+            userService.updateUserAdmin(usersDB);
+        }else{
+            throw new RuntimeException("Shop not found with ID : " + id);
         }
-        throw new RuntimeException("Shop not found with ID : " + id);
-        //shopRepository.deleteById(id);
     }
 
     public boolean dataShopVerification(Shop shop) {
@@ -76,5 +90,4 @@ public class ShopService {
             throw new RuntimeException("Invalid email");
         } else return true;
     }
-
 }

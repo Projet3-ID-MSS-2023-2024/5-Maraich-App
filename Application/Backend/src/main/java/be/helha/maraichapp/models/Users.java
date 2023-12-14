@@ -42,6 +42,8 @@ public class Users implements UserDetails {
     @ManyToOne(cascade={CascadeType.MERGE})
     @JoinColumn(name = "rankId")
     private Rank rank;
+    @OneToMany(mappedBy = "user")
+    private List<Requests> requests;
 
     @Override
     public boolean equals(Object o) {
@@ -97,21 +99,21 @@ public class Users implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return this.isActif;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return this.isActif;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return this.isActif;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return this.isActif;
+        return true;
     }
 }

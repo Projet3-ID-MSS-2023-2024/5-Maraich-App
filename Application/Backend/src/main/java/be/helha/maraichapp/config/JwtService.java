@@ -3,7 +3,10 @@ package be.helha.maraichapp.config;
 import be.helha.maraichapp.dto.AuthentificationDTO;
 import be.helha.maraichapp.models.*;
 import be.helha.maraichapp.repositories.JwtRepository;
+import be.helha.maraichapp.repositories.UserRepository;
+import be.helha.maraichapp.repositories.ValidationRepository;
 import be.helha.maraichapp.services.UserService;
+import be.helha.maraichapp.services.ValidationService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -36,7 +40,13 @@ public class JwtService {
     @Autowired
     JwtRepository jwtRepository;
     @Autowired
-        AuthenticationManager authenticationManager;
+    UserRepository userRepository;
+    @Autowired
+    ValidationRepository validationRepository;
+    @Autowired
+    ValidationService validationService;
+    @Autowired
+    AuthenticationManager authenticationManager;
     private final String ENCRYPTION_KEY = "39a3d3ef7523663f81f23906dba75c9425c256cb55dc6d05f5cc75e5b524786d";
     @Autowired
     private UserService userService;
@@ -91,6 +101,7 @@ public class JwtService {
         final long expirationTime = currentTime + (30 * 60 * 1000);
         final Map<String, Object> claims = Map.of(
                 "name", users.getFirstName(),
+                "idIUser", users.getIdUser(),
                 Claims.EXPIRATION,new Date(expirationTime),
                 Claims.SUBJECT, users.getEmail()
         );
@@ -125,12 +136,29 @@ public class JwtService {
     }
 
     public Map<String, String> connection(AuthentificationDTO authentificationDTO) {
-        Authentication authentificate = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authentificationDTO.email(), authentificationDTO.password())
-        );
 
-        if(authentificate.isAuthenticated()) {
-            return generate(authentificationDTO.email());
+        try{
+            Authentication authentificate = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authentificationDTO.email(), authentificationDTO.password())
+            );
+            Users users = userRepository.findByEmail(authentificationDTO.email()).get();
+            if(!users.isActif()){
+                Instant expirationDate = validationRepository.findbyUser(authentificationDTO.email()).get().getExpirationDate();
+                if(expirationDate.isBefore(Instant.now())){
+                    validationRepository.deleteByUserEmail(users.getEmail());
+                    validationService.createValidationProcess(users);
+                    throw new RuntimeException("The user is not activate and the activation code has expired, a new one has been sent !");
+                };
+                throw new RuntimeException("The user is not activate, check your mail !");
+            } else {
+                if (authentificate.isAuthenticated()) {
+                    return generate(authentificationDTO.email());
+                }
+            }
+        } catch (Exception e) {
+            Map<String, String> mapError = new HashMap<>();
+            mapError.put("message", e.getMessage());
+            return mapError;
         }
         return null;
     }

@@ -2,6 +2,7 @@ package be.helha.maraichapp.controllers;
 
 import be.helha.maraichapp.models.Orders;
 import be.helha.maraichapp.services.OrderServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @RequestMapping
 public class OrderController {
 
+    @Autowired
     OrderServiceImpl orderService;
 
     @GetMapping("/{id}")

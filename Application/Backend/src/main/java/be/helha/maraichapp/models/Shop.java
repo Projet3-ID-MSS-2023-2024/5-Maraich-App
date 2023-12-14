@@ -35,8 +35,8 @@ public class Shop {
     @JoinColumn(name = "ownerId")
     private Users owner;
     @OneToMany (mappedBy = "shopSeller")
-    private List<Orders> orders;
-    @OneToMany(mappedBy = "shop")
+    private List<Order> orders;
+    @OneToMany(mappedBy = "shop", cascade = {CascadeType.ALL})
     private List<Product> products;
 
 
