@@ -1,6 +1,6 @@
 package be.helha.maraichapp.services;
 
-import be.helha.maraichapp.models.Order;
+import be.helha.maraichapp.models.Orders;
 import be.helha.maraichapp.models.Users;
 import be.helha.maraichapp.repositories.OrderRepository;
 import be.helha.maraichapp.repositories.UserRepository;
@@ -9,7 +9,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,38 +21,35 @@ public class OrderServiceImpl implements OrderService {
     private UserRepository userRepository;
 
     @Override
-    public Order addOrder(Order order) {
-        ExampleMatcher userMatcher = ExampleMatcher.matching();
+    public Orders addOrder(Orders orders) {
         // Verify if the customer already exists in the database
-        Users customer = order.getCustomer();
-        Example<Users> customerExample = Example.of(customer, userMatcher);
-        boolean customerExist = userRepository.exists(customerExample);
-        // Verify if the Shop owner already exists in the database
-        Users owner = order.getShopSeller().getOwner();
-        Example<Users> ownerExample = Example.of(owner, userMatcher);
-        boolean ownerExist = userRepository.exists(ownerExample);
-        // We verify if both of them are false, we throw an exception if that's the case
-        if (!ownerExist && !customerExist) {
-            throw new RuntimeException("Customer or Owner doesn't exists in the database");
+        Users customer = orders.getCustomer();
+        if (!userRepository.existsById(customer.getIdUser())) {
+            throw new RuntimeException("Customer doesn't exist in the database");
         }
-        return this.orderRepository.save(order);
+        // Verify if the Shop owner already exists in the database
+        Users owner = orders.getShopSeller().getOwner();
+        if (!userRepository.existsById(owner.getIdUser())) {
+            throw new RuntimeException("Owner doesn't exist in the database");
+        }
+        return this.orderRepository.save(orders);
     }
 
     @Override
-    public List<Order> getAllOrders() {
+    public List<Orders> getAllOrders() {
         return this.orderRepository.findAll();
     }
 
     @Override
-    public Order getOrderById(int id) {
-        Optional<Order> orderOptional = this.orderRepository.findById(id);
+    public Orders getOrderById(int id) {
+        Optional<Orders> orderOptional = this.orderRepository.findById(id);
         return orderOptional.orElse(null);
     }
 
     @Override
-    public Order updateOrder(Order order) {
-        if (this.orderRepository.existsById(order.getId())){
-            return this.orderRepository.save(order);
+    public Orders updateOrder(Orders orders) {
+        if (this.orderRepository.existsById(orders.getId())){
+            return this.orderRepository.save(orders);
         }
         return null;
     }
