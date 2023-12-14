@@ -16,7 +16,7 @@ public class Requests {
     @GeneratedValue
     private int Id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name="userId")
     private Users user;
 
