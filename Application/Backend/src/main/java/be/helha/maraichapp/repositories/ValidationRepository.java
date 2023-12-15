@@ -14,4 +14,8 @@ public interface ValidationRepository extends JpaRepository<Validation, Integer>
     @Modifying
     @Query("DELETE FROM Validation v WHERE v.users.email = :email")
     void deleteByUserEmail(String email);
+
+    @Modifying
+    @Query("DELETE FROM Validation v WHERE v.users.idUser = :idUser")
+    void deleteByUserId(int idUser);
 }

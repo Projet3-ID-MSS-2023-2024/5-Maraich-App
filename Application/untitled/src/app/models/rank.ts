@@ -1,5 +1,7 @@
+import {RankEnum} from "./rankEnum";
+
 export interface Rank {
   idRank: number;
-  name: string;
+  name: RankEnum;
   priorityLevel: number;
 }

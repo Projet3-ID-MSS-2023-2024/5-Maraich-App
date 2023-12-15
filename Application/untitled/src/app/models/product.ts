@@ -1,4 +1,5 @@
 import {Category} from "./category";
+import {Shop} from "./shop";
 
 export interface Product {
   id: number;
@@ -10,4 +11,5 @@ export interface Product {
   weight: number;
   isUnity: boolean;
   category: Category;
+  shop: Shop;
 }

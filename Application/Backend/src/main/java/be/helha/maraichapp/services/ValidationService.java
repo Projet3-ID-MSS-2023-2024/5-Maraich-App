@@ -18,7 +18,7 @@ public class ValidationService {
     @Autowired
     private EmailSender emailSender;
 
-    public void createValidationProcess(Users users){
+    public Validation createValidationProcess(Users users){
         Validation validation = new Validation();
         validation.setUsers(users);
         Instant creationDate = Instant.now();
@@ -29,8 +29,9 @@ public class ValidationService {
         Random random = new Random();
         String code = String.format("%06d", random.nextInt(999999));
         validation.setCode(code);
-        this.validationRepository.save(validation);
+        validation = this.validationRepository.save(validation);
         this.emailSender.sendActivationMail(validation);
+        return validation;
     }
 
     public Validation readWithCode(String code) {

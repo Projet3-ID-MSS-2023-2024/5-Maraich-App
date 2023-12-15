@@ -1,7 +1,7 @@
 import {Address} from "./address";
 import {User} from "./user";
-import {Product} from "./product";
 import {Order} from "./order";
+import {Product} from "./product";
 
 export interface Shop {
   idShop: number;
@@ -11,6 +11,7 @@ export interface Shop {
   picture: string;
   description: string;
   shopIsOkay: boolean;
+  enable: boolean;
   enabled: boolean;
   owner: User;
   orders: Order[];
