@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class OrdersServiceTest {
     public void addOrderTest() {
         Users testUser = new Users("Bilal",  "Maachi", "0456212365","HELHa123", "1","Rue des potiers", "6200","Châtelet", "bilal@test.be");
         Shop testShop = new Shop("Chez Robert", "robert@gmail.com", "Rue de potier", "3", "6200", "Châtelet", "carrot.jpg", "des bon légumes bien frais", testUser);
-        Orders testOrders = new Orders(Calendar.getInstance(), 50, Calendar.getInstance(),testUser, testShop);
+        Orders testOrders = new Orders(Instant.now(), 50, Instant.now(),testUser, testShop);
         // Adding Users and Shop to the database
         userService.addUser(testUser);
         shopService.addShop(testShop);
@@ -70,7 +71,7 @@ public class OrdersServiceTest {
         // Creating shop, user and order for testing
         Users testUser = new Users("Bilal",  "Maachi", "0456212365","HELHa123", "1","Rue des potiers", "6200","Châtelet", "bilal@test.be");
         Shop testShop = new Shop("Chez Robert", "robert@gmail.com", "Rue de potier", "3", "6200", "Châtelet", "carrot.jpg", "des bon légumes bien frais", testUser);
-        Orders testOrders = new Orders(Calendar.getInstance(), 50, Calendar.getInstance(),testUser, testShop);
+        Orders testOrders = new Orders(Instant.now(), 50, Instant.now(),testUser, testShop);
         // Adding the test order,user and shop to the database
         userService.addUser(testUser);
         shopService.addShop(testShop);
@@ -98,11 +99,11 @@ public class OrdersServiceTest {
         // Creating order objects for testing
         Users testUser1 = new Users("Bilal",  "Maachi", "0456212365","HELHa123", "1","Rue des potiers", "6200","Châtelet", "bilal@test.be");
         Shop testShop1 = new Shop("Chez Robert", "robert@gmail.com", "Rue de potier", "3", "6200", "Châtelet", "carrot.jpg", "des bon légumes bien frais", testUser1);
-        Orders testOrder1 = new Orders(Calendar.getInstance(), 50, Calendar.getInstance(),testUser1, testShop1);
+        Orders testOrder1 = new Orders(Instant.now(), 50, Instant.now(),testUser1, testShop1);
 
         Users testUser2 = new Users("Logan",  "Dumont", "0456212365","HELHa123", "1","Rue des potiers", "6200","Châtelet", "logan@test.be");
         Shop testShop2 = new Shop("Chez Logan", "logan@gmail.com", "Rue de potier", "3", "6200", "Châtelet", "carrot.jpg", "des bon légumes bien frais", testUser2);
-        Orders testOrder2 = new Orders(Calendar.getInstance(), 50, Calendar.getInstance(),testUser2, testShop2);
+        Orders testOrder2 = new Orders(Instant.now(), 50, Instant.now(),testUser2, testShop2);
 
         // Adding users,shops and orders to the database
         userService.addUser(testUser1);
@@ -126,7 +127,7 @@ public class OrdersServiceTest {
         // Creating order object for testing
         Users testUser = new Users("Bilal",  "Maachi", "0456212365","HELHa123", "1","Rue des potiers", "6200","Châtelet", "bilal@test.be");
         Shop testShop = new Shop("Chez Robert", "robert@gmail.com", "Rue de potier", "3", "6200", "Châtelet", "carrot.jpg", "des bon légumes bien frais", testUser);
-        Orders testOrder = new Orders(Calendar.getInstance(), 50, Calendar.getInstance(),testUser, testShop);
+        Orders testOrder = new Orders(Instant.now(), 50, Instant.now(),testUser, testShop);
 
         // Add the user, shop and order to the database
         userService.addUser(testUser);
@@ -148,7 +149,7 @@ public class OrdersServiceTest {
         // Creating order object for testing
         Users testUser = new Users("Bilal",  "Maachi", "0456212365","HELHa123", "1","Rue des potiers", "6200","Châtelet", "bilal@test.be");
         Shop testShop = new Shop("Chez Robert", "robert@gmail.com", "Rue de potier", "3", "6200", "Châtelet", "carrot.jpg", "des bon légumes bien frais", testUser);
-        Orders testOrder = new Orders(Calendar.getInstance(), 50, Calendar.getInstance(),testUser, testShop);
+        Orders testOrder = new Orders(Instant.now(), 50, Instant.now(),testUser, testShop);
 
         // Add the user, shop and order to the database
         userService.addUser(testUser);

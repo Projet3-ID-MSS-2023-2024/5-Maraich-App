@@ -1,5 +1,6 @@
 package be.helha.maraichapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,11 +32,13 @@ public class Shop {
     private boolean shopIsOkay;
     @Column(nullable = false)
     private boolean enable = false;
-    @OneToOne(cascade = {CascadeType.MERGE})
+    @OneToOne(mappedBy = "shop")
     @JoinColumn(name = "ownerId")
     private Users owner;
-    @OneToMany (mappedBy = "shopSeller")
-    private List<Order> orders;
+    @JsonIgnore
+    @OneToMany (mappedBy = "shopSeller", cascade = {CascadeType.ALL})
+    private List<Orders> orders;
+    @JsonIgnore
     @OneToMany(mappedBy = "shop", cascade = {CascadeType.ALL})
     private List<Product> products;
 
