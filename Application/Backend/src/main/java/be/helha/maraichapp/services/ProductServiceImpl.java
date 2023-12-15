@@ -3,7 +3,9 @@ package be.helha.maraichapp.services;
 import be.helha.maraichapp.models.Category;
 import be.helha.maraichapp.models.Product;
 import be.helha.maraichapp.models.Shop;
+import be.helha.maraichapp.repositories.CategoryRepository;
 import be.helha.maraichapp.repositories.ProductRepository;
+import be.helha.maraichapp.repositories.ShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,10 @@ public class ProductServiceImpl implements ProductService{
 
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private ShopRepository shopRepository;
 
     @Override
     public List<Product> getAllProduct() {
@@ -37,9 +43,8 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public Product addProduct(Product product) {
-        if (product.getCategory() == null){
-            return null;
-        }
+        product.setCategory(categoryRepository.findById(product.getCategory().getIdCategory()).orElseThrow(()-> new RuntimeException("Category not found!")));
+        product.setShop(shopRepository.findById(product.getShop().getIdShop()).orElseThrow(() -> new RuntimeException("Shop not found")));
         return productRepository.save(product);
     }
 

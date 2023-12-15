@@ -17,7 +17,7 @@ public class Jwt {
     private String value;
     private boolean isDisable;
     private boolean isExpired;
-    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "userId")
     private Users users;
 

@@ -1,5 +1,7 @@
 package be.helha.maraichapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,6 +19,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Getter
 @Setter
+@JsonIgnoreProperties(value = {"authorities", "credentialsNonExpired", "accountNonLocked", "accountNonExpired","username","enabled"})
 
 public class Users implements UserDetails {
     @Id
@@ -37,13 +40,27 @@ public class Users implements UserDetails {
     private String email;
     @Column(nullable = false)
     private boolean isActif = false;
-    @OneToMany(mappedBy = "customer")
+    @JsonIgnore
+    @OneToMany(mappedBy = "customer", cascade = {CascadeType.REMOVE})
     private List<Orders> orders;
     @ManyToOne(cascade={CascadeType.MERGE})
     @JoinColumn(name = "rankId")
     private Rank rank;
-    @OneToOne(mappedBy = "user")
+    @JsonIgnore
+    @OneToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name="requestId")
     private Requests requests;
+    @JsonIgnore
+    @OneToMany(mappedBy = "users", cascade = {CascadeType.ALL})
+    private List<Jwt> jwts;
+    @JsonIgnore
+    @OneToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name="validationId")
+    private Validation validation;
+    @JsonIgnore
+    @OneToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "shopId")
+    private Shop shop;
 
     @Override
     public boolean equals(Object o) {

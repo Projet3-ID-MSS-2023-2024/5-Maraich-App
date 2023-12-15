@@ -24,11 +24,12 @@ public class RequestsServiceImpl implements RequestsService{
     public Requests addRequests(Requests requests) {
         ExampleMatcher userMatcher = ExampleMatcher.matching();
         // Verify if the customer already exists in the database
-        Users user = requests.getUser();
-        Example<Users> userExample = Example.of(user, userMatcher);
-        boolean userExists = userRepository.exists(userExample);
-        if (!userExists) throw new RuntimeException("User doesn't exist");
-        return this.requestsRepository.save(requests);
+        Users user = userRepository.findById(requests.getUser().getIdUser()).orElseThrow(() -> new RuntimeException("User doesn't exist"));
+        requests.setUser(user);
+        requests = this.requestsRepository.save(requests);
+        user.setRequests(requests);
+        userRepository.save(user);
+        return requests;
     }
 
     @Override

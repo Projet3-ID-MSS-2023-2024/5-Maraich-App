@@ -1,5 +1,6 @@
 package be.helha.maraichapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,8 +17,8 @@ public class Requests {
     @GeneratedValue
     private int Id;
 
-    @OneToOne
-    @JoinColumn(name="userId")
+
+    @OneToOne(mappedBy = "requests")
     private Users user;
 
     @Column (nullable = false)
