@@ -20,6 +20,7 @@ public class ShopConfiguration {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+    /*
     @Bean
     public List<Rank> initializeRank(RankRepository rankRepository) {
         List<Rank> ranks = new ArrayList<>(3);
@@ -33,6 +34,7 @@ public class ShopConfiguration {
                         .getIdRank()));
         return ranks;
     }
+    */
 
 
     /*@Bean
