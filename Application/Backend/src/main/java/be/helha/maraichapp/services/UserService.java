@@ -54,7 +54,9 @@ public class UserService implements UserDetailsService, UserServiceInterface {
             Rank rank = rankRepository.findByName(rankEnum).orElseThrow(() -> new RuntimeException("Back issue: Rank initialization issue"));
             users.setRank(rank);
             users = this.userRepository.save(users);
-            this.validationService.createValidationProcess(users);
+            Validation validation = this.validationService.createValidationProcess(users);
+            users.setValidation(validation);
+            this.userRepository.save(users);
             mapError.put("message", "Well done!");
             return mapError;
         } catch (RuntimeException re) {
@@ -271,15 +273,10 @@ public class UserService implements UserDetailsService, UserServiceInterface {
     @Transactional
     public void deleteUserById(int id) {
         if (userRepository.existsById(id)) {
-            jwtRepository.deleteByUserId(id);//pour eviter les erreur clé étrangère
-            validationRepository.deleteByUserId(id);
-
             userRepository.deleteById(id);
         } else {
             throw new EntityNotFoundException("User not found with ID: " + id);
         }
     }
-
-
 }
 

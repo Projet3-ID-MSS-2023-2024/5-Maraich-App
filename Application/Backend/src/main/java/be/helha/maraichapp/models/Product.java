@@ -1,5 +1,6 @@
 package be.helha.maraichapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,7 @@ public class Product {
     @ManyToOne
     @JoinColumn(name="categoryId")
     private Category category;
+    @JsonIgnore
     @OneToMany(mappedBy = "product")
     private List<OrderProduct> orderProducts;
     @ManyToOne

@@ -3,7 +3,11 @@ package be.helha.maraichapp.services;
 import be.helha.maraichapp.models.Category;
 import be.helha.maraichapp.models.Product;
 import be.helha.maraichapp.models.Shop;
+import be.helha.maraichapp.repositories.CategoryRepository;
 import be.helha.maraichapp.repositories.ProductRepository;
+import be.helha.maraichapp.repositories.ShopRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +17,13 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService{
 
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private ShopRepository shopRepository;
+  
     private final ProductRepository productRepository;
 
     private final ImageService imageService;
@@ -57,13 +68,14 @@ public class ProductServiceImpl implements ProductService{
             throw new IllegalArgumentException("Invalid product");
         }
         try {
+            product.setCategory(categoryRepository.findById(product.getCategory().getIdCategory()).orElseThrow(()-> new RuntimeException("Category not found!")));
+            product.setShop(shopRepository.findById(product.getShop().getIdShop()).orElseThrow(() -> new RuntimeException("Shop not found")));
             String fileName = imageService.saveFile(file);
             product.setPicturePath(fileName);
             return productRepository.save(product);
         }catch (Exception e){
             throw new RuntimeException("Error adding product", e);
         }
-
     }
 
     @Override
