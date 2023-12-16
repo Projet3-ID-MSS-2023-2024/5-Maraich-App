@@ -12,7 +12,6 @@ export interface Shop {
   description: string;
   shopIsOkay: boolean;
   enable: boolean;
-  enabled: boolean;
   owner: User;
   orders: Order[];
   products: Product[];

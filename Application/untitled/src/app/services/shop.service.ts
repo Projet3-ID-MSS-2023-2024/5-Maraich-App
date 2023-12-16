@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import {catchError, map, Observable} from "rxjs";
 import { Shop } from '../models/shop';
 import { environment } from '../../environments/environment';
 @Injectable({
@@ -17,13 +17,13 @@ export class ShopService {
   getAllShops(): Observable<Shop[]> {
     const url = `${environment.apiUrl}/shops`;
 
-    return this.http.get<Shop[]>(url).pipe(
+    return this.http.get<any[]>(url).pipe(
       map(shopsData => shopsData.map(shop => this.mapToShopModel(shop)))
     );
   }
 
   private mapToShopModel(data: any): Shop {
-return {
+  return {
       idShop: data.idShop,
       name: data.name,
       email: data.email,
@@ -31,7 +31,7 @@ return {
       picture: data.picture,
       description: data.description,
       shopIsOkay: data.shopIsOkay,
-      enabled: data.enabled,
+      enable: data.enable,
       owner: data.owner,
       orders: data.orders,
       products: data.products
