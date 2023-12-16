@@ -1,5 +1,6 @@
 package be.helha.maraichapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,13 +33,14 @@ public class Product {
     @ManyToOne
     @JoinColumn(name="categoryId")
     private Category category;
+    @JsonIgnore
     @OneToMany(mappedBy = "product")
     private List<OrderProduct> orderProducts;
     @ManyToOne
     @JoinColumn(name = "shopId")
     private Shop shop;
 
-    public Product(String name, double price, String description, String picturePath, int quantity, double weight, boolean isUnity, Category category) {
+    public Product(String name, double price, String description, String picturePath, int quantity, double weight, boolean isUnity, Category category, Shop shop) {
         this.name = name;
         this.price = price;
         this.description = description;
@@ -47,6 +49,7 @@ public class Product {
         this.weight = weight;
         this.isUnity = isUnity;
         this.category = category;
+        this.shop = shop;
     }
 
     @Override

@@ -6,6 +6,8 @@ services:
       - 5431:5432
     environment:
       - POSTGRES_PASSWORD=helha
+
+  #Local mailing server if you want to use this go application.properties
   smtp4dev:
     image: rnwood/smtp4dev:v3
     restart: always

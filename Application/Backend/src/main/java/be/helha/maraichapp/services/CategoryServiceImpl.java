@@ -30,8 +30,8 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public Category updateCategory(Category category) {
-        if (categoryRepository.existsById(category.getIdCategory())){
+    public Category updateCategory(Category category, int id) {
+        if (categoryRepository.existsById(id)){
             return categoryRepository.save(category);
         }
         return null;

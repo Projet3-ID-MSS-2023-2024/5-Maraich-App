@@ -2,6 +2,7 @@ package be.helha.maraichapp.repositories;
 
 import be.helha.maraichapp.models.Jwt;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
@@ -19,4 +20,8 @@ public interface JwtRepository extends JpaRepository<Jwt, Integer> {
     void deleteAllByIsExpiredAndIsDisable(boolean isExpired, boolean isDisable);
 
     boolean existsByValue(String tokenBearer);
+
+    @Modifying
+    @Query("DELETE FROM Jwt j WHERE j.users.idUser = :idUser")
+    void deleteByUserId(int idUser);
 }
