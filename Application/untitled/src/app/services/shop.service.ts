@@ -15,7 +15,7 @@ export class ShopService {
   }
 
   getAllShops(): Observable<Shop[]> {
-    const url = `${environment.apiUrl}/shops/getAll`;
+    const url = `${environment.apiUrl}/shops`;
 
     return this.http.get<any[]>(url).pipe(
       map(shopsData => shopsData.map(shop => this.mapToShopModel(shop)))
