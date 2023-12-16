@@ -62,10 +62,7 @@ public class ProductController {
     @PostMapping("/new")
     public ResponseEntity<Product> addProduct(@RequestPart("product") Product product,@RequestPart("file") MultipartFile file) {
         try {
-            String fileName = imageService.saveFile(file);
-            product.setPicturePath(fileName);
-
-            Product addedProduct = productService.addProduct(product);
+            Product addedProduct = productService.addProduct(product, file);
             return new ResponseEntity<>(addedProduct, HttpStatus.CREATED);
         }catch (Exception e){
             System.err.println("Error adding product: " + e.getMessage());
@@ -93,7 +90,7 @@ public class ProductController {
                     existingProduct.setPicturePath(fileName);
                 }
 
-                Product updated = productService.updateProduct(existingProduct);
+                Product updated = productService.updateProduct(id, existingProduct, file);
 
                 return new ResponseEntity<>(updated, HttpStatus.OK);
             }else {

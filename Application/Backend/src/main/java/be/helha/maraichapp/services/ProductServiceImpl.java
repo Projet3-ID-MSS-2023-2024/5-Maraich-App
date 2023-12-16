@@ -6,7 +6,6 @@ import be.helha.maraichapp.models.Shop;
 import be.helha.maraichapp.repositories.CategoryRepository;
 import be.helha.maraichapp.repositories.ProductRepository;
 import be.helha.maraichapp.repositories.ShopRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -17,20 +16,19 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService{
 
-    @Autowired
-    private ProductRepository productRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
-    private ShopRepository shopRepository;
+    private final CategoryRepository categoryRepository;
+
+    private final ShopRepository shopRepository;
   
     private final ProductRepository productRepository;
 
     private final ImageService imageService;
 
-    public ProductServiceImpl(ProductRepository productRepository, ImageService imageService){
+    public ProductServiceImpl(ProductRepository productRepository, ImageService imageService, CategoryRepository categoryRepository, ShopRepository shopRepository){
         this.productRepository = productRepository;
         this.imageService = imageService;
+        this.categoryRepository = categoryRepository;
+        this.shopRepository = shopRepository;
     }
 
     @Override
