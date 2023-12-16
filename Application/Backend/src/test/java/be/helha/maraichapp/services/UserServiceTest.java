@@ -1,4 +1,4 @@
-package be.helha.maraichapp;
+package be.helha.maraichapp.services;
 
 import be.helha.maraichapp.models.Rank;
 import be.helha.maraichapp.models.RankEnum;

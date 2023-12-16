@@ -1,32 +1,34 @@
 package be.helha.maraichapp.controllers;
 
-import be.helha.maraichapp.models.Order;
+import be.helha.maraichapp.models.Orders;
 import be.helha.maraichapp.services.OrderServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/orders")
 public class OrderController {
 
+    @Autowired
     OrderServiceImpl orderService;
 
     @GetMapping("/{id}")
-    public Order getOrderById(@PathVariable int id) {
+    public Orders getOrderById(@PathVariable int id) {
         return orderService.getOrderById(id);
     }
     @GetMapping
-    public List<Order> getOrders() {
+    public List<Orders> getOrders() {
         return orderService.getAllOrders();
     }
     @PostMapping("newOrder")
-    public Order addOrder(@RequestBody Order order) {
-        return orderService.addOrder(order);
+    public Orders addOrder(@RequestBody Orders orders) {
+        return orderService.addOrder(orders);
     }
     @PutMapping("/update/order")
-    public Order updateOrder(@RequestBody Order order) {
-        return orderService.updateOrder(order);
+    public Orders updateOrder(@RequestBody Orders orders) {
+        return orderService.updateOrder(orders);
     }
 
     @DeleteMapping("/{id}")

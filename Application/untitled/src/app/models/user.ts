@@ -1,4 +1,6 @@
 import {Address} from "./address";
+import {Order} from "./order";
+import {Rank} from "./rank";
 
 export interface User {
   idUser: number;
@@ -8,7 +10,9 @@ export interface User {
   password: string;
   address: Address;
   email: string;
-  isActif: boolean;
+  rank : Rank;
+  actif: boolean;
+  orders : Order[];
 
 
 

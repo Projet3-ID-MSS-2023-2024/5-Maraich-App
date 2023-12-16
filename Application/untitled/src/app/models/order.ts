@@ -13,5 +13,4 @@ export interface Order {
   customer: User;
   shopSeller: Shop;
   orderProucts: Product[];
-
 }

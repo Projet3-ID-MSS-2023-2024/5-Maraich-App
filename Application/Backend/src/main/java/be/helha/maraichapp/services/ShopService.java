@@ -41,15 +41,18 @@ public class ShopService {
     }
 
     public Shop addShop(Shop shop){
+        Users usersDB = userRepository.findById(shop.getOwner().getIdUser()).orElseThrow(() -> new RuntimeException("User doesn't exist"));
+        shop.setOwner(usersDB);
         boolean dataIsOk = dataShopVerification(shop);
-        Users usersDB;
 
         if (!dataIsOk) throw new RuntimeException("Invalid data");
         if (shopRepository.existsByName(shop.getName())) throw new RuntimeException("Shop's name already used");
-        usersDB = shop.getOwner();
         usersDB.setRank(rankRepository.findByName(RankEnum.MARAICHER).orElseThrow(()-> new RuntimeException("Unknown rank")));
+        shop.setOwner(usersDB);
+        shop = shopRepository.save(shop);
+        usersDB.setShop(shop);
         userService.updateUserAdmin(usersDB);
-        return shopRepository.save(shop);
+        return shop;
     }
 
     public Shop updateShop(Shop shop){
