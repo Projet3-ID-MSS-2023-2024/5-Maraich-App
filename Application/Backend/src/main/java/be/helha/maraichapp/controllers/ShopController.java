@@ -16,7 +16,7 @@ public class ShopController {
     private ShopService shopService;
 
     @GetMapping
-    @RequestMapping("/shops")
+    @RequestMapping("/shops/getAll")
     public List<Shop> getShop(){
         return shopService.getShop();
     }

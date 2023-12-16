@@ -23,8 +23,6 @@ public class ProductServiceImpl implements ProductService{
     private CategoryRepository categoryRepository;
     @Autowired
     private ShopRepository shopRepository;
-  
-    private final ProductRepository productRepository;
 
     private final ImageService imageService;
 

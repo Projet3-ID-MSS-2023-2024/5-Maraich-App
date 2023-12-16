@@ -59,6 +59,7 @@ public class ProductController {
         }
     }
 
+    /*
     @PostMapping("/new")
     public ResponseEntity<Product> addProduct(@RequestPart("product") Product product,@RequestPart("file") MultipartFile file) {
         try {
@@ -105,6 +106,7 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @DeleteMapping
     @RequestMapping("/delete/{id}")
