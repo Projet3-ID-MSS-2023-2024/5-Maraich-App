@@ -99,10 +99,10 @@ public class UserService implements UserDetailsService, UserServiceInterface {
         String emailRegex = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
         String nameRegex = "^[a-zA-ZÀ-ÿ-]+$";
         String passwordRegex = "^(?=.*[A-Z])(?=.*\\d).{8,}$";
-        String roadRegex = "^[a-zA-Z0-9\\s\\-.,'()&]+$";
+        String roadRegex = "^[a-zA-Z0-9\\s\\-.,'()&àâäéèêëîïôöùûüçÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ]+$";
         String postCodeRegex = "^[a-zA-Z0-9\\s\\-]+$";
         String numberRegex = "^[a-zA-Z0-9\\s\\-.,'()&]+$";
-        String cityRegex = "^[a-zA-Z\\s\\-.,'()&]+$";
+        String cityRegex = "^[a-zA-Z\\s\\-.,'()&àâäéèêëîïôöùûüçÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ]+$";
         String phoneNumberRegex = "^[0-9]+$";
 
         if (!Pattern.compile(emailRegex).matcher(users.getEmail()).matches()) {
