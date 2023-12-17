@@ -1,7 +1,6 @@
 package be.helha.maraichapp.controllers;
 
 import be.helha.maraichapp.models.Shop;
-import be.helha.maraichapp.repositories.ShopRepository;
 import be.helha.maraichapp.services.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +25,10 @@ public class ShopController {
     public Shop getShopById(@PathVariable("id")int id){
         return shopService.getShopById(id);
     }
+
+    @GetMapping
+    @RequestMapping("/shop/owner/{id}")
+    public Shop getShopByIdOwner(@PathVariable("id") int id){ return shopService.getShopByIdOwner(id); }
 
     @GetMapping
     @RequestMapping("/name/{name}")
