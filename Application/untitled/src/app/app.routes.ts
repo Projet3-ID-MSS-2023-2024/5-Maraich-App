@@ -7,6 +7,7 @@ import {AddCategoriesComponent} from "./components/shop/categories/add-categorie
 import {ListCategoriesComponent} from "./components/shop/categories/list-categories/list-categories.component";
 import {UserManagementComponent} from "./components/admin/user-management/user-management.component";
 import {HomePageComponent} from "./pages/home-page/home-page.component";
+import {AddRequestComponent} from "./components/requests/add-request/add-request.component";
 
 export const routes: Routes = [
   { path: 'connexion', component: LoginComponent },
@@ -19,5 +20,6 @@ export const routes: Routes = [
   { path: 'admin/user', component: UserManagementComponent},
   { path: 'home', component: HomePageComponent },
   { path: '**', redirectTo: '/connexion', pathMatch: 'full' },
+  { path: 'addRequest', component: AddRequestComponent}
 
 ];
