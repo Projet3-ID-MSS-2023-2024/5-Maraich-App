@@ -124,8 +124,6 @@ public class ProductServiceImpl implements ProductService{
                 product.getCategory() == null ||
                 product.getName() == null || product.getName().isEmpty() ||
                 product.getPrice() <= 0 ||
-                product.getDescription() == null || product.getDescription().isEmpty() ||
-                product.getQuantity() <= 0 ||
-                product.getWeight() <= 0;
+                product.getDescription() == null || product.getDescription().isEmpty();
     }
 }

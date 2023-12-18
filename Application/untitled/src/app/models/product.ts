@@ -10,6 +10,6 @@ export interface Product {
   quantity: number;
   weight: number;
   isUnity: boolean;
-  category: Category;
-  shop: Shop;
+  category?: Category;
+  shop?: Shop;
 }

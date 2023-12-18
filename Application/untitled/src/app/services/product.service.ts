@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Observable} from "rxjs";
 import {Product} from "../models/product";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {Category} from "../models/category";
 
@@ -30,6 +30,10 @@ export class ProductService {
     formData.append('product', JSON.stringify(product));
     formData.append('file', file, file.name);
 
-    return this.http.post<Product>(`${this.apiUrl}/new`, formData);
+    const headers = new HttpHeaders({
+      'Content-Type': 'multipart/form-data'
+    });
+
+    return this.http.post<Product>(`${this.apiUrl}/new`, formData, {headers: headers});
   }
 }

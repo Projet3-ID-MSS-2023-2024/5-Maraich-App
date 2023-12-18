@@ -1,0 +1,33 @@
+<div class="p-inputgroup">
+    <span class="p-inputgroup-addon">
+        <i class="pi pi-user"></i>
+    </span>
+  <input pInputText [(ngModel)]="product.name" placeholder="Nom produit" />
+</div>
+<div class="p-inputgroup">
+  <span class="p-inputgroup-addon">Prix</span>
+  <p-inputNumber [(ngModel)]="product.price" mode="currency" currency="EUR"></p-inputNumber>
+</div>
+<div class="p-inputgroup">
+  <span class="p-inputgroup-addon">Desc.</span>
+  <input type="text" [(ngModel)]="product.description" pInputText placeholder="Description" />
+</div>
+<div class="p-inputgroup">
+  <p-checkbox [(ngModel)]="product.isUnity" [binary]="true" inputId="binary"></p-checkbox>
+  <label for="binary">A l'unité</label>
+</div>
+<div class="p-inputgroup" *ngIf="!product.isUnity">
+  <span class="p-inputgroup-addon">Poids</span>
+  <p-inputNumber [(ngModel)]="product.weight" mode="decimal" [minFractionDigits]="2"> </p-inputNumber>
+</div>
+<div class="p-inputgroup" *ngIf="product.isUnity">
+  <span class="p-inputgroup-addon">Quantité</span>
+  <p-inputNumber [(ngModel)]="product.quantity" mode="decimal"> </p-inputNumber>
+</div>
+<div>
+  <p-fileUpload [showUploadButton]="false" accept="image/*" [maxFileSize]="100000" name="file" (onSelect)="onFileSelected($event)" chooseLabel="Image"></p-fileUpload>
+</div>
+<div>
+  <p-dropdown [options]="categories" [(ngModel)]="product.category" optionLabel="nomCategory" [showClear]="true" placeholder="Choisi une catégorie"></p-dropdown>
+</div>
+<p-button label="Submit" icon="pi pi-check" (click)="submit()"></p-button>
