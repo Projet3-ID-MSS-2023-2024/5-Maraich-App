@@ -5,6 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import {User} from "../../../models/user";
 import {Requests} from "../../../models/requests";
 import {RequestService} from "../../../services/request.service";
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 @Component({
   selector: 'app-add-request',
   standalone: true,
@@ -17,18 +18,27 @@ export class AddRequestComponent {
   user!: User;
   newRequest : Requests = {idRequest:0, requestBody: '', user : this.user};
 
-  constructor(private requestService: RequestService) {}
+  constructor(private requestService: RequestService, private ref: DynamicDialogRef, private config: DynamicDialogConfig) {}
 
   onSubmit() {
     this.newRequest.requestBody=this.requestBody;
     this.requestService.addRequest(this.newRequest).subscribe({
       next: (response) => {
           console.log('Succès', response);
+          this.ref?.close();
+          this.updateRequestsList();
         },
       error: (error) => {
           console.error('Error :', error)
         }
       }
     );
+  }
+
+  private updateRequestsList() {
+    const refreshRequests = this.config?.data?.refreshRequests;
+    if (refreshRequests){
+      refreshRequests();
+    }
   }
 }
