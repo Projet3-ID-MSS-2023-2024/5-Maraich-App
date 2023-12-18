@@ -21,7 +21,7 @@ import {error} from "@angular/compiler-cli/src/transformers/util";
   styleUrl: './get-request.component.css'
 })
 export class GetRequestComponent implements OnInit{
-  newRequest : Requests = {idRequest:0, requestBody: ''};
+  Request : Requests = {idRequest:0, requestBody: ''};
   ref: DynamicDialogRef | undefined;
   constructor(private requestService: RequestService, public dialogService: DialogService) {}
 
@@ -33,7 +33,7 @@ export class GetRequestComponent implements OnInit{
     this.requestService.getRequestById(id).subscribe({
     next: (response) => {
         console.log('Succes : ', response);
-        this.newRequest = response;
+        this.Request = response;
       },
     error: (error) => {
       console.log('Error: ', error)
