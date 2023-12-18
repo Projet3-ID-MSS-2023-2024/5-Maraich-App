@@ -3,7 +3,7 @@ import {User} from "./user";
 import {Order} from "./order";
 import {Product} from "./product";
 
-export interface Shop{
+export interface Shop {
   idShop: number;
   name: string;
   email: string;
@@ -12,6 +12,7 @@ export interface Shop{
   description: string;
   shopIsOkay: boolean;
   enable: boolean;
+  enabled: boolean;
   owner: User;
   orders: Order[];
   products: Product[];

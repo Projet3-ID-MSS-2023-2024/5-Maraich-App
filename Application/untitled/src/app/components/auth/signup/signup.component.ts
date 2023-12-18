@@ -52,10 +52,10 @@ export class SignupComponent{
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const nameRegex = /^[a-zA-ZÀ-ÿ-]+$/;
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
-    const roadRegex = /^[a-zA-Z0-9\s\-.,'()&]+$/;
+    const roadRegex = /^[a-zA-Z0-9\s\-.,'()&àâäéèêëîïôöùûüçÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ]+$/;
     const postCodeRegex = /^[a-zA-Z0-9\s\-]+$/;
     const numberRegex = /^[a-zA-Z0-9\s\-.,'()&]+$/;
-    const cityRegex = /^[a-zA-Z\s\-.,'()&]+$/;
+    const cityRegex = /^[a-zA-Z\s\-.,'()&àâäéèêëîïôöùûüçÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ]+$/;
     const phoneNumberRegex = /^[0-9]+$/;
 
 
