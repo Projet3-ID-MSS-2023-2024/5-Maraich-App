@@ -1,6 +1,6 @@
 import {User} from "./user";
 
-export interface Request {
+export interface Requests {
   idRequest: number;
   user: User;
   requestBody: string;
