@@ -1,1 +1,33 @@
-<p>list-requests works!</p>
+<p-table
+        [value]="requests"
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[10,15,20]"
+        [tableStyle]="{'min-width': '50rem'}">
+    <ng-template pTemplate="header">
+        <tr>
+          <th>Id</th>
+          <th>Utilisateur</th>
+          <th>Requêtes</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-request>
+      <tr>
+        <td>{{ request.id }}</td>
+        <td>{{ request.user }}</td>
+        <td>{{ request.body }}</td>
+        <td style="width: 1%; white-space: nowrap;">
+          <p-button icon="pi pi-pencil" (click)="showEdit(request.id)" styleClass="p-button-text p-button-succes"></p-button>
+          <p-button icon="pi pi-trash" (click)="showDelete(request.id)" styleClass="p-button-text p-button-danger"></p-button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="3">Il n'y a pas de requêtes à traiter pour l'instant.</td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorleft">
+      <p-button (click)="showAdd()" icon="pi pi-plus" styleClass="p-button-text"></p-button>
+    </ng-template>
+</p-table>
