@@ -14,15 +14,15 @@ public class RequestController {
     @Autowired
     RequestsService requestsService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public Requests getRequestById(@PathVariable int id) {
         return requestsService.getRequestsById(id);
     }
-    @GetMapping
+    @GetMapping("/getAll")
     public List<Requests> getRequests() {
         return requestsService.getAllRequests();
     }
-    @PostMapping("newRequest")
+    @PostMapping("/addRequest")
     public Requests addRequest(@RequestBody Requests requests) {
         return requestsService.addRequests(requests);
     }
@@ -30,7 +30,7 @@ public class RequestController {
     public Requests updateRequest(@RequestBody Requests requests) {
         return requestsService.updateRequests(requests);
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteRequestById(@PathVariable int id) {
         requestsService.deleteRequestsById(id);
     }
