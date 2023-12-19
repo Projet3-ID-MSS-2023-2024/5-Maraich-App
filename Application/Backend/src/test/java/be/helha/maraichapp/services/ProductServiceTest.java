@@ -27,6 +27,8 @@ public class ProductServiceTest {
     private ShopService shopService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private ValidationService validationService;
 
     private Category testCategory;
     private Category testCategory2;
@@ -67,9 +69,9 @@ public class ProductServiceTest {
     @Test
     @Order(1)
     public void addProductTest(){
-        testProduct = productService.addProduct(new Product("Carotte",15,"C'est des carottes","",20,40,false,testCategory,testShop), file);
-        testProduct2 = productService.addProduct(new Product("Patate",12,"C'est des patates","",10,80,false,testCategory,testShop),file);
-        testProduct3 = productService.addProduct(new Product("Pomme",10,"C'est des pommes","",50,20,false,testCategory2,testShop2), file);
+        testProduct = productService.addProduct(new Product("Carotte",15,"C'est des carottes","",20,40,false,testCategory,testShop));
+        testProduct2 = productService.addProduct(new Product("Patate",12,"C'est des patates","",10,80,false,testCategory,testShop));
+        testProduct3 = productService.addProduct(new Product("Pomme",10,"C'est des pommes","",50,20,false,testCategory2,testShop2));
 
         // Récupérez le produit de la base de données
         Product retrievedProduct = productRepository.findById(testProduct.getId()).orElse(null);

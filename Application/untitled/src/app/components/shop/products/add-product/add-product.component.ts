@@ -14,6 +14,7 @@ import {NgIf} from "@angular/common";
 import {InputNumberModule} from "primeng/inputnumber";
 import {FileUploadModule} from "primeng/fileupload";
 import {ProductService} from "../../../../services/product.service";
+import {error} from "@angular/compiler-cli/src/transformers/util";
 
 @Component({
   selector: 'app-add-product',
@@ -34,6 +35,7 @@ import {ProductService} from "../../../../services/product.service";
 export class AddProductComponent implements OnInit{
   idUser: any;
   shop!: Shop;
+  category!: Category;
   categories: Category[] =[];
   selectedFile?: File;
   product: Product = {
@@ -65,6 +67,7 @@ export class AddProductComponent implements OnInit{
     this.shopService.getShopByOwnerId(this.idUser).subscribe(
         (data) => {
           this.shop = data;
+          this.product.shop=this.shop;
         },
         (error)=>{
           console.error('Error fetching:', error);
@@ -100,42 +103,30 @@ export class AddProductComponent implements OnInit{
   }
 
   submit(){
+
+    console.log(this.product);
     if (this.selectedFile) {
-      this.productService.postProduct(this.product, this.selectedFile).subscribe(
-        (response) => {
-          console.log('Product added successfully: ', response);
-        },
-        (error) => {
-          console.error('Error adding product: ', error);
-        }
+      this.productService.postImage(this.selectedFile).subscribe(
+          (response) => {
+            this.product.picturePath = response.fileName;
+            console.log(this.product.picturePath);
+            this.submitProduct();
+          },
+          (error) => {
+            console.error('Error adding image: ', error);
+          }
       );
     }
+  }
 
-      /*
-    if (
-      !this.product.name || this.product.name.trim() === '' ||
-      !this.product.price || this.product.price.toString().trim() === ''||
-      !this.product.description || this.product.description.trim() === '' ||
-      !this.product.category
-    )
-    {
-        if (this.product.isUnity){
-            this.product.weight = 0;
-        }else {
-            this.product.quantity = 0;
-        }
-
-        if(this.selectedFile){
-          console.log(this.product);
-         this.productService.postProduct(this.product, this.selectedFile).subscribe(
-             (response) =>  {
-               console.log('File upload successfully: ', response);
-             },
-             (error) => {
-               console.error('File upload failed: ', error);
-             }
-         )
-        }
-    }*/
+  submitProduct(){
+      this.productService.postProduct(this.product).subscribe(
+          (productResponse) => {
+              console.log('Product added successfully: ', productResponse);
+          },
+          (error) => {
+              console.error('Error adding product: ', error);
+          }
+      );
   }
 }

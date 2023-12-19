@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {Observable} from "rxjs";
+import {catchError, Observable, throwError} from "rxjs";
 import {Product} from "../models/product";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {environment} from "../../environments/environment";
@@ -25,15 +25,14 @@ export class ProductService {
     return this.http.put<Product>(`${this.apiUrl}/update/${product.id}`, product);
   }
 
-  postProduct(product: Product, file : File): Observable<any>{
-    const formData: FormData = new FormData();
-    formData.append('product', JSON.stringify(product));
-    formData.append('file', file, file.name);
+  postProduct(product: Product): Observable<Product>{
+    return this.http.post<Product>(`${this.apiUrl}/new`, product);
+  }
 
-    const headers = new HttpHeaders({
-      'Content-Type': 'multipart/form-data'
-    });
+  postImage(file: File){
+      const formData = new FormData();
+      formData.append('file', file);
 
-    return this.http.post<Product>(`${this.apiUrl}/new`, formData, {headers: headers});
+      return this.http.post<{fileName : string}>(`${environment.apiUrl}/images/upload`, formData);
   }
 }

@@ -8,12 +8,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/images")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ImageController {
 
     @Autowired
     private ImageService imageService;
 
-    @PostMapping(value = "/upload", produces = "application/json")
+    @PostMapping("/upload")
     public ResponseEntity<String> handleFileUpload(@RequestParam("file")MultipartFile file){
         String fileName=imageService.saveFile(file);
         return ResponseEntity.ok().body("{\"fileName\": \"" + fileName + "\"}");
