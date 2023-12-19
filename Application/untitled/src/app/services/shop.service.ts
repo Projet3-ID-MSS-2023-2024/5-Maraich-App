@@ -7,8 +7,13 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class ShopService {
+  apiUrl = environment.apiUrl + "/shop";
 
-  constructor(private http: HttpClient) {}
+  constructor(private http:HttpClient) { }
+
+    getShopByOwnerId(idOwner: number){
+      return this.http.get<Shop>(`${this.apiUrl}/shop/owner/${idOwner}`);
+    }
 
   getShopById(id: number): Observable<Shop> {
     return this.http.get<Shop>(`${environment.apiUrl}/shops/get/${id}`);
@@ -37,5 +42,4 @@ return {
       products: data.products
     };
   }
-
 }

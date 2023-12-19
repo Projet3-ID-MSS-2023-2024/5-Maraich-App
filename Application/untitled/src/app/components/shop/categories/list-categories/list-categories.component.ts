@@ -7,7 +7,6 @@ import {ButtonModule} from "primeng/button";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {AddCategoriesComponent} from "../add-categories/add-categories.component";
 import {DeleteCategoriesComponent} from "../delete-categories/delete-categories.component";
-import {config} from "rxjs";
 import {UpdateCategoriesComponent} from "../update-categories/update-categories.component";
 
 @Component({

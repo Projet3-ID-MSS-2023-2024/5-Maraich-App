@@ -1,6 +1,5 @@
 package be.helha.maraichapp.services;
 
-import be.helha.maraichapp.models.Rank;
 import be.helha.maraichapp.models.RankEnum;
 import be.helha.maraichapp.models.Shop;
 import be.helha.maraichapp.models.Users;
@@ -38,6 +37,11 @@ public class ShopService {
         List<Shop> foundShop = shopRepository.findByName(name);
         if (foundShop.isEmpty()) throw new RuntimeException("Shop not found with name : " + name);
         return foundShop;
+    }
+
+    public Shop getShopByIdOwner(int id){
+        Users user = userRepository.findById(id).orElseThrow();
+        return user.getShop();
     }
 
     public Shop addShop(Shop shop){

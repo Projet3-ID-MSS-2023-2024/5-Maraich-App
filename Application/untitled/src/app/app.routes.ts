@@ -6,6 +6,7 @@ import {AccueilComponent} from "./temp/accueil/accueil.component";
 import {AddCategoriesComponent} from "./components/shop/categories/add-categories/add-categories.component";
 import {ListCategoriesComponent} from "./components/shop/categories/list-categories/list-categories.component";
 import {UserManagementComponent} from "./components/admin/user-management/user-management.component";
+import {AddProductComponent} from "./components/shop/products/add-product/add-product.component";
 import {HomePageComponent} from "./pages/home-page/home-page.component";
 import {AddRequestComponent} from "./components/requests/add-request/add-request.component";
 
@@ -15,9 +16,9 @@ export const routes: Routes = [
   { path: 'activation/:code', component: ActivationComponent },
   { path: 'activation', component: ActivationComponent },
   { path: 'accueil', component: AccueilComponent },
-  { path: 'addCategory', component: AddCategoriesComponent},
-  { path: 'listCategories', component: ListCategoriesComponent},
+  { path: 'categories', component: ListCategoriesComponent},
   { path: 'admin/user', component: UserManagementComponent},
+  { path: 'form-product', component: AddProductComponent},
   { path: 'home', component: HomePageComponent },
   { path: '**', redirectTo: '/connexion', pathMatch: 'full' },
   { path: 'addRequest', component: AddRequestComponent}
