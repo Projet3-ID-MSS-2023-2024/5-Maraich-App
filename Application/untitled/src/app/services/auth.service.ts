@@ -5,6 +5,8 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import {environment} from "../../environments/environment";
 import {User} from "../models/user";
 import {CookieService} from "ngx-cookie-service";
+import {Router} from "@angular/router";
+import {RankEnum} from "../models/rankEnum";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,8 @@ export class AuthService {
 
 
   private jwtHelper: JwtHelperService = new JwtHelperService(); // Instanciez le JwtHelperService
-  constructor(private http: HttpClient, private cookieService : CookieService) {}
+  userRank : RankEnum | undefined;
+  constructor(private http: HttpClient, private cookieService : CookieService, private route: Router) {}
 
   login(email: string, password: string): Observable<any> { // Appel API pour le login
     const credentials = { email, password };
@@ -32,9 +35,8 @@ export class AuthService {
   }
 
    logout(){ // Supprimez le cookie du token en l'expirant
-    let returnObservable = this.http.get(`${environment.apiUrl}/disconnection`);
-    setTimeout(() => {this.cookieService.deleteAll()}, 2000)
-    return returnObservable;
+    return this.http.get(`${environment.apiUrl}/disconnection`)
+
   }
 
   getTokenFromCookie(): string | null {
