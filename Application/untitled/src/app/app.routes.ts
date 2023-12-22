@@ -9,14 +9,14 @@ import {AddProductComponent} from "./components/shop/products/add-product/add-pr
 import {HomePageComponent} from "./pages/home-page/home-page.component";
 import {AddRequestComponent} from "./components/requests/add-request/add-request.component";
 import {authGuard} from "./guard/auth.guard";
-import {MaraicherComponent} from "./temp/maraicher/maraicher.component";
 import {AdminComponent} from "./temp/admin/admin.component";
+import {MaraicherManagementComponent} from "./pages/maraicher-management/maraicher-management.component";
 
 export const routes: Routes = [
 
   {
     path: 'maraicher', canActivate: [authGuard], children: [
-      {path: 'test', component: MaraicherComponent},
+      {path: 'produits', component: MaraicherManagementComponent}
     ]
   },
   {

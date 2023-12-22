@@ -42,7 +42,7 @@ export class NavbarComponent implements OnInit{
   }
 
   redirectToPanelMaraicher(){
-    this.route.navigate(["maraicher/test"]);
+    this.route.navigate(["maraicher/produits"]);
   }
 
   redirectToPanelAdmin(){
@@ -65,6 +65,14 @@ export class NavbarComponent implements OnInit{
     );
     this.handleRouteChange();
   }
+
+  clickProfiUser(){
+    if(!this.isLogged){
+      this.route.navigate(["/connexion"]);
+    }
+    // IMPLEMENTER LE ELSE QUI REDIREGERA VERS LE PROFIL SI CONNECTER
+  }
+
   handleRouteChange(){
     this.userRank = this.authService.userRank;
     this.isLogged = !!this.userRank;
@@ -86,13 +94,13 @@ export class NavbarComponent implements OnInit{
   itemsCustomer() {
     return [
       {
-        label: 'Navbar client connecter',
+        label: 'Accueil',
         icon: 'pi pi-fw pi-home',
         routerLink: "/"
 
       },
       {
-        label: 'Edit',
+        label: 'Client',
         icon: ''
       }
     ];
@@ -101,13 +109,13 @@ export class NavbarComponent implements OnInit{
   itemsMaraicher(){
     return [
         {
-          label: 'Navbar maraicher',
+          label: 'Accueil',
           icon: 'pi pi-fw pi-home',
           routerLink: "/"
 
         },
         {
-          label: 'Edit',
+          label: 'Maraicher',
           icon: ''
         }
       ];
@@ -116,13 +124,13 @@ export class NavbarComponent implements OnInit{
   itemsAdmin() {
     return [
       {
-        label: 'NAvbar Admin',
+        label: 'Accueil',
         icon: 'pi pi-fw pi-home',
         routerLink: "/"
 
       },
       {
-        label: 'Edit',
+        label: 'Admin',
         icon: ''
       }
     ];
@@ -131,13 +139,13 @@ export class NavbarComponent implements OnInit{
   itemsUser() {
     return [
       {
-        label: 'Navbar client non connecter',
+        label: 'Accueil',
         icon: 'pi pi-fw pi-home',
         routerLink: "/"
 
       },
       {
-        label: 'Edit',
+        label: 'Non connecter',
         icon: ''
       }
     ];

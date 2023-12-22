@@ -21,7 +21,7 @@ export class AccueilComponent implements OnInit{
   }
 
   goMaraicher() {
-    this.route.navigate(["/maraicher/test"])
+    this.route.navigate(["/maraicher/produits"])
   }
 
 
