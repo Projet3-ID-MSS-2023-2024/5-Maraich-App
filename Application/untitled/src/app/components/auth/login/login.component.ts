@@ -8,6 +8,8 @@ import {FormsModule} from "@angular/forms";
 import {AuthService} from "../../../services/auth.service";
 import {Router, RouterLink} from "@angular/router";
 import {PasswordModule} from "primeng/password";
+import {CookieService} from "ngx-cookie-service";
+import {RankEnum} from "../../../models/rankEnum";
 
 @Component({
   selector: 'app-login',
@@ -22,7 +24,7 @@ export class LoginComponent {
   userPassword!: string;
   errorMessage!: string;
 
-  constructor(private authService: AuthService, private route: Router) {
+  constructor(private authService: AuthService, private route: Router, private cookieService : CookieService) {
   }
 
   onSubmitForm() {
@@ -57,9 +59,9 @@ export class LoginComponent {
             console.log(response.message);
           } else {
             // Save the token in a cookie
-            document.cookie = `access_token=${response.bearer}`;
-
-            // Navigate to the farmers display TO BE DONE
+            this.cookieService.set("access_token", response.bearer, undefined,  undefined, undefined, true, "Lax");
+            this.authService.getRankFromCookie();
+            // Navigate to the home page display
             this.route.navigate(["/accueil"]);
           }
 
