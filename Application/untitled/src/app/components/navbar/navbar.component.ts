@@ -53,21 +53,21 @@ export class NavbarComponent implements OnInit{
     this.authService.logout().subscribe({
         next: (response: any) => {
           this.cookieService.deleteAll()
-          this.route.navigate(["/accueil"]);
           this.isLogged = false;
           this.userRank = undefined;
           this.authService.userRank = this.userRank;
+          this.route.navigate(["/accueil"]);
+          this.handleRouteChange();
         },
         error: (error) => {
         }
       }
     );
+    this.handleRouteChange();
   }
   handleRouteChange(){
     this.userRank = this.authService.userRank;
-    if(this.userRank !== undefined){
-      this.isLogged = true;
-    }
+    this.isLogged = !!this.userRank;
     if(this.route.url.startsWith("/maraicher")){
       this.items = this.itemsMaraicher();
     }
