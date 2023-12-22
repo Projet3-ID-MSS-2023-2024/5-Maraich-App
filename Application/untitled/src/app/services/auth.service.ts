@@ -40,14 +40,25 @@ export class AuthService {
   }
 
   getTokenFromCookie(): string | null {
-    const cookies = document.cookie.split(';');
-    for (const cookie of cookies) {
-      const [name, value] = cookie.split('=').map(part => part.trim());
-      if (name.toLowerCase() === 'access_token') {
-        return value.replace(/^"(.*)"$/, '$1') || null;
+    const accessToken = this.cookieService.get('access_token');
+
+    // Verify if the value is present or not
+    return accessToken ? accessToken : null;
+  }
+
+  getRankFromCookie() {
+    const token = this.getTokenFromCookie()
+    if(token)
+    {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace('-', '+').replace('_', '/');
+      const decodedPayload = JSON.parse(atob(base64));
+      let isValidRank = Object.values(RankEnum).includes(decodedPayload.rank as RankEnum);
+      if (isValidRank) {
+        this.userRank = decodedPayload.rank as RankEnum
       }
+      console.log(this.userRank + "AUTH SERV");
     }
-    return null;
   }
 
   isTokenExpired() {

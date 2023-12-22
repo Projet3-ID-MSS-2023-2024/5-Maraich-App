@@ -1,5 +1,5 @@
 import {inject} from '@angular/core';
-import {CanActivateFn, Router} from '@angular/router';
+import {ActivatedRoute, CanActivateFn, Router} from '@angular/router';
 import {AuthService} from '../services/auth.service';
 import {CookieService} from "ngx-cookie-service";
 import {RankEnum} from "../models/rankEnum";
@@ -10,10 +10,15 @@ export const authGuard: CanActivateFn = (route, state) => {
   const router: Router = inject(Router);
   const cookieService: CookieService = inject(CookieService);
   const isTokenExpired = authService.isTokenExpired();
+  const currentRoutePath = route.routeConfig?.path;
 
   if (isTokenExpired) {
     cookieService.deleteAll();
-    return router.navigate(['accueil']);
+    if (currentRoutePath !== 'accueil') {
+      return router.navigate(['accueil']);
+    }
+  } else if(authService.userRank === undefined) {
+    authService.getRankFromCookie();
   }
   // For access to maraicher panel be maraicher or for access to admin panel be administrator
   if (

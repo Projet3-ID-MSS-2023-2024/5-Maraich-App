@@ -32,7 +32,7 @@ export const routes: Routes = [
   {path: 'addRequest', canActivate: [authGuard], component: AddRequestComponent},
 
   //Don't need the guard
-  {path: 'accueil', component: AccueilComponent},
+  {path: 'accueil',canActivate: [authGuard], component: AccueilComponent},
   {path: 'connexion', component: LoginComponent},
   {path: 'inscription', component: SignupComponent},
   {path: 'activation/:code', component: ActivationComponent},

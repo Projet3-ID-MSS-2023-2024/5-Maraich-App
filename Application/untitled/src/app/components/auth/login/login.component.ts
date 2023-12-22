@@ -60,15 +60,7 @@ export class LoginComponent {
           } else {
             // Save the token in a cookie
             this.cookieService.set("access_token", response.bearer, undefined,  undefined, undefined, true, "Lax");
-            const base64Url = response.bearer.split('.')[1];
-            const base64 = base64Url.replace('-', '+').replace('_', '/');
-            const decodedPayload = JSON.parse(atob(base64));
-            this.authService.userRank = decodedPayload.rank
-            let isValidRank = Object.values(RankEnum).includes(decodedPayload.rank as RankEnum);
-            if(isValidRank) {
-              this.authService.userRank = decodedPayload.rank as RankEnum
-            }
-            console.log(this.authService.userRank);
+            this.authService.getRankFromCookie();
             // Navigate to the home page display
             this.route.navigate(["/accueil"]);
           }
