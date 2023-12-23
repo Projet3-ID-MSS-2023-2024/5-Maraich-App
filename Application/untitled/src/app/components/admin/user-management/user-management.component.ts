@@ -22,6 +22,7 @@ import {StepsModule} from "primeng/steps";
 import {PasswordModule} from "primeng/password";
 import {DividerModule} from "primeng/divider";
 import {KeyFilterModule} from "primeng/keyfilter";
+import {forkJoin} from "rxjs";
 
 @Component({
   selector: 'app-user-management',
@@ -54,9 +55,9 @@ export class UserManagementComponent implements OnInit{
 
 
   constructor(
-      private userService: UserService,
-      private messageService: MessageService,
-      private confirmationService: ConfirmationService
+    private userService: UserService,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit() {
@@ -74,7 +75,7 @@ export class UserManagementComponent implements OnInit{
     }; //pour etre sur que user est null
     this.submitted = false; //on le remet a false
     this.userDialog = true; //pour afficher le dialog
-      this.currentStepIndex = 0;
+    this.currentStepIndex = 0;
   }
 
   /**
@@ -91,34 +92,44 @@ export class UserManagementComponent implements OnInit{
           // Récupère les identifiants des utilisateurs sélectionnés
           const userIds = this.selectedUsers.map((user) => user.idUser);
 
-          // Parcourir chaque id de user
-          userIds.forEach((userId) => {
-            //on appelle le service pour supprimer l'id
-            this.userService.deleteUserById(userId).subscribe(
-                () => {
-                  //on supprime également l'id de la liste
-                  this.users = this.users.filter((u) => u.idUser !== userId);
-
-                  // Message de succès
-                  this.messageService.add({
-                    severity: 'success',
-                    summary: 'Succès',
-                    detail: 'Utilisateur supprimé',
-                    life: 3000,
-                  });
-                },
-                (error) => {
-                  // en cas d'erreur
-                  console.error('Erreur lors de la suppression de l\'utilisateur', error);
-                }
-            );
+          //  tableau d'Observables pour suivre les appels de suppression
+          const deleteObservables = userIds.map((userId) => {
+            // Appelle le service pour supprimer l'id
+            return this.userService.deleteUserById(userId);
           });
+
+          //  forkJoin pour attendre que tous les appels soient terminés
+          forkJoin(deleteObservables).subscribe(
+            () => {
+              // Supprime les id de la liste
+              this.users = this.users.filter((u) => !userIds.includes(u.idUser));
+
+              // Message de succès une fois que toutes les suppressions sont terminées
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Succès',
+                detail: 'Utilisateurs supprimés avec succès',
+                life: 3000,
+              });
+            },
+            (error) => {
+              // En cas d'erreur
+              this.messageService.add({
+                severity: 'danger',
+                summary: 'Erreur',
+                detail: 'Une erreur est survenue lors de la suppression des utilisateurs',
+                life: 3000,
+              });
+            }
+          );
+
           // Réinitialise la liste des utilisateurs sélectionnés
           this.selectedUsers = null;
         }
       }
     });
   }
+
 
 
   /**
@@ -147,17 +158,17 @@ export class UserManagementComponent implements OnInit{
       accept: () => {
         // on supprime le user de la BDD
         this.userService.deleteUserById(user.idUser).subscribe(
-            () => {
-              // on supprime le user de la liste
-              this.users = this.users.filter((val) => val.idUser !== user.idUser);
-              this.user = {};
-              // Affichage du message de succès
-              this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Utilisateur supprimé', life: 3000 });
-            },
-            (error) => {
-              // En cas d'erreur
-              console.error('Erreur lors de la suppression de l\'utilisateur', error);
-            }
+          () => {
+            // on supprime le user de la liste
+            this.users = this.users.filter((val) => val.idUser !== user.idUser);
+            this.user = {};
+            // Affichage du message de succès
+            this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Utilisateur supprimé', life: 3000 });
+          },
+          (error) => {
+            // En cas d'erreur
+            this.messageService.add({ severity: 'danger', summary: 'Erreur', detail: 'Une erreur est survenue lors de la suppression de l\'utilisateur', life: 3000 });
+          }
         );
       }
     });
@@ -178,35 +189,35 @@ export class UserManagementComponent implements OnInit{
    * Modifier ou ajouter un user
    */
   saveUser() {
-      this.submitted = true;
+    this.submitted = true;
 
-      console.log(this.user);
+    console.log(this.user);
 
-      if (this.user.surname?.trim()) {
-        if (this.user.idUser) {
-          this.userService.updateUserAdmin(this.user).subscribe(updatedUser => {
-            this.users[this.findIndexById(updatedUser.idUser)] = updatedUser;
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Succès',
-              detail: 'Utilisateur mis à jour',
-              life: 3000
-            });
-            this.users = [...this.users];
-            this.userDialog = false;
-            this.user = {};
+    if (this.user.surname?.trim()) {
+      if (this.user.idUser) {
+        this.userService.updateUserAdmin(this.user).subscribe(updatedUser => {
+          this.users[this.findIndexById(updatedUser.idUser)] = updatedUser;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Succès',
+            detail: 'Utilisateur mis à jour',
+            life: 3000
           });
-        } else {
-          this.userService.addUser(this.user).subscribe(newUser => {
-            //newUser.image = 'user-placeholder.svg';
-            this.users.push(newUser);
-            this.messageService.add({severity: 'success', summary: 'Succès', detail: 'Utilisateur créé', life: 3000});
-            this.users = [...this.users];
-            this.userDialog = false;
-            this.user = {};
-          });
-        }
+          this.users = [...this.users];
+          this.userDialog = false;
+          this.user = {};
+        });
+      } else {
+        this.userService.addUser(this.user).subscribe(newUser => {
+          //newUser.image = 'user-placeholder.svg';
+          this.users.push(newUser);
+          this.messageService.add({severity: 'success', summary: 'Succès', detail: 'Utilisateur créé', life: 3000});
+          this.users = [...this.users];
+          this.userDialog = false;
+          this.user = {};
+        });
       }
+    }
 
   }
 
@@ -303,35 +314,35 @@ export class UserManagementComponent implements OnInit{
 
 
 
-    /**
-     * vérifie le form de chaque étape
-     * exemple : étape 1, vérifie firstname, numéro...
-     */
-    validatePersonalStep() {
-      this.submitted = true;
+  /**
+   * vérifie le form de chaque étape
+   * exemple : étape 1, vérifie firstname, numéro...
+   */
+  validatePersonalStep() {
+    this.submitted = true;
 
-      if (
-        this.user.surname?.trim() &&
-        this.user.firstName?.trim() &&
-        this.user.phoneNumber?.trim() &&
-        this.isValidPassword(this.user.password?.trim()) &&
-        this.isPasswordValid // Check the password validity
-      ) {
-        if (this.isEditMode()) {
-          // Mode édition : vérifier si l'e-mail est valide
-          if (this.user.email && this.isValidEmail(this.user.email.trim())) {
-            this.nextStep();
-            this.submitted = false;
-          }
-        } else {
-          // Mode ajout : vérifier si l'e-mail est valide et n'existe pas déjà
-          if (this.isValidEmail(this.user.email?.trim()) && !this.emailExists(this.user.email?.trim())) {
-            this.nextStep();
-            this.submitted = false;
-          }
+    if (
+      this.user.surname?.trim() &&
+      this.user.firstName?.trim() &&
+      this.user.phoneNumber?.trim() &&
+      this.isValidPassword(this.user.password?.trim()) &&
+      this.isPasswordValid // Check the password validity
+    ) {
+      if (this.isEditMode()) {
+        // Mode édition : vérifier si l'e-mail est valide
+        if (this.user.email && this.isValidEmail(this.user.email.trim())) {
+          this.nextStep();
+          this.submitted = false;
+        }
+      } else {
+        // Mode ajout : vérifier si l'e-mail est valide et n'existe pas déjà
+        if (this.isValidEmail(this.user.email?.trim()) && !this.emailExists(this.user.email?.trim())) {
+          this.nextStep();
+          this.submitted = false;
         }
       }
     }
+  }
 
   isValidPassword(password: string): boolean {
     const isValid = /^(?=.*[A-Z])(?=.*\d).{8,}$/.test(password);
@@ -341,32 +352,32 @@ export class UserManagementComponent implements OnInit{
 
 
   /**
-     * pour la validation d'email, si il a le bon format
-     * @param email
-     */
-    isValidEmail(email: string): boolean {
-        // Expression régulière pour la validation de l'e-mail
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    }
+   * pour la validation d'email, si il a le bon format
+   * @param email
+   */
+  isValidEmail(email: string): boolean {
+    // Expression régulière pour la validation de l'e-mail
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
 
-    /**
-     * vérifie si l'email existe deja
-     * @param email
-     */
-    emailExists(email: string): boolean {
-      // Assuming this.users is the array you are checking
-      return this.users && this.users.some(user => user.email === email);
-    }
+  /**
+   * vérifie si l'email existe deja
+   * @param email
+   */
+  emailExists(email: string): boolean {
+    // Assuming this.users is the array you are checking
+    return this.users && this.users.some(user => user.email === email);
+  }
 
 
-    /**
-     * Retourne true si l'ID de l'utilisateur est défini, ce qui signifie que vous êtes en mode édition
-     */
-    isEditMode(): boolean {
+  /**
+   * Retourne true si l'ID de l'utilisateur est défini, ce qui signifie que vous êtes en mode édition
+   */
+  isEditMode(): boolean {
 
-        return this.user && this.user.idUser !== undefined;
-    }
+    return this.user && this.user.idUser !== undefined;
+  }
 
 
   showPasswordInputField = false;

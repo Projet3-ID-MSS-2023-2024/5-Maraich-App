@@ -11,8 +11,7 @@ export interface Shop {
   picture: string;
   description: string;
   shopIsOkay: boolean;
-  enable?: boolean;
-  enabled: boolean;
+  enable: boolean;
   owner: User;
   orders: Order[];
   products: Product[];

@@ -60,11 +60,12 @@
                 <td>{{ user.email}}</td>
                 <td>{{ user.phoneNumber}}</td>
                 <td>{{ user.address | adressFormat}}</td>
-                <td>
-                    <p-tag [value]="user.rank.name | rankFormat" [severity]="getRankSeverity(user.rank.name)"></p-tag>
-                </td>
+              <td>
+                <p-tag *ngIf="user.rank" [value]="user.rank.name | rankFormat" [severity]="getRankSeverity(user.rank.name)"></p-tag>
+              </td>
 
-                <td>
+
+              <td>
                     <p-tag [value]="user.actif ? 'Actif' : 'Inactif'" [severity]="getStatusSeverity(user.actif)"></p-tag>
                 </td>
                 <td>
@@ -102,7 +103,7 @@
       <div class="field" *ngIf="!isEditMode()">
         <label for="email">Email</label>
         <input  type="email" pInputText id="email" [(ngModel)]="user.email" [disabled]="isEditMode()" required autofocus />
-        <!-- Autres validations et messages d'erreur ici... -->
+
       </div>
 
       <div class="field">

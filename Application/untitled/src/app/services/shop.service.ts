@@ -1,34 +1,43 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import {catchError, map, Observable} from "rxjs";
 import { Shop } from '../models/shop';
 import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class ShopService {
-  apiUrl = environment.apiUrl + "/shop";
 
-  constructor(private http:HttpClient) { }
-
-    getShopByOwnerId(idOwner: number){
-      return this.http.get<Shop>(`${this.apiUrl}/shop/owner/${idOwner}`);
-    }
+  constructor(private http: HttpClient) {}
 
   getShopById(id: number): Observable<Shop> {
     return this.http.get<Shop>(`${environment.apiUrl}/shops/get/${id}`);
   }
 
-  getAllShops(): Observable<Shop[]> {
-    const url = `${environment.apiUrl}/shops/getAll`;
+  getShopByOwnerId(idOwner: number){
+    return this.http.get<Shop>(`${environment.apiUrl}/shop/owner/${idOwner}`);
+  }
 
-    return this.http.get<Shop[]>(url).pipe(
-      map(shopsData => shopsData.map(shopData => this.mapToShopModel(shopData)))
+  getAllShops(): Observable<Shop[]> {
+    const url = `${environment.apiUrl}/shop/getAll`;
+
+    return this.http.get<any[]>(url).pipe(
+      map(shopsData => shopsData.map(shop => this.mapToShopModel(shop)))
     );
   }
 
+  updateShop(shop: Shop): Observable<Shop> {
+    const url = `${environment.apiUrl}/shop/update`;
+    return this.http.put<Shop>(url, shop);
+  }
+
+  deleteShop(id: number): Observable<void> {
+    const url = `${environment.apiUrl}/shop/delete/${id}`;
+    return this.http.delete<void>(url);
+  }
+
   private mapToShopModel(data: any): Shop {
-return {
+    return {
       idShop: data.idShop,
       name: data.name,
       email: data.email,
@@ -36,10 +45,11 @@ return {
       picture: data.picture,
       description: data.description,
       shopIsOkay: data.shopIsOkay,
-      enabled: data.enabled,
+      enable: data.enable,
       owner: data.owner,
       orders: data.orders,
       products: data.products
     };
   }
+
 }

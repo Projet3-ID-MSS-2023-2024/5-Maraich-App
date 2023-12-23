@@ -11,6 +11,7 @@ import {AddRequestComponent} from "./components/requests/add-request/add-request
 import {authGuard} from "./guard/auth.guard";
 import {MaraicherComponent} from "./temp/maraicher/maraicher.component";
 import {AdminComponent} from "./temp/admin/admin.component";
+import {MaraicherManagementComponent} from "./components/admin/maraicher-management/maraicher-management.component";
 
 export const routes: Routes = [
 
@@ -27,6 +28,7 @@ export const routes: Routes = [
 
   {path: 'categories', canActivate: [authGuard], component: ListCategoriesComponent},
   {path: 'admin/user', canActivate: [authGuard], component: UserManagementComponent},
+  {path: 'admin/maraicher', canActivate: [authGuard], component: MaraicherManagementComponent},
   {path: 'form-product', canActivate: [authGuard], component: AddProductComponent},
   {path: 'home', canActivate: [authGuard], component: HomePageComponent},
   {path: 'addRequest', canActivate: [authGuard], component: AddRequestComponent},
