@@ -60,7 +60,7 @@ export class LoginComponent {
             document.cookie = `access_token=${response.bearer}`;
 
             // Navigate to the farmers display TO BE DONE
-            this.route.navigate(["/accueil"]);
+            this.route.navigate(["/home"]);
           }
 
         },

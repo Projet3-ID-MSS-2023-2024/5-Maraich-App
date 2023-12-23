@@ -1,8 +1,16 @@
-<div class="card" style="width: 18rem;" *ngFor="let shop of shops">
-  <img src="..." class="card-img-top" alt="...">
-  <div class="card-body">
-    <h5 class="card-title">{{ shop.name }}</h5>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    <a href="#" class="btn btn-primary stretched-link">Go somewhere</a>
+<div class="p-grid p-justify-center">
+  <div class="p-col-12 p-md-4" *ngFor="let item of shops">
+    <div class="p-shadow-4">
+      <p-card header="{{item.name}}" subheader="Location: {{item.address.city}}" [style]="{'width': '300px'}">
+        <ng-template pTemplate="header">
+          <img alt="Card" [src]="item.picture" style="border-radius: 8px 8px 0 0; width: 100%;">
+        </ng-template>
+        <ng-template pTemplate="body">
+          <p>
+            {{ item.description }}
+          </p>
+        </ng-template>
+      </p-card>
+    </div>
   </div>
 </div>

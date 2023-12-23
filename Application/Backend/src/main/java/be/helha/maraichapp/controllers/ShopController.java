@@ -16,19 +16,19 @@ public class ShopController {
     private ShopService shopService;
 
     @GetMapping
-    @RequestMapping("/shops/getAll")
+    @RequestMapping("/getAll")
     public List<Shop> getShop(){
         return shopService.getShop();
     }
 
     @GetMapping
-    @RequestMapping("/shop/{id}")
+    @RequestMapping("/getById/{id}")
     public Shop getShopById(@PathVariable("id")int id){
         return shopService.getShopById(id);
     }
 
     @GetMapping
-    @RequestMapping("/name/{name}")
+    @RequestMapping("/getByName/{name}")
     public List<Shop> getShopByName(@PathVariable("name")String name){
         return shopService.getShopByName(name);
     }

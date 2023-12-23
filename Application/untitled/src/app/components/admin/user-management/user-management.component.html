@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card" style="margin-top: 100px">
     <p-toast></p-toast>
     <p-toolbar styleClass="mb-4 gap-2">
         <ng-template pTemplate="left">
@@ -60,10 +60,11 @@
                 <td>{{ user.email}}</td>
                 <td>{{ user.phoneNumber}}</td>
                 <td>{{ user.address | adressFormat}}</td>
+<!--
                 <td>
                     <p-tag [value]="user.rank.name | rankFormat" [severity]="getRankSeverity(user.rank.name)"></p-tag>
                 </td>
-
+-->
                 <td>
                     <p-tag [value]="user.actif ? 'Actif' : 'Inactif'" [severity]="getStatusSeverity(user.actif)"></p-tag>
                 </td>

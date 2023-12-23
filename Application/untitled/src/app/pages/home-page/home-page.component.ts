@@ -12,7 +12,7 @@ import {ShopCardComponent} from "../../components/shop/shop-card/shop-card.compo
     CardModule,
     NgForOf,
     ButtonModule,
-    ShopCardComponent
+    ShopCardComponent,
   ],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css'
