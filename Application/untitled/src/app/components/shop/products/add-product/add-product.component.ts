@@ -14,7 +14,6 @@ import {NgIf} from "@angular/common";
 import {InputNumberModule} from "primeng/inputnumber";
 import {FileUploadModule} from "primeng/fileupload";
 import {ProductService} from "../../../../services/product.service";
-import {error} from "@angular/compiler-cli/src/transformers/util";
 
 @Component({
   selector: 'app-add-product',
@@ -53,26 +52,26 @@ export class AddProductComponent implements OnInit{
   }
 
   getCategories(){
-    this.categoryService.getCategories().subscribe(
-      (data) =>{
+    this.categoryService.getCategories().subscribe({
+      next:(data) => {
         this.categories = data;
       },
-        (error) => {
-          console.error('Error fetching: ', error);
-        }
-    );
+      error:(error) => {
+        console.error('Error fetching: ', error);
+      }
+    });
   }
 
   getShopByIdUser(){
-    this.shopService.getShopByOwnerId(this.idUser).subscribe(
-        (data) => {
-          this.shop = data;
-          this.product.shop=this.shop;
-        },
-        (error)=>{
-          console.error('Error fetching:', error);
-        }
-    )
+    this.shopService.getShopByOwnerId(this.idUser).subscribe({
+      next: (data) => {
+        this.shop = data;
+        this.product.shop = this.shop;
+      },
+      error: (error) => {
+        console.error('Error fetching: ', error);
+      }
+    });
   }
 
   extractIdUserData(token: string): void {
@@ -86,7 +85,7 @@ export class AddProductComponent implements OnInit{
         // Parse the decoded payload as JSON
         const payloadData = JSON.parse(decodedPayload);
 
-        this.idUser = payloadData.idIUser;
+        this.idUser = payloadData.idUser;
     }
   }
 
@@ -97,36 +96,32 @@ export class AddProductComponent implements OnInit{
         const maxSizeInBytes = 100000;
         if (fileInput.size < maxSizeInBytes){
             this.selectedFile = event.files[0];
-            console.log(this.selectedFile);
         }
       }
   }
 
   submit(){
-
-    console.log(this.product);
     if (this.selectedFile) {
-      this.productService.postImage(this.selectedFile).subscribe(
-          (response) => {
-            this.product.picturePath = response.fileName;
-            console.log(this.product.picturePath);
-            this.submitProduct();
-          },
-          (error) => {
-            console.error('Error adding image: ', error);
-          }
-      );
+      this.productService.postImage(this.selectedFile).subscribe({
+        next: (filePath) => {
+          this.product.picturePath = filePath.fileName;
+          this.submitProduct();
+        },
+        error: (error) => {
+          console.error('Error adding image: ', error);
+        }
+      });
     }
   }
 
   submitProduct(){
-      this.productService.postProduct(this.product).subscribe(
-          (productResponse) => {
-              console.log('Product added successfully: ', productResponse);
-          },
-          (error) => {
-              console.error('Error adding product: ', error);
-          }
-      );
+      this.productService.postProduct(this.product).subscribe({
+        next:(productResponse) => {
+          console.log('Product added successfully: ', productResponse);
+        },
+        error:(error) => {
+          console.error('Error adding product: ', error);
+        }
+      });
   }
 }

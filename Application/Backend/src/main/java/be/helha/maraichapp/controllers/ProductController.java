@@ -19,7 +19,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/products")
-@CrossOrigin(origins = "http://localhost:4200")
 public class ProductController {
     private final ProductService productService;
     private final ImageService imageService;
@@ -51,8 +50,8 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/get-all-by-shop")
-    public ResponseEntity<List<Product>> getAllProductsByShop(@RequestParam("shopId") int shopId){
+    @GetMapping("/get-all-by-shop/{id}")
+    public ResponseEntity<List<Product>> getAllProductsByShop(@PathVariable("id") int shopId){
         Shop shop = shopService.getShopById(shopId);
         if (shop != null){
             List<Product> products = productService.getAllProductByShop(shop);

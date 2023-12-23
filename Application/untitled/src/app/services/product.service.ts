@@ -21,6 +21,10 @@ export class ProductService {
     return this.http.post<Product[]>(`${this.apiUrl}/getAllByCategories`, { params: { category: category } });
   }
 
+  getProductByShop(id:number): Observable<Product[]>{
+    return this.http.get<Product[]>(`${this.apiUrl}/get-all-by-shop/${id}`);
+  }
+
   updateProduct(product: Product): Observable<any>{
     return this.http.put<Product>(`${this.apiUrl}/update/${product.id}`, product);
   }
