@@ -1,5 +1,6 @@
 package be.helha.maraichapp.services;
 
+import be.helha.maraichapp.models.Address;
 import be.helha.maraichapp.models.RankEnum;
 import be.helha.maraichapp.models.Shop;
 import be.helha.maraichapp.models.Users;
@@ -53,6 +54,24 @@ public class ShopService {
         if (shopRepository.existsByName(shop.getName())) throw new RuntimeException("Shop's name already used");
         usersDB.setRank(rankRepository.findByName(RankEnum.MARAICHER).orElseThrow(()-> new RuntimeException("Unknown rank")));
         shop.setOwner(usersDB);
+        shop.setShopIsOkay(true);
+        shop.setEnable(false);
+        shop = shopRepository.save(shop);
+        usersDB.setShop(shop);
+        userService.updateUserAdmin(usersDB);
+        return shop;
+    }
+
+    public Shop addShopMinimal(int idUser) {
+        Shop shop = new Shop();
+        Users usersDB = userRepository.findById(idUser).orElseThrow(() -> new RuntimeException("User doesn't exist"));
+        shop.setOwner(usersDB);
+        shop.setName("name"+idUser);
+        shop.setEmail("email"+idUser);
+        shop.setAddress(new Address("road"+idUser, "postCode"+idUser, "city"+idUser, "number"+idUser));
+        shop.setDescription("description"+idUser);
+        shop.setShopIsOkay(false);
+        shop.setEnable(false);
         shop = shopRepository.save(shop);
         usersDB.setShop(shop);
         userService.updateUserAdmin(usersDB);
