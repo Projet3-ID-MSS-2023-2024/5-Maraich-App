@@ -42,13 +42,6 @@ public class ShopController {
         return shopService.addShop(shop);
     }
 
-    @PostMapping
-    @RequestMapping("/addMinimal/{idUser}")
-    public Shop addShopMinimal(@PathVariable("idUser")int idUser){
-        return shopService.addShopMinimal(idUser);
-    }
-
-
     @PutMapping
     @RequestMapping("/update")
     public Shop updateShop(@RequestBody Shop shop){
