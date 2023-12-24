@@ -6,10 +6,10 @@ import {CardModule} from "primeng/card";
 import {AsyncPipe, NgForOf, NgOptimizedImage} from "@angular/common";
 import {ImageService} from "../../../../services/image.service";
 import {ButtonModule} from "primeng/button";
-import {Category} from "../../../../models/category";
 import {CategoryService} from "../../../../services/category.service";
 import {FormsModule} from "@angular/forms";
-import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
+import {DomSanitizer} from "@angular/platform-browser";
+import {Category} from "../../../../models/category";
 
 @Component({
   selector: 'app-list-products',
@@ -28,8 +28,10 @@ import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
 export class ListProductsComponent implements OnInit{
   listProduct: Product[] = [];
   shopId!:number;
-  categories:Category[] = [];
-  imageUrls:SafeUrl[] = [];
+  selectedCategory: string | undefined;
+  categories:Category[]=[];
+  filteredListProduct: Product[] = [];
+  searchTerm: string = '';
 
   constructor(private productService:ProductService, private route:ActivatedRoute,private imageService:ImageService, private categoryService:CategoryService, private sanitizer:DomSanitizer) {
   }
@@ -69,15 +71,22 @@ export class ListProductsComponent implements OnInit{
   loadImages(): void {
     for (const product of this.listProduct) {
       const fileName = product.picturePath; // Adjust this based on your Product model
-      this.imageService.getImage(fileName).subscribe(
-        (data: Blob) => {
-          const imageUrl = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(data));
-          this.imageUrls.push(imageUrl);
+      this.imageService.getImage(fileName).subscribe({
+        next:(data:Blob) => {
+          product.imageUrl = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(data));
         },
-        error => {
+        error:() => {
           console.error(`Error loading image ${fileName} from the backend.`);
+
         }
-      );
+      });
     }
+  }
+
+  updateFilteredProducts(): void {
+    this.filteredListProduct = this.listProduct.filter((product) =>
+      (this.selectedCategory ? product.category?.nomCategory === this.selectedCategory : true) &&
+      (product.name.toLowerCase().includes(this.searchTerm.toLowerCase()))
+    );
   }
 }
