@@ -14,4 +14,6 @@ export interface Product {
   category?: Category;
   shop?: Shop;
   imageUrl?:SafeUrl;
+  quantityUnity?: number;
+  quantityWeight?: number;
 }

@@ -1,0 +1,22 @@
+.flex-container {
+  display: flex;
+  justify-content: space-between; /* Aligns items to the left, center, and right */
+}
+
+.flex-left {
+  display: flex; /* Nested flexbox for centering content vertically */
+  align-items: center;
+}
+
+.flex-center {
+  flex: 1; /* Takes as much space as available */
+  display: flex; /* Nested flexbox for centering content horizontally */
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-right {
+  display: flex; /* Nested flexbox for aligning content to the right */
+  align-items: center;
+  justify-content: flex-end;
+}
