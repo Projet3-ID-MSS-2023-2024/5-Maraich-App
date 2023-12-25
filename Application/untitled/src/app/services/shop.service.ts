@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import {catchError, map, Observable} from "rxjs";
 import { Shop } from '../models/shop';
 import { environment } from '../../environments/environment';
+import {User} from "../models/user";
 @Injectable({
   providedIn: 'root'
 })
@@ -28,7 +29,15 @@ export class ShopService {
 
   updateShop(shop: Shop): Observable<Shop> {
     const url = `${environment.apiUrl}/shop/update`;
-    return this.http.put<Shop>(url, shop);
+    // Map the user data before making the PUT request
+    const mappedShop = this.mapToShopModel(shop);
+
+    return this.http.put<Shop>(url, mappedShop).pipe(
+        catchError((error: any) => {
+          console.error(`Erreur lors de la mise à jour du shop : ${error.message || error}`);
+          throw error; // relancez l'erreur pour que le composant appelant puisse également la traiter
+        })
+    );
   }
 
   deleteShop(id: number): Observable<void> {
@@ -50,6 +59,13 @@ export class ShopService {
       orders: data.orders,
       products: data.products
     };
+  }
+
+  postImage(file: File){
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post<{fileName : string}>(`${environment.apiUrl}/images/upload`, formData);
   }
 
 }
