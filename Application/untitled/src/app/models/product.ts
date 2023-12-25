@@ -10,7 +10,7 @@ export interface Product {
   picturePath: string;
   quantity: number;
   weight: number;
-  isUnity: boolean;
+  unity: boolean;
   category?: Category;
   shop?: Shop;
   imageUrl?:SafeUrl;

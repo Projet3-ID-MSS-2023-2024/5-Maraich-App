@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import {catchError, Observable, throwError} from "rxjs";
+import {Observable} from "rxjs";
 import {Product} from "../models/product";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {Category} from "../models/category";
 
@@ -38,5 +38,9 @@ export class ProductService {
       formData.append('file', file);
 
       return this.http.post<{fileName : string}>(`${environment.apiUrl}/images/upload`, formData);
+  }
+
+  deleteProduct(productId:number){
+    return this.http.delete(`${this.apiUrl}/delete/${productId}`);
   }
 }

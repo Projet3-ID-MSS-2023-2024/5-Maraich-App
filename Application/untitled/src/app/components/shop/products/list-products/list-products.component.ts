@@ -11,11 +11,18 @@ import {FormsModule} from "@angular/forms";
 import {DomSanitizer} from "@angular/platform-browser";
 import {Category} from "../../../../models/category";
 import {DataViewModule} from "primeng/dataview";
-import {RatingModule} from "primeng/rating";
 import {TagModule} from "primeng/tag";
 import {InputTextModule} from "primeng/inputtext";
 import {InputNumberModule} from "primeng/inputnumber";
 import {DropdownModule} from "primeng/dropdown";
+import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
+import {AddProductComponent} from "../add-product/add-product.component";
+import {CookieService} from "ngx-cookie-service";
+import {ShopService} from "../../../../services/shop.service";
+import {Shop} from "../../../../models/shop";
+import {UpdateProductComponent} from "../update-product/update-product.component";
+import {ConfirmationService} from "primeng/api";
+import {ConfirmDialogModule} from "primeng/confirmdialog";
 
 @Component({
   selector: 'app-list-products',
@@ -33,10 +40,12 @@ import {DropdownModule} from "primeng/dropdown";
     CommonModule,
     InputTextModule,
     InputNumberModule,
-    DropdownModule
+    DropdownModule,
+    ConfirmDialogModule
   ],
   templateUrl: './list-products.component.html',
-  styleUrl: './list-products.component.css'
+  styleUrl: './list-products.component.css',
+  providers: [DialogService, ConfirmationService]
 })
 export class ListProductsComponent implements OnInit{
   listProduct: Product[] = [];
@@ -45,8 +54,10 @@ export class ListProductsComponent implements OnInit{
   categories:Category[]=[];
   filteredListProduct: Product[] = [];
   searchTerm: string = '';
+  ref: DynamicDialogRef | undefined;
+  shop?:Shop;
 
-  constructor(private productService:ProductService, private route:ActivatedRoute,private imageService:ImageService, private categoryService:CategoryService, private sanitizer:DomSanitizer) {
+  constructor(private productService:ProductService,private cookieService:CookieService, private confirmationService:ConfirmationService, private shopService:ShopService,private route:ActivatedRoute,private imageService:ImageService, private categoryService:CategoryService, private sanitizer:DomSanitizer, public dialogService:DialogService) {
   }
 
   ngOnInit(): void {
@@ -56,6 +67,8 @@ export class ListProductsComponent implements OnInit{
       this.getCategories();
       this.getProducts();
       this.updateFilteredProducts();
+      const jwtToken = this.cookieService.get('access_token');
+      this.extractIdUserData(jwtToken);
     });
   }
 
@@ -74,7 +87,7 @@ export class ListProductsComponent implements OnInit{
   getCategories(){
     this.categoryService.getCategories().subscribe({
       next: (categories) => {
-        this.categories = categories;
+        this.categories = [{ idCategory: 0, nomCategory: 'Tous' }, ...categories];
       },
       error: (error) => {
         console.log(error);
@@ -105,11 +118,62 @@ export class ListProductsComponent implements OnInit{
     });
   }
 
+  extractIdUserData(token: string): void {
+    if (token) {
+      const tokenParts = token.split('.');
+      const payload = tokenParts[1];
+
+      // Decode the payload using base64 decoding
+      const decodedPayload = atob(payload);
+
+      // Parse the decoded payload as JSON
+      const payloadData = JSON.parse(decodedPayload);
+
+      this.shopService.getShopByOwnerId(payloadData.idUser).subscribe({
+        next:(shop) => {
+          this.shop = shop;
+      }, error:(error) => {
+        console.log(error);
+      }
+      })
+    }
+  }
+
   updateFilteredProducts(): void {
     this.filteredListProduct = this.listProduct.filter((product) => {
-      const categoryMatch = !this.selectedCategory || product.category?.nomCategory === this.selectedCategory.nomCategory;
+      const categoryMatch = !this.selectedCategory || this.selectedCategory.idCategory === 0 || product.category?.idCategory === this.selectedCategory.idCategory;
       const nameMatch = product.name.toLowerCase().includes(this.searchTerm.toLowerCase());
       return categoryMatch && nameMatch;
     });
+  }
+
+  showAddProduct(){
+    this.ref = this.dialogService.open(AddProductComponent, {header: "Ajoutez un produit"});
+
+    this.ref.onClose.subscribe((response) => {
+      if (response == 'success'){
+        this.getProducts();
+      }
+    })
+  }
+
+  showEditProduct(product: Product){
+    this.ref = this.dialogService.open(UpdateProductComponent, { header:"Modifiez un produit"});
+  }
+
+  showDeleteProduct(productId: number){
+    this.confirmationService.confirm({
+      message:'Etes-vous sur de vouloir supprimer ce produit ?',
+      accept: () => {
+        this.productService.deleteProduct(productId).subscribe({
+          next:() => {
+            this.getProducts();
+          },
+          error:(error) => {
+            console.log(error);
+          }
+        })
+      }
+    })
   }
 }
