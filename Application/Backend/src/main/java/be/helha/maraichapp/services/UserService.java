@@ -33,7 +33,10 @@ public class UserService implements UserDetailsService, UserServiceInterface {
     private ValidationRepository validationRepository;
     @Autowired
     private EmailSender emailSender;
-
+    @Autowired
+    private ShopService shopService;
+    @Autowired
+    private ShopRepository shopRepository;
     @Autowired
     private JwtRepository jwtRepository;
 
@@ -195,6 +198,24 @@ public class UserService implements UserDetailsService, UserServiceInterface {
                 // Hachez le nouveau mot de passe
                 String hashedPassword = passwordEncoder.encode(user.getPassword());
                 user.setPassword(hashedPassword);  // Met à jour le mot de passe chiffré dans l'objet user
+            }
+            Users userDb = userRepository.findById(user.getIdUser()).orElseThrow(() -> new RuntimeException("User not found !"));
+            if(user.getRank().getName() == RankEnum.MARAICHER &&
+                    userDb.getRank().getName() == RankEnum.CUSTOMER){
+                if(shopRepository.existsByOwnerId(user.getIdUser())){
+                    Shop shop = userDb.getShop();
+                    shop.setEnable(true);
+                    shopRepository.save(shop);
+                    user.setShop(shop);
+                }else{
+                    shopService.addShopMinimal(user);
+                }
+            } else if(user.getRank().getName() == RankEnum.CUSTOMER &&
+                    userDb.getRank().getName() == RankEnum.MARAICHER){
+                Shop shop = userDb.getShop();
+                shop.setEnable(false);
+                shopRepository.save(shop);
+                user.setShop(shop);
             }
 
             // Met à jour l'utilisateur
