@@ -101,7 +101,7 @@ public class ProductServiceTest {
         testProduct.setCategory(testCategory2);
 
         //Mets à jour les données du produit
-        Product updatedProduct = productService.updateProduct(testProduct.getId(), testProduct, null);
+        Product updatedProduct = productService.updateProduct(testProduct.getId(), testProduct);
 
         // Récupérez le produit modifié de la base de données
         Product retrievedProduct = productRepository.findById(updatedProduct.getId()).orElse(null);

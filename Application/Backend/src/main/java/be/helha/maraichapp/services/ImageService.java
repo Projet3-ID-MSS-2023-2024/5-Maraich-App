@@ -62,5 +62,4 @@ public class ImageService {
     public boolean fileExists(String fileName){
         return Files.exists(Paths.get(getUploadDirectory(), fileName));
     }
-
 }
