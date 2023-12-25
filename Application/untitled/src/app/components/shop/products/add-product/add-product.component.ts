@@ -15,6 +15,8 @@ import {InputNumberModule} from "primeng/inputnumber";
 import {FileUploadModule} from "primeng/fileupload";
 import {ProductService} from "../../../../services/product.service";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {MessageService} from "primeng/api";
+import {ToastModule} from "primeng/toast";
 
 @Component({
   selector: 'app-add-product',
@@ -27,7 +29,8 @@ import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
     CheckboxModule,
     NgIf,
     InputNumberModule,
-    FileUploadModule
+    FileUploadModule,
+    ToastModule
   ],
   templateUrl: './add-product.component.html',
   styleUrl: './add-product.component.css'
@@ -43,7 +46,7 @@ export class AddProductComponent implements OnInit{
   };
   isEditMode: boolean = false;
 
-  constructor(private productService: ProductService,private shopService: ShopService,private categoryService: CategoryService, private cookieService: CookieService, private ref:DynamicDialogRef, private config:DynamicDialogConfig) {
+  constructor(private productService: ProductService,private shopService: ShopService,private categoryService: CategoryService, private cookieService: CookieService, private ref:DynamicDialogRef, private config:DynamicDialogConfig, private messageService:MessageService) {
   }
 
   ngOnInit(): void {
@@ -109,31 +112,40 @@ export class AddProductComponent implements OnInit{
   }
 
   submit(){
-    if (this.isEditMode){
-      if (this.selectedFile) {
-        this.productService.postImage(this.selectedFile).subscribe({
-          next: (filePath) => {
-            this.product.picturePath = filePath.fileName;
-            this.submitProduct();
-          },
-          error: (error) => {
-            console.error('Error adding image: ', error);
-          }
-        })
+    if (this.product.name && this.product.price > 0 && this.product.description &&  ((this.product.unity && this.product.quantity > 0) || (!this.product.unity && this.product.weight > 0)) && this.product.category){
+      if (this.isEditMode){
+        if (this.selectedFile) {
+          this.productService.postImage(this.selectedFile).subscribe({
+            next: (filePath) => {
+              this.product.picturePath = filePath.fileName;
+              this.submitProduct();
+            },
+            error: (error) => {
+              console.error('Error adding image: ', error);
+            }
+          })
+        }else {
+          this.submitProduct();
+        }
+      }else {
+        if (this.selectedFile) {
+          this.productService.postImage(this.selectedFile).subscribe({
+            next: (filePath) => {
+              this.product.picturePath = filePath.fileName;
+              this.submitProduct();
+            },
+            error: (error) => {
+              console.error('Error adding image: ', error);
+            }
+          });
+        }
       }
-      this.submitProduct();
     }else {
-      if (this.selectedFile) {
-        this.productService.postImage(this.selectedFile).subscribe({
-          next: (filePath) => {
-            this.product.picturePath = filePath.fileName;
-            this.submitProduct();
-          },
-          error: (error) => {
-            console.error('Error adding image: ', error);
-          }
-        });
-      }
+      this.messageService.add({
+        severity:'error',
+        summary:'Erreur',
+        detail:"Remplissez tous les champs"
+      });
     }
   }
 
