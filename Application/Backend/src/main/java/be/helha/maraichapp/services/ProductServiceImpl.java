@@ -7,9 +7,7 @@ import be.helha.maraichapp.repositories.CategoryRepository;
 import be.helha.maraichapp.repositories.ProductRepository;
 import be.helha.maraichapp.repositories.ShopRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -72,32 +70,17 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Product updateProduct(int id, Product updatedProduct, MultipartFile file) {
-        try {
-            Product existingProduct = getProductById(id);
-            if (existingProduct != null){
-                existingProduct.setName(updatedProduct.getName());
-                existingProduct.setPrice(updatedProduct.getPrice());
-                existingProduct.setDescription(updatedProduct.getDescription());
-                existingProduct.setUnity(updatedProduct.isUnity());
-                existingProduct.setWeight(updatedProduct.getWeight());
-                existingProduct.setQuantity(updatedProduct.getQuantity());
-                existingProduct.setCategory(updatedProduct.getCategory());
-                existingProduct.setShop(updatedProduct.getShop());
+    public Product updateProduct(int id, Product updatedProduct) {
+        Product existingProduct = getProductById(id);
 
-                if (file != null && !file.isEmpty()){
-                    imageService.deleteFile(existingProduct.getPicturePath());
-                    String fileName = imageService.saveFile(file);
-                    existingProduct.setPicturePath(fileName);
-                }
-
-                return productRepository.save(existingProduct);
-            }else {
-                throw new EntityNotFoundException("Product not found with id: " + id);
+        if (productRepository.existsById(updatedProduct.getId())){
+            if (!(updatedProduct.getPicturePath().equals(existingProduct.getPicturePath()))){
+                imageService.deleteFile(existingProduct.getPicturePath());
+                existingProduct.setPicturePath(updatedProduct.getPicturePath());
             }
-        }catch (Exception e){
-            throw new RuntimeException("Error updating product", e);
+            return productRepository.save(updatedProduct);
         }
+        return null;
     }
 
     @Override

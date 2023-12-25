@@ -14,7 +14,7 @@ import {NgIf} from "@angular/common";
 import {InputNumberModule} from "primeng/inputnumber";
 import {FileUploadModule} from "primeng/fileupload";
 import {ProductService} from "../../../../services/product.service";
-import {DynamicDialogRef} from "primeng/dynamicdialog";
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 
 @Component({
   selector: 'app-add-product',
@@ -41,8 +41,9 @@ export class AddProductComponent implements OnInit{
   product: Product = {
     id:0, name: "", price:0, description:"", picturePath:"", quantity:0, weight:0, unity:false,category: undefined, shop: undefined
   };
+  isEditMode: boolean = false;
 
-  constructor(private productService: ProductService,private shopService: ShopService,private categoryService: CategoryService, private cookieService: CookieService, private ref:DynamicDialogRef) {
+  constructor(private productService: ProductService,private shopService: ShopService,private categoryService: CategoryService, private cookieService: CookieService, private ref:DynamicDialogRef, private config:DynamicDialogConfig) {
   }
 
   ngOnInit(): void {
@@ -50,6 +51,12 @@ export class AddProductComponent implements OnInit{
     const jwtToken = this.cookieService.get('access_token');
     this.extractIdUserData(jwtToken);
     this.getShopByIdUser();
+    if (this.config.data && this.config.data.product){
+      this.isEditMode = true;
+      this.product = { ...this.config.data.product }
+    }else {
+      this.isEditMode = false;
+    }
   }
 
   getCategories(){
@@ -102,20 +109,45 @@ export class AddProductComponent implements OnInit{
   }
 
   submit(){
-    if (this.selectedFile) {
-      this.productService.postImage(this.selectedFile).subscribe({
-        next: (filePath) => {
-          this.product.picturePath = filePath.fileName;
-          this.submitProduct();
-        },
-        error: (error) => {
-          console.error('Error adding image: ', error);
-        }
-      });
+    if (this.isEditMode){
+      if (this.selectedFile) {
+        this.productService.postImage(this.selectedFile).subscribe({
+          next: (filePath) => {
+            this.product.picturePath = filePath.fileName;
+            this.submitProduct();
+          },
+          error: (error) => {
+            console.error('Error adding image: ', error);
+          }
+        })
+      }
+      this.submitProduct();
+    }else {
+      if (this.selectedFile) {
+        this.productService.postImage(this.selectedFile).subscribe({
+          next: (filePath) => {
+            this.product.picturePath = filePath.fileName;
+            this.submitProduct();
+          },
+          error: (error) => {
+            console.error('Error adding image: ', error);
+          }
+        });
+      }
     }
   }
 
   submitProduct(){
+    if (this.isEditMode){
+      this.productService.updateProduct(this.product).subscribe({
+        next:() => {
+          this.ref.close('success');
+          },
+        error:(error) => {
+          console.error('Error updating product: ', error);
+        }
+      });
+    } else {
       this.productService.postProduct(this.product).subscribe({
         next:() => {
           this.ref.close('success');
@@ -124,5 +156,6 @@ export class AddProductComponent implements OnInit{
           console.error('Error adding product: ', error);
         }
       });
+    }
   }
 }

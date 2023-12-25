@@ -20,9 +20,9 @@ import {AddProductComponent} from "../add-product/add-product.component";
 import {CookieService} from "ngx-cookie-service";
 import {ShopService} from "../../../../services/shop.service";
 import {Shop} from "../../../../models/shop";
-import {UpdateProductComponent} from "../update-product/update-product.component";
-import {ConfirmationService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
+import {ToastModule} from "primeng/toast";
 
 @Component({
   selector: 'app-list-products',
@@ -41,11 +41,12 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
     InputTextModule,
     InputNumberModule,
     DropdownModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    ToastModule
   ],
   templateUrl: './list-products.component.html',
   styleUrl: './list-products.component.css',
-  providers: [DialogService, ConfirmationService]
+  providers: [DialogService, ConfirmationService, MessageService]
 })
 export class ListProductsComponent implements OnInit{
   listProduct: Product[] = [];
@@ -57,7 +58,7 @@ export class ListProductsComponent implements OnInit{
   ref: DynamicDialogRef | undefined;
   shop?:Shop;
 
-  constructor(private productService:ProductService,private cookieService:CookieService, private confirmationService:ConfirmationService, private shopService:ShopService,private route:ActivatedRoute,private imageService:ImageService, private categoryService:CategoryService, private sanitizer:DomSanitizer, public dialogService:DialogService) {
+  constructor(private productService:ProductService,private cookieService:CookieService, private confirmationService:ConfirmationService, private shopService:ShopService,private route:ActivatedRoute,private imageService:ImageService, private categoryService:CategoryService, private sanitizer:DomSanitizer, public dialogService:DialogService, private messageService:MessageService) {
   }
 
   ngOnInit(): void {
@@ -105,7 +106,6 @@ export class ListProductsComponent implements OnInit{
             resolve();
           },
           error: () => {
-            console.error(`Error loading image ${fileName} from the backend.`);
             resolve();
           },
         });
@@ -153,12 +153,28 @@ export class ListProductsComponent implements OnInit{
     this.ref.onClose.subscribe((response) => {
       if (response == 'success'){
         this.getProducts();
+        this.messageService.add({
+          severity:'success',
+          summary:'Succès',
+          detail:"Le produit a bien été ajouté"
+        });
       }
-    })
+    });
   }
 
   showEditProduct(product: Product){
-    this.ref = this.dialogService.open(UpdateProductComponent, { header:"Modifiez un produit"});
+    this.ref = this.dialogService.open(AddProductComponent, { header:"Modifiez un produit" , data: { product: product }});
+
+    this.ref.onClose.subscribe((response) => {
+      if (response == 'success'){
+        this.getProducts();
+        this.messageService.add({
+          severity:'success',
+          summary:'Succès',
+          detail:"Le produit a bien été modifié"
+        });
+      }
+    })
   }
 
   showDeleteProduct(productId: number){
@@ -168,12 +184,17 @@ export class ListProductsComponent implements OnInit{
         this.productService.deleteProduct(productId).subscribe({
           next:() => {
             this.getProducts();
+            this.messageService.add({
+              severity:'success',
+              summary:'Succès',
+              detail: "Le produit a bien été supprimé"
+            })
           },
           error:(error) => {
             console.log(error);
           }
-        })
+        });
       }
-    })
+    });
   }
 }

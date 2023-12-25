@@ -1,6 +1,7 @@
 <div *ngIf="shop?.idShop == shopId">
   <p-button label="Ajouter un produit" (click)="showAddProduct()"></p-button>
 </div>
+<p-toast></p-toast>
 <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
 <div>
   <p-dataView [value]="filteredListProduct">
