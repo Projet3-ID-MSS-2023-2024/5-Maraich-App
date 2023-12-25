@@ -175,6 +175,7 @@ public class UserService implements UserDetailsService, UserServiceInterface {
         user.setRank(rank); //on set le role au user
         Users users = userRepository.save(user);
         this.validationService.createValidationProcess(users);
+        users = userRepository.save(user);
         return users;
     }
 

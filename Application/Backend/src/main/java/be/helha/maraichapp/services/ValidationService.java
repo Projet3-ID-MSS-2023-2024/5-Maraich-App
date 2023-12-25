@@ -30,6 +30,7 @@ public class ValidationService {
         String code = String.format("%06d", random.nextInt(999999));
         validation.setCode(code);
         validation = this.validationRepository.save(validation);
+        users.setValidation(validation);
         this.emailSender.sendActivationMail(validation);
         return validation;
     }
