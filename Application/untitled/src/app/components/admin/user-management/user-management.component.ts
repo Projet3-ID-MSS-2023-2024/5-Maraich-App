@@ -23,11 +23,13 @@ import {PasswordModule} from "primeng/password";
 import {DividerModule} from "primeng/divider";
 import {KeyFilterModule} from "primeng/keyfilter";
 import {forkJoin} from "rxjs";
+import {RadioButtonModule} from "primeng/radiobutton";
+import {Rank} from "../../../models/rank";
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, ToastModule, ToolbarModule, ButtonModule, FileUploadModule, TableModule, InputTextModule, RippleModule, TagModule, AdressFormatPipe, RankFormatPipe, DialogModule, FormsModule, ConfirmDialogModule, InputMaskModule, StepsModule, PasswordModule, DividerModule, KeyFilterModule],
+  imports: [CommonModule, ToastModule, ToolbarModule, ButtonModule, FileUploadModule, TableModule, InputTextModule, RippleModule, TagModule, AdressFormatPipe, RankFormatPipe, DialogModule, FormsModule, ConfirmDialogModule, InputMaskModule, StepsModule, PasswordModule, DividerModule, KeyFilterModule, RadioButtonModule],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.css',
   providers: [MessageService , ConfirmationService],
@@ -37,8 +39,10 @@ export class UserManagementComponent implements OnInit{
   userDialog : boolean = false; //savoir si le dialog est ouvert ou non
 
   users! : User[]; //tableau de users
+  ranks! : Rank[]; //tableau de ranks
   user! : User | any;
   selectedUsers! : User[] | null; //va contenir les users que l'on veut supprimer
+  confirmPassword: string | null = null;
 
   submitted: boolean = false; //savoir si on soumis le formulaire (gestion erreur dans html)
 
@@ -52,6 +56,8 @@ export class UserManagementComponent implements OnInit{
   postCodeRegex = /^[a-zA-Z0-9\s\-]+$/;
   numberRegex = /^[a-zA-Z0-9\s\-.,'()&]+$/;
   cityRegex = /^[a-zA-Z\s\-.,'()&]+$/;
+  passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+
 
 
   constructor(
@@ -61,7 +67,8 @@ export class UserManagementComponent implements OnInit{
   ) {}
 
   ngOnInit() {
-    this.getAllUsers(); //recuperer les users
+    this.getAllUsers(); //récupérer les users
+    this.getAllRanks(); // récupérer les ranks
     this.formStep(); //etape du formulaire
 
   }
@@ -76,6 +83,7 @@ export class UserManagementComponent implements OnInit{
     this.submitted = false; //on le remet a false
     this.userDialog = true; //pour afficher le dialog
     this.currentStepIndex = 0;
+    this.confirmPassword =null;
   }
 
   /**
@@ -115,7 +123,7 @@ export class UserManagementComponent implements OnInit{
             (error) => {
               // En cas d'erreur
               this.messageService.add({
-                severity: 'danger',
+                severity: 'error',
                 summary: 'Erreur',
                 detail: 'Une erreur est survenue lors de la suppression des utilisateurs',
                 life: 3000,
@@ -139,10 +147,16 @@ export class UserManagementComponent implements OnInit{
   editUser(user : User) {
     // clone le user mit en paramètre
     this.user = { ...user };
+    // Sélectionne automatiquement le rang correspondant dans la liste des rangs
+    if (this.ranks) {
+      this.user.rank = this.ranks.find((rank) => rank.idRank === user.rank.idRank);
+    }
+
     // Active le dialogue d'édition du user
     this.userDialog = true;
     this.currentStepIndex = 0;
     this.showPasswordInputField = false;
+    this.confirmPassword =null;
   }
 
 
@@ -167,7 +181,7 @@ export class UserManagementComponent implements OnInit{
           },
           (error) => {
             // En cas d'erreur
-            this.messageService.add({ severity: 'danger', summary: 'Erreur', detail: 'Une erreur est survenue lors de la suppression de l\'utilisateur', life: 3000 });
+            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur est survenue lors de la suppression de l\'utilisateur', life: 3000 });
           }
         );
       }
@@ -183,6 +197,7 @@ export class UserManagementComponent implements OnInit{
     this.currentStepIndex = 0;
     this.user = {};
     this.showPasswordInputField = false;
+    this.confirmPassword =null;
   }
 
   /**
@@ -190,8 +205,6 @@ export class UserManagementComponent implements OnInit{
    */
   saveUser() {
     this.submitted = true;
-
-    console.log(this.user);
 
     if (this.user.surname?.trim()) {
       if (this.user.idUser) {
@@ -206,6 +219,7 @@ export class UserManagementComponent implements OnInit{
           this.users = [...this.users];
           this.userDialog = false;
           this.user = {};
+          this.confirmPassword =null;
         });
       } else {
         this.userService.addUser(this.user).subscribe(newUser => {
@@ -215,6 +229,7 @@ export class UserManagementComponent implements OnInit{
           this.users = [...this.users];
           this.userDialog = false;
           this.user = {};
+          this.confirmPassword =null;
         });
       }
     }
@@ -266,6 +281,16 @@ export class UserManagementComponent implements OnInit{
     );
   }
 
+  getAllRanks() {
+    this.userService.getAllRanks().subscribe(
+        (data: Rank[]) => {
+          this.ranks = data;
+        },
+        (error: any) => {
+          console.error('Error fetching ranks', error);
+        }
+    );
+  }
 
   formStep(){
     this.items = [
@@ -302,15 +327,7 @@ export class UserManagementComponent implements OnInit{
 
   isPasswordValid = false; //a mettre dans le diasbled de suivant si bug de mdp
 
-  /**
-   * à mettre si bug avec le mdp lors de l'ajout
-   */
-  /*
-  onPasswordChange() {
-    // Update isPasswordValid based on the password validity
-    this.isPasswordValid = this.isValidPassword(this.user.password?.trim());
-  }
-*/
+
 
 
 
@@ -321,28 +338,52 @@ export class UserManagementComponent implements OnInit{
   validatePersonalStep() {
     this.submitted = true;
 
-    if (
-      this.user.surname?.trim() &&
-      this.user.firstName?.trim() &&
-      this.user.phoneNumber?.trim() &&
-      this.isValidPassword(this.user.password?.trim()) &&
-      this.isPasswordValid // Check the password validity
-    ) {
-      if (this.isEditMode()) {
-        // Mode édition : vérifier si l'e-mail est valide
-        if (this.user.email && this.isValidEmail(this.user.email.trim())) {
-          this.nextStep();
-          this.submitted = false;
+    const isEditModeWithPassword = this.isEditMode() && this.showPasswordInputField;
+    const isPasswordValid = this.isValidPassword(this.user.password?.trim());
+
+    if (this.currentStepIndex === 0) {
+      if (
+          this.user.surname?.trim() &&
+          this.user.firstName?.trim() &&
+          this.user.phoneNumber?.trim() &&
+          ((!this.isEditMode() && this.user.password) || (isEditModeWithPassword && isPasswordValid) || !this.showPasswordInputField)
+      ) {
+        if (this.isEditMode()) {
+          // Mode édition : vérifier si l'e-mail est valide et si les mots de passe correspondent
+          if (this.user.email && this.isValidEmail(this.user.email.trim()) && (!isEditModeWithPassword || this.confirmPassword === this.user.password)) {
+            this.nextStep();
+            this.submitted = false;
+          }
+        } else {
+          // Mode ajout : vérifier si l'e-mail est valide, n'existe pas déjà, et le mot de passe n'est pas vide et les mots de passe correspondent
+          if (
+              this.isValidEmail(this.user.email?.trim()) &&
+              !this.emailExists(this.user.email?.trim()) &&
+              this.user.password &&
+              this.confirmPassword === this.user.password &&
+              this.passwordRegex.test(this.user.password.trim())
+          ) {
+            this.nextStep();
+            this.submitted = false;
+          }
         }
-      } else {
-        // Mode ajout : vérifier si l'e-mail est valide et n'existe pas déjà
-        if (this.isValidEmail(this.user.email?.trim()) && !this.emailExists(this.user.email?.trim())) {
-          this.nextStep();
-          this.submitted = false;
-        }
+      }
+    } else if (this.currentStepIndex === 1) {
+      if (
+          this.user.address.road?.trim() &&
+          this.user.address.postCode?.trim() &&
+          this.user.address.city?.trim() &&
+          this.user.address.number?.trim()
+      ) {
+        this.nextStep();
+        this.submitted = false;
       }
     }
   }
+
+
+
+
 
   isValidPassword(password: string): boolean {
     const isValid = /^(?=.*[A-Z])(?=.*\d).{8,}$/.test(password);
@@ -350,6 +391,10 @@ export class UserManagementComponent implements OnInit{
     return isValid;
   }
 
+  onPasswordChange(): void {
+    // Mettez à jour isPasswordValid en fonction de votre expression régulière
+    this.isPasswordValid = this.passwordRegex.test(this.user.password?.trim() || '');
+  }
 
   /**
    * pour la validation d'email, si il a le bon format
@@ -368,6 +413,17 @@ export class UserManagementComponent implements OnInit{
   emailExists(email: string): boolean {
     // Assuming this.users is the array you are checking
     return this.users && this.users.some(user => user.email === email);
+  }
+
+  /**
+   * Vérifier si l'email est présent parmi les autres users (en excluant le user actuel)
+   * @param id
+   * @param email
+   */
+  emailExist(id: number, email: string): boolean {
+    const isEmailExist = this.users.some(user => user.idUser !== id && user.email === email);
+
+    return isEmailExist;
   }
 
 
@@ -401,14 +457,10 @@ export class UserManagementComponent implements OnInit{
     if (this.showPasswordInputField) {
       // Si le bouton "modifier mdp" est cliqué, réinitialisez le mot de passe à null.
       this.user.password = null;
+      this.confirmPassword = null;
     }
   }
 
 
-
-
-
-
-
-
+  protected readonly RankEnum = RankEnum;
 }

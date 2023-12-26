@@ -155,7 +155,12 @@ public class UserService implements UserDetailsService, UserServiceInterface {
     }
 
 
-    // Ajouter un nouvel user (niveau admin)
+    /**
+     * Add a new user
+     * (only the admin can add here)
+     * @param user
+     * @return
+     */
     @Override
     @Transactional
     public Users addUser(Users user) {
@@ -179,7 +184,11 @@ public class UserService implements UserDetailsService, UserServiceInterface {
         return users;
     }
 
-    // Mettre à jour un user existant
+    /**
+     * Admin update users
+     * @param user
+     * @return
+     */
     @Override
     @Transactional
     public Users updateUserAdmin(Users user) {
@@ -226,6 +235,12 @@ public class UserService implements UserDetailsService, UserServiceInterface {
         }
     }
 
+    /**
+     * customer and market gardener level user update
+     * (for example : their user profile)
+     * @param updatedUser
+     * @return
+     */
     @Override
     @Transactional
     public Users updateUserRestricted(Users updatedUser) {
@@ -261,7 +276,11 @@ public class UserService implements UserDetailsService, UserServiceInterface {
         }
     }
 
-    //rechercher un user avec un id
+    /**
+     * get a user by id
+     * @param id
+     * @return
+     */
     @Override
     @Transactional
     public Users getUserById(int id) {
@@ -269,6 +288,11 @@ public class UserService implements UserDetailsService, UserServiceInterface {
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + id));//on lève une exception si pas trouvé
     }
 
+    /**
+     * return users by rank name
+     * @param rankEnum
+     * @return
+     */
     @Override
     @Transactional
     public Optional<List<Users>> getUsersByRank(RankEnum rankEnum) {
@@ -284,13 +308,20 @@ public class UserService implements UserDetailsService, UserServiceInterface {
         return Optional.of(usersList);
     }
 
-    //retourne tout les users
+    /**
+     * Return all users
+     * @return
+     */
     @Override
     public List<Users> getAllUsers() {
         return userRepository.findAll();
     }
 
-    // Supprimer un utilisateur depuis son ID
+    /**
+     *
+     * Delete a user by id
+     * @param id
+     */
     @Override
     @Transactional
     public void deleteUserById(int id) {
@@ -299,6 +330,15 @@ public class UserService implements UserDetailsService, UserServiceInterface {
         } else {
             throw new EntityNotFoundException("User not found with ID: " + id);
         }
+    }
+
+    /**
+     * Return all ranks
+     * @return
+     */
+    @Override
+    public List<Rank> getAllRanks() {
+        return rankRepository.findAll();
     }
 }
 

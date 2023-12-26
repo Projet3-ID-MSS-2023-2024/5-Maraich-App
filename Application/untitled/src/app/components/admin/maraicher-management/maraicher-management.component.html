@@ -27,7 +27,7 @@
 
     <ng-template pTemplate="caption">
       <div class="flex align-items-center justify-content-between">
-        <h5 class="m-0">Gestion des maraichers</h5>
+        <h5 class="m-0">Gestion des boutiques</h5>
         <span class="p-input-icon-left">
                     <i class="pi pi-search"></i>
                     <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Rechercher..." />
@@ -91,7 +91,7 @@
       </div>
       <div class="field">
         <label for="email">Email</label>
-        <input  type="email" pInputText id="email" [(ngModel)]="shop.email" #shopEmail="ngModel" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" required autofocus />
+        <input  type="email" pInputText id="email" [(ngModel)]="shop.email" #shopEmail="ngModel" pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" required autofocus />
         <small class="p-error" *ngIf="!shop.email && shopEmail.touched">L'email est requis.</small>
         <small class="p-error" *ngIf="shopEmail.touched && !shopEmail.valid">Format d'email incorrect.</small>
         <small class="p-error" *ngIf="shopEmail.touched && emailExist(shop.idShop, shop.email)" >Cette adresse mail existe déjà.</small>
@@ -120,7 +120,7 @@
         <label for="picture">Image</label>
 
         <!-- Afficher l'image actuelle -->
-        <img *ngIf="showCurrentImage && shop.pictureUrl" [src]="shop.pictureUrl" alt="Current Image" style="max-width: 100%;" />
+        <img *ngIf="showCurrentImage && shop.pictureUrl" [src]="shop.pictureUrl" [alt]="shop.name" style="max-width: 100%;" />
 
         <!-- Afficher le bouton "Modifier image" ou "Annuler" en fonction de showCurrentImage -->
         <button pButton type="button" pRipple class="p-button" (click)="toggleImageUpload()">
@@ -205,3 +205,5 @@
     <button *ngIf="isLastStep()" pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveShop()" ></button>
   </ng-template>
 </p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }" acceptLabel="Confirmer" rejectLabel="Annuler"></p-confirmDialog>

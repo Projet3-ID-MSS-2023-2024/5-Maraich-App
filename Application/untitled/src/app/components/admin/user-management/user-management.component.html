@@ -102,8 +102,10 @@
       </div>
       <div class="field" *ngIf="!isEditMode()">
         <label for="email">Email</label>
-        <input  type="email" pInputText id="email" [(ngModel)]="user.email" [disabled]="isEditMode()" required autofocus />
-
+        <input  type="email" pInputText id="email" [(ngModel)]="user.email" #email="ngModel" [disabled]="isEditMode()" pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"  required autofocus />
+          <small class="p-error" *ngIf="!user.email && email.touched">L'email est requis.<br> </small>
+          <small class="p-error" *ngIf="email.touched && !email.valid">Format d'email incorrect.<br></small>
+          <small class="p-error" *ngIf="email.touched && emailExist(user.idUser, user.email)" >Cette adresse mail existe déjà.<br></small>
       </div>
 
       <div class="field">
@@ -112,29 +114,62 @@
         <small class="p-error" *ngIf="submitted && !user.phoneNumber">Le numéro de téléphone est requis.</small>
       </div>
 
+        <div class="field" *ngIf="isEditMode()">
+            <label class="mb-3">Rôle</label>
+            <div class="formgrid grid">
+                <div *ngFor="let rank of ranks" class="field-radiobutton col-6">
+                    <p-radioButton [id]="'rank' + rank.idRank" name="rank" [value]="rank" [(ngModel)]="user.rank"></p-radioButton>
+                    <label [for]="'rank' + rank.idRank">{{ rank.name | rankFormat }}</label>
+                </div>
+            </div>
+        </div>
 
-      <div class="field">
-        <label for="password">Mot de passe</label>
-        <ng-container *ngIf="!isEditMode(); else editModeTemplate">
-          <p-password [(ngModel)]="user.password" [promptLabel]="'Entrez le mot de passe'" id="password"
-                      [weakLabel]="'Faible'" [mediumLabel]="'Moyen'" [strongLabel]="'Fort'" [toggleMask]="true"
-                      *ngIf="!isEditMode(); else editModeTemplate">
-          </p-password>
-        </ng-container>
+
+
+
+        <div class="field">
+            <label for="password">Mot de passe</label>
+
+            <ng-container *ngIf="!isEditMode() || showPasswordInputField; else editModeTemplate">
+                <p-password [(ngModel)]="user.password" #password="ngModel" [promptLabel]="'Entrez le mot de passe'" id="password"
+                            [weakLabel]="'Faible'" [mediumLabel]="'Moyen'" [strongLabel]="'Fort'" [toggleMask]="true"
+                            (ngModelChange)="onPasswordChange()">
+
+                    <ng-template pTemplate="footer">
+                        <p-divider></p-divider>
+                        <p class="mt-2">Suggestions</p>
+                        <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
+                            <li>Au moins une minuscule</li>
+                            <li>Au moins une majuscule</li>
+                            <li>Au moins un chiffre</li>
+                            <li>Minimum 8 caractères</li>
+                        </ul>
+                    </ng-template>
+
+                </p-password>
+                <small class="p-error" *ngIf="password.touched && user.password && !isPasswordValid">
+                    Le mot de passe ne respecte pas les critères requis.<br>
+                </small>
+
+                <div class="field">
+                    <label for="confirmPassword">Répéter le mot de passe</label>
+                    <p-password id="confirmPassword" [(ngModel)]="confirmPassword" #confirmPwd="ngModel" [toggleMask]="true" [feedback]="false"></p-password>
+                    <small class="p-error" *ngIf="confirmPwd.touched && confirmPassword !== user.password">
+                        Les mots de passe ne correspondent pas.
+                    </small>
+                </div>
+            </ng-container>
+
 
         <ng-template #editModeTemplate>
-          <button *ngIf="!showPasswordInputField" pButton pRipple label="Modifier mot de passe" class="p-button"
-                  (click)="btnPwdSubmitted() "></button>
-          <p-password *ngIf="showPasswordInputField" [(ngModel)]="user.password" [promptLabel]="'Entrez le mot de passe'"
-                      [weakLabel]="'Faible'" [mediumLabel]="'Moyen'" [strongLabel]="'Fort'" [toggleMask]="true">
-            <!-- Existing password template... -->
-          </p-password>
-        </ng-template>
+                <button *ngIf="!showPasswordInputField" pButton pRipple label="Modifier mot de passe" class="p-button"
+                        (click)="btnPwdSubmitted()"></button>
+            </ng-template>
 
-        <small class="p-error" *ngIf="submitted && user.password && !isPasswordValid">
-          Le mot de passe ne respecte pas les critères requis.
-        </small>
-      </div>
+        </div>
+
+
+
 
 
 
@@ -189,6 +224,11 @@
       <div class="field">
         <label class="label"><b>Adresse:</b></label>
         <div class="info">{{ user.address | adressFormat }}</div>
+      </div>
+        <div *ngIf="isEditMode()" class="field">
+        <label class="label"><b>Rôle:</b></label>
+        <br>
+        <p-tag *ngIf="user.rank" [value]="user.rank.name | rankFormat" [severity]="getRankSeverity(user.rank.name)"></p-tag>
       </div>
     </div>
 

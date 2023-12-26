@@ -64,7 +64,6 @@ export class MaraicherManagementComponent implements OnInit{
   shop!: Shop | any;
   selectedShops!: Shop[] | null;
   submitted: boolean = false;
-  statuses!: any[];
   selectedFile?: File | null;
 
   // Regex
@@ -72,6 +71,8 @@ export class MaraicherManagementComponent implements OnInit{
   postCodeRegex = /^[a-zA-Z0-9\s\-]+$/;
   numberRegex = /^[a-zA-Z0-9\s\-.,'()&]+$/;
   cityRegex = /^[a-zA-Z\s\-.,'()&]+$/;
+  emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 
   items: MenuItem[] | any; //pour les étapes edit du shop
   currentStepIndex: number | any;
@@ -102,7 +103,8 @@ export class MaraicherManagementComponent implements OnInit{
         this.loadImages();
       },
       (error: any) => {
-        console.error('Error fetching shops', error);
+        // En cas d'erreur
+        this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur est survenue lors de l\'affichage des boutiques', life: 3000 });
       }
     );
   }
@@ -137,7 +139,7 @@ export class MaraicherManagementComponent implements OnInit{
         },
           (error) => {
             // En cas d'erreur
-            this.messageService.add({ severity: 'danger', summary: 'Erreur', detail: 'Une erreur est survenue lors de la suppression de la boutique', life: 3000 });
+            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur est survenue lors de la suppression de la boutique', life: 3000 });
           }
         );
       }
@@ -179,7 +181,7 @@ export class MaraicherManagementComponent implements OnInit{
             (error) => {
               // En cas d'erreur
               this.messageService.add({
-                severity: 'danger',
+                severity: 'error',
                 summary: 'Erreur',
                 detail: 'Une erreur est survenue lors de la suppression des utilisateurs',
                 life: 3000,
@@ -254,8 +256,7 @@ export class MaraicherManagementComponent implements OnInit{
   }
 
     isEmailValid(): boolean {
-        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        return emailPattern.test(this.shop.email);
+        return this.emailPattern.test(this.shop.email);
     }
 
 
@@ -296,7 +297,6 @@ export class MaraicherManagementComponent implements OnInit{
       this.shopService.postImage(this.selectedFile).subscribe(
           (response) => {
             this.shop.picture = response.fileName;
-            console.log(this.shop.picture);
             this.selectedFile = null;
             this.submitShop(); // Appel à la fonction de soumission une fois l'image téléchargée.
           },
@@ -325,9 +325,15 @@ export class MaraicherManagementComponent implements OnInit{
       this.shops = [...this.shops];
       this.shopDialog = false;
       this.shop = {};
+      this.loadImages();
     },
         (error) => {
-          console.error('Error update shop: ', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erreur',
+            detail: 'Une erreur est survenue lors de la mise à jour de la boutique.',
+            life: 3000
+          });
         });
 
   }
