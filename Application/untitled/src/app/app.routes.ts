@@ -1,17 +1,17 @@
 import {Routes} from '@angular/router';
-import {LoginComponent} from "./components/auth/login/login.component";
-import {SignupComponent} from "./components/auth/signup/signup.component";
-import {ActivationComponent} from "./components/auth/activation/activation.component";
+import {LoginComponent} from "./pages/auth/login/login.component";
+import {SignupComponent} from "./pages/auth/signup/signup.component";
+import {ActivationComponent} from "./pages/auth/activation/activation.component";
 import {AccueilComponent} from "./temp/accueil/accueil.component";
 import {ListCategoriesComponent} from "./components/shop/categories/list-categories/list-categories.component";
-import {UserManagementComponent} from "./components/admin/user-management/user-management.component";
+import {UserManagementComponent} from "./pages/admin/user-management/user-management.component";
 import {AddProductComponent} from "./components/shop/products/add-product/add-product.component";
 import {HomePageComponent} from "./pages/home-page/home-page.component";
 import {AddRequestComponent} from "./components/requests/add-request/add-request.component";
 import {authGuard} from "./guard/auth.guard";
 import {MaraicherComponent} from "./temp/maraicher/maraicher.component";
 import {AdminComponent} from "./temp/admin/admin.component";
-import {MaraicherManagementComponent} from "./components/admin/maraicher-management/maraicher-management.component";
+import {MaraicherManagementComponent} from "./pages/admin/maraicher-management/maraicher-management.component";
 import {ListProductsComponent} from "./components/shop/products/list-products/list-products.component";
 
 export const routes: Routes = [
@@ -24,8 +24,8 @@ export const routes: Routes = [
   {
     path: 'admin', canActivate: [authGuard], children: [
       {path: 'test', component: AdminComponent},
-      {path: 'user', canActivate: [authGuard], component: UserManagementComponent},
-      {path: 'maraicher', canActivate: [authGuard], component: MaraicherManagementComponent},
+      {path: 'user', component: UserManagementComponent},
+      {path: 'maraicher', component: MaraicherManagementComponent},
     ]
   },
 
