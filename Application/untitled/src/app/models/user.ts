@@ -1,6 +1,7 @@
 import {Address} from "./address";
 import {Order} from "./order";
 import {Rank} from "./rank";
+import {Shop} from "./shop";
 
 export interface User {
   idUser: number;
@@ -13,7 +14,5 @@ export interface User {
   rank : Rank;
   actif: boolean;
   orders : Order[];
-
-
-
+  shop?: Shop;
 }

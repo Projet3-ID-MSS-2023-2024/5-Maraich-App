@@ -1,18 +1,33 @@
 package be.helha.maraichapp.controllers;
 
 import be.helha.maraichapp.services.ImageService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/images")
-@CrossOrigin(origins = "http://localhost:4200")
 public class ImageController {
 
-    @Autowired
-    private ImageService imageService;
+    private final ImageService imageService;
+
+    public ImageController(ImageService imageService){
+        this.imageService = imageService;
+    }
+
+    @GetMapping("/{fileName}")
+    public ResponseEntity<Resource> getImage(@PathVariable String fileName){
+        Resource resource = imageService.load(fileName);
+
+        if (resource != null) {
+            return ResponseEntity.ok().body(resource);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @PostMapping("/upload")
     public ResponseEntity<String> handleFileUpload(@RequestParam("file")MultipartFile file){

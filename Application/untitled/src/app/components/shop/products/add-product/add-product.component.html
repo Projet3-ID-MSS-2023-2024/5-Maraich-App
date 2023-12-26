@@ -13,14 +13,14 @@
   <input type="text" [(ngModel)]="product.description" pInputText placeholder="Description" />
 </div>
 <div class="p-inputgroup">
-  <p-checkbox [(ngModel)]="product.isUnity" [binary]="true" inputId="binary"></p-checkbox>
+  <p-checkbox [(ngModel)]="product.unity" [binary]="true" inputId="binary"></p-checkbox>
   <label for="binary">A l'unité</label>
 </div>
-<div class="p-inputgroup" *ngIf="!product.isUnity">
+<div class="p-inputgroup" *ngIf="!product.unity">
   <span class="p-inputgroup-addon">Poids</span>
   <p-inputNumber [(ngModel)]="product.weight" mode="decimal" [minFractionDigits]="2"> </p-inputNumber>
 </div>
-<div class="p-inputgroup" *ngIf="product.isUnity">
+<div class="p-inputgroup" *ngIf="product.unity">
   <span class="p-inputgroup-addon">Quantité</span>
   <p-inputNumber [(ngModel)]="product.quantity" mode="decimal"> </p-inputNumber>
 </div>
@@ -30,4 +30,4 @@
 <div>
   <p-dropdown [options]="categories" [(ngModel)]="product.category" optionLabel="nomCategory" [showClear]="true" placeholder="Choisi une catégorie"></p-dropdown>
 </div>
-<p-button label="Submit" icon="pi pi-check" (click)="submit()"></p-button>
+<p-button label="Envoyé" icon="pi pi-check" (click)="submit()"></p-button>

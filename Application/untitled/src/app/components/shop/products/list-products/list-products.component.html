@@ -1,0 +1,92 @@
+<div *ngIf="shop?.idShop == shopId">
+  <p-button label="Ajouter un produit" (click)="showAddProduct()"></p-button>
+</div>
+<p-toast></p-toast>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+<div>
+  <p-dataView [value]="filteredListProduct">
+    <ng-template pTemplate="header">
+      <div class="flex-container">
+        <div class="flex-left">
+          <label for="searchInput">Search:</label>
+          <input type="text" pInputText  id="searchInput" [(ngModel)]="searchTerm" (input)="updateFilteredProducts()" placeholder="Nom d'un produit">
+        </div>
+        <div class="flex-center">
+          <label>Choissisez une catégorie:</label>
+          <p-dropdown [options]="categories" [(ngModel)]="selectedCategory" optionLabel="nomCategory" placeholder="Tous" (onChange)="updateFilteredProducts()"></p-dropdown>
+        </div>
+        <div class="flex-right">
+          <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="list" let-products>
+      <div class="grid grid-nogutter">
+        <div class="col-12" *ngFor="let product of products; let first = first">
+          <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4" [ngClass]="{ 'border-top-1 surface-border': !first }">
+            <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" [src]="product.imageUrl" [alt]="product.name" />
+            <div class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
+              <div class="flex flex-column align-items-center sm:align-items-start gap-3">
+                <div class="text-2xl font-bold text-900">{{ product.name }}</div>
+                <div>{{ product.description }}</div>
+                <div class="flex align-items-center gap-3">
+                                <span class="flex align-items-center gap-2">
+                                    <i class="pi pi-tag"></i>
+                                    <span class="font-semibold">{{ product.category.nomCategory }}</span>
+                                </span>
+                  <p-tag [value]="product.unity ? 'À l\'unité' : 'Au poids'"></p-tag>
+                </div>
+              </div>
+              <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
+                <span class="text-2xl font-semibold">{{ product.price + '€' }}</span>
+                <div *ngIf="product.unity">
+                  <label  for="quantityInput">Quantité (unité):</label>
+                  <p-inputNumber inputId="quantityInput" [(ngModel)]="product.quantityUnity" [min]="0"> </p-inputNumber>
+                </div>
+                <div *ngIf="!product.unity">
+                  <label for="quantityInput">Quantité (kg):</label>
+                  <p-inputNumber [(ngModel)]="product.quantityWeight" inputId="quantityInput" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"> </p-inputNumber>
+                </div>
+                <button pButton icon="pi pi-shopping-cart" class="md:align-self-end mb-2 p-button-rounded"></button>
+                <div class="flex align-items-center justify-content-between" *ngIf="shop?.idShop == shopId">
+                  <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-success" (click)="showEditProduct(product)"></button>
+                  <button pButton icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="showDeleteProduct(product.id)"></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="grid" let-products>
+      <div class="grid grid-nogutter">
+        <div class="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" *ngFor="let product of products">
+          <div class="p-4 border-1 surface-border surface-card border-round">
+            <div class="flex flex-wrap align-items-center justify-content-between gap-2">
+                        <span class="flex align-items-center gap-2">
+                            <i class="pi pi-tag"></i>
+                            <span class="font-semibold">{{ product.category.nomCategory }}</span>
+                        </span>
+            </div>
+            <div class="flex flex-column align-items-center gap-3 py-5">
+              <img class="w-9 shadow-2 border-round" [src]="product.imageUrl" [alt]="product.name" />
+              <div class="text-2xl font-bold">{{ product.name }}</div>
+            </div>
+            <div class="flex align-items-center justify-content-between">
+              <span class="text-2xl font-semibold">{{ product.price + '€' }}</span>
+              <div *ngIf="product.unity">
+                <label  for="quantityInput">Quantité (unité):</label>
+                <p-inputNumber inputId="quantityInput" [(ngModel)]="product.quantityUnity" [min]="0"> </p-inputNumber>
+              </div>
+              <div *ngIf="!product.unity">
+                <label for="quantityInput">Quantité (kg):</label>
+                <p-inputNumber [(ngModel)]="product.quantityWeight" inputId="quantityInput" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"> </p-inputNumber>
+              </div>
+              <button pButton icon="pi pi-shopping-cart" class="p-button-rounded"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-dataView>
+</div>

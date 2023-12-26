@@ -12,6 +12,7 @@ import {authGuard} from "./guard/auth.guard";
 import {MaraicherComponent} from "./temp/maraicher/maraicher.component";
 import {AdminComponent} from "./temp/admin/admin.component";
 import {MaraicherManagementComponent} from "./components/admin/maraicher-management/maraicher-management.component";
+import {ListProductsComponent} from "./components/shop/products/list-products/list-products.component";
 
 export const routes: Routes = [
 
@@ -32,6 +33,8 @@ export const routes: Routes = [
   {path: 'form-product', canActivate: [authGuard], component: AddProductComponent},
   {path: 'home', canActivate: [authGuard], component: HomePageComponent},
   {path: 'addRequest', canActivate: [authGuard], component: AddRequestComponent},
+
+  {path: 'shop/:shopId', component:ListProductsComponent},
 
   //Don't need the guard
   {path: 'accueil',canActivate: [authGuard], component: AccueilComponent},

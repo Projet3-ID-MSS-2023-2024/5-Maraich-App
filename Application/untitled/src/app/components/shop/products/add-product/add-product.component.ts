@@ -14,7 +14,9 @@ import {NgIf} from "@angular/common";
 import {InputNumberModule} from "primeng/inputnumber";
 import {FileUploadModule} from "primeng/fileupload";
 import {ProductService} from "../../../../services/product.service";
-import {error} from "@angular/compiler-cli/src/transformers/util";
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {MessageService} from "primeng/api";
+import {ToastModule} from "primeng/toast";
 
 @Component({
   selector: 'app-add-product',
@@ -27,7 +29,8 @@ import {error} from "@angular/compiler-cli/src/transformers/util";
     CheckboxModule,
     NgIf,
     InputNumberModule,
-    FileUploadModule
+    FileUploadModule,
+    ToastModule
   ],
   templateUrl: './add-product.component.html',
   styleUrl: './add-product.component.css'
@@ -39,10 +42,11 @@ export class AddProductComponent implements OnInit{
   categories: Category[] =[];
   selectedFile?: File;
   product: Product = {
-    id:0, name: "", price:0, description:"", picturePath:"", quantity:0, weight:0, isUnity:false,category: undefined, shop: undefined
+    id:0, name: "", price:0, description:"", picturePath:"", quantity:0, weight:0, unity:false,category: undefined, shop: undefined
   };
+  isEditMode: boolean = false;
 
-  constructor(private productService: ProductService,private shopService: ShopService,private categoryService: CategoryService, private cookieService: CookieService) {
+  constructor(private productService: ProductService,private shopService: ShopService,private categoryService: CategoryService, private cookieService: CookieService, private ref:DynamicDialogRef, private config:DynamicDialogConfig, private messageService:MessageService) {
   }
 
   ngOnInit(): void {
@@ -50,29 +54,35 @@ export class AddProductComponent implements OnInit{
     const jwtToken = this.cookieService.get('access_token');
     this.extractIdUserData(jwtToken);
     this.getShopByIdUser();
+    if (this.config.data && this.config.data.product){
+      this.isEditMode = true;
+      this.product = { ...this.config.data.product }
+    }else {
+      this.isEditMode = false;
+    }
   }
 
   getCategories(){
-    this.categoryService.getCategories().subscribe(
-      (data) =>{
+    this.categoryService.getCategories().subscribe({
+      next:(data) => {
         this.categories = data;
       },
-        (error) => {
-          console.error('Error fetching: ', error);
-        }
-    );
+      error:(error) => {
+        console.error('Error fetching: ', error);
+      }
+    });
   }
 
   getShopByIdUser(){
-    this.shopService.getShopByOwnerId(this.idUser).subscribe(
-        (data) => {
-          this.shop = data;
-          this.product.shop=this.shop;
-        },
-        (error)=>{
-          console.error('Error fetching:', error);
-        }
-    )
+    this.shopService.getShopByOwnerId(this.idUser).subscribe({
+      next: (data) => {
+        this.shop = data;
+        this.product.shop = this.shop;
+      },
+      error: (error) => {
+        console.error('Error fetching: ', error);
+      }
+    });
   }
 
   extractIdUserData(token: string): void {
@@ -86,7 +96,7 @@ export class AddProductComponent implements OnInit{
         // Parse the decoded payload as JSON
         const payloadData = JSON.parse(decodedPayload);
 
-        this.idUser = payloadData.idIUser;
+        this.idUser = payloadData.idUser;
     }
   }
 
@@ -97,36 +107,67 @@ export class AddProductComponent implements OnInit{
         const maxSizeInBytes = 100000;
         if (fileInput.size < maxSizeInBytes){
             this.selectedFile = event.files[0];
-            console.log(this.selectedFile);
         }
       }
   }
 
   submit(){
-
-    console.log(this.product);
-    if (this.selectedFile) {
-      this.productService.postImage(this.selectedFile).subscribe(
-          (response) => {
-            this.product.picturePath = response.fileName;
-            console.log(this.product.picturePath);
-            this.submitProduct();
-          },
-          (error) => {
-            console.error('Error adding image: ', error);
-          }
-      );
+    if (this.product.name && this.product.price > 0 && this.product.description &&  ((this.product.unity && this.product.quantity > 0) || (!this.product.unity && this.product.weight > 0)) && this.product.category){
+      if (this.isEditMode){
+        if (this.selectedFile) {
+          this.productService.postImage(this.selectedFile).subscribe({
+            next: (filePath) => {
+              this.product.picturePath = filePath.fileName;
+              this.submitProduct();
+            },
+            error: (error) => {
+              console.error('Error adding image: ', error);
+            }
+          })
+        }else {
+          this.submitProduct();
+        }
+      }else {
+        if (this.selectedFile) {
+          this.productService.postImage(this.selectedFile).subscribe({
+            next: (filePath) => {
+              this.product.picturePath = filePath.fileName;
+              this.submitProduct();
+            },
+            error: (error) => {
+              console.error('Error adding image: ', error);
+            }
+          });
+        }
+      }
+    }else {
+      this.messageService.add({
+        severity:'error',
+        summary:'Erreur',
+        detail:"Remplissez tous les champs"
+      });
     }
   }
 
   submitProduct(){
-      this.productService.postProduct(this.product).subscribe(
-          (productResponse) => {
-              console.log('Product added successfully: ', productResponse);
+    if (this.isEditMode){
+      this.productService.updateProduct(this.product).subscribe({
+        next:() => {
+          this.ref.close('success');
           },
-          (error) => {
-              console.error('Error adding product: ', error);
-          }
-      );
+        error:(error) => {
+          console.error('Error updating product: ', error);
+        }
+      });
+    } else {
+      this.productService.postProduct(this.product).subscribe({
+        next:() => {
+          this.ref.close('success');
+        },
+        error:(error) => {
+          console.error('Error adding product: ', error);
+        }
+      });
+    }
   }
 }
