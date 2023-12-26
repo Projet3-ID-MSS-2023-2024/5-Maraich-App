@@ -65,7 +65,7 @@ public class ShopService {
         return shop;
     }
 
-    public Shop addShopMinimal(Users users) {
+    public void addShopMinimal(Users users) {
         Shop shop = new Shop();
         int idUser = users.getIdUser();
         if (users.getRank().getName() != RankEnum.ADMINISTRATOR)
@@ -80,10 +80,11 @@ public class ShopService {
         shop = shopRepository.save(shop);
         users.setShop(shop);
         userRepository.save(users);
-        return shop;
     }
 
     public Shop updateShop(Shop shop) {
+        Users users = userRepository.findById(shop.getOwner().getIdUser()).orElseThrow(() -> new RuntimeException("Owner not found by id !"));
+        shop.setOwner(users);
         boolean dataIsOk = dataShopVerification(shop);
         if (!dataIsOk) throw new RuntimeException("Invalid data");
         if (shopRepository.existsById(shop.getIdShop()))
@@ -114,7 +115,12 @@ public class ShopService {
         if (!Pattern.matches(lettersOnlyRegex, shop.getAddress().getCity()) && !Pattern.matches(lettersAndDigitOnlyRegex, shop.getAddress().getRoad())) {
             throw new RuntimeException("Invalid address");
         }
-        if (shop.getName().isEmpty() || shop.getEmail().isEmpty() || shop.getAddress().getRoad().isEmpty() || shop.getAddress().getNumber().isEmpty() || shop.getAddress().getPostCode().isEmpty() || shop.getAddress().getCity().isEmpty() || shop.getDescription().isEmpty() || shop.getOwner().getFirstName().isEmpty() || shop.getOwner().getSurname().isEmpty() || shop.getOwner().getPassword().isEmpty() || shop.getOwner().getUsername().isEmpty() || shop.getOwner().getPhoneNumber().isEmpty() || shop.getOwner().getEmail().isEmpty()) {
+        if (shop.getName().isEmpty() || shop.getEmail().isEmpty() || shop.getAddress().getRoad().isEmpty()
+                || shop.getAddress().getNumber().isEmpty() || shop.getAddress().getPostCode().isEmpty()
+                || shop.getAddress().getCity().isEmpty()
+                || shop.getOwner().getFirstName().isEmpty() || shop.getOwner().getSurname().isEmpty()
+                || shop.getOwner().getPassword().isEmpty() || shop.getOwner().getUsername().isEmpty()
+                || shop.getOwner().getPhoneNumber().isEmpty() || shop.getOwner().getEmail().isEmpty()) {
             throw new RuntimeException("Empty field");
         }
         if (!Pattern.matches(emailRegex, shop.getEmail())) {
