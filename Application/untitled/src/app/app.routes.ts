@@ -24,20 +24,19 @@ export const routes: Routes = [
   {
     path: 'admin', canActivate: [authGuard], children: [
       {path: 'test', component: AdminComponent},
+      {path: 'user', canActivate: [authGuard], component: UserManagementComponent},
+      {path: 'maraicher', canActivate: [authGuard], component: MaraicherManagementComponent},
     ]
   },
 
   {path: 'categories', canActivate: [authGuard], component: ListCategoriesComponent},
-  {path: 'admin/user', canActivate: [authGuard], component: UserManagementComponent},
-  {path: 'admin/maraicher', canActivate: [authGuard], component: MaraicherManagementComponent},
   {path: 'form-product', canActivate: [authGuard], component: AddProductComponent},
   {path: 'home', canActivate: [authGuard], component: HomePageComponent},
   {path: 'addRequest', canActivate: [authGuard], component: AddRequestComponent},
-
   {path: 'shop/:shopId', component:ListProductsComponent},
+  {path: 'accueil',canActivate: [authGuard], component: AccueilComponent},
 
   //Don't need the guard
-  {path: 'accueil',canActivate: [authGuard], component: AccueilComponent},
   {path: 'connexion', component: LoginComponent},
   {path: 'inscription', component: SignupComponent},
   {path: 'activation/:code', component: ActivationComponent},
