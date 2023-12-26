@@ -214,7 +214,6 @@ public class UserService implements UserDetailsService, UserServiceInterface {
                     userDb.getRank().getName() == RankEnum.CUSTOMER){
                 if(shopRepository.existsByOwnerId(user.getIdUser())){
                     Shop shop = userDb.getShop();
-                    shop.setEnable(true);
                     shopRepository.save(shop);
                     user.setShop(shop);
                 }else{
