@@ -8,7 +8,9 @@ import be.helha.maraichapp.services.ImageService;
 import be.helha.maraichapp.services.ProductService;
 import be.helha.maraichapp.services.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,8 +50,8 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/get-all-by-shop")
-    public ResponseEntity<List<Product>> getAllProductsByShop(@RequestParam("shopId") int shopId){
+    @GetMapping("/get-all-by-shop/{id}")
+    public ResponseEntity<List<Product>> getAllProductsByShop(@PathVariable("id") int shopId){
         Shop shop = shopService.getShopById(shopId);
         if (shop != null){
             List<Product> products = productService.getAllProductByShop(shop);
@@ -60,11 +62,8 @@ public class ProductController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<Product> addProduct(@RequestPart("product") Product product,@RequestPart("file") MultipartFile file) {
+    public ResponseEntity<Product> addProduct(@RequestBody Product product) {
         try {
-            String fileName = imageService.saveFile(file);
-            product.setPicturePath(fileName);
-
             Product addedProduct = productService.addProduct(product);
             return new ResponseEntity<>(addedProduct, HttpStatus.CREATED);
         }catch (Exception e){
@@ -75,35 +74,8 @@ public class ProductController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable("id") int id, @RequestPart("product") Product updatedProduct, @RequestPart(name = "file", required = false) MultipartFile file){
-        try {
-            Product existingProduct = productService.getProductById(id);
-
-            if (existingProduct != null){
-                existingProduct.setName(updatedProduct.getName());
-                existingProduct.setPrice(updatedProduct.getPrice());
-                existingProduct.setDescription(updatedProduct.getDescription());
-                existingProduct.setQuantity(updatedProduct.getQuantity());
-                existingProduct.setWeight(updatedProduct.getWeight());
-                existingProduct.setUnity(updatedProduct.isUnity());
-
-                if (file!= null && !file.isEmpty()){
-                    imageService.deleteFile(existingProduct.getPicturePath());
-                    String fileName = imageService.saveFile(file);
-                    existingProduct.setPicturePath(fileName);
-                }
-
-                Product updated = productService.updateProduct(existingProduct);
-
-                return new ResponseEntity<>(updated, HttpStatus.OK);
-            }else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        }catch (Exception e){
-            System.err.println("Error updating product: " + e.getMessage());
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public Product updateProduct(@PathVariable("id") int id, @RequestBody Product updatedProduct){
+        return productService.updateProduct(id, updatedProduct);
     }
 
     @DeleteMapping

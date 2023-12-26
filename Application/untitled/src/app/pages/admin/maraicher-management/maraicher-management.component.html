@@ -1,0 +1,209 @@
+<div class="card">
+  <p-toast></p-toast>
+  <p-toolbar styleClass="mb-4 gap-2">
+    <ng-template pTemplate="left">
+      <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+      <button pButton pRipple icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedShops()" [disabled]="!selectedShops || !selectedShops.length"></button>
+    </ng-template>
+
+    <ng-template pTemplate="right">
+      <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="mr-2 inline-block"></p-fileUpload>
+      <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"></button>
+    </ng-template>
+  </p-toolbar>
+  <p-table
+    #dt
+    [value]="shops"
+    [rows]="10"
+    [paginator]="true"
+    [globalFilterFields]="['name', 'email', 'formattedAddress', 'description', 'ownerFullName', 'enable']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [(selection)]="selectedShops"
+    [rowHover]="true"
+    dataKey="idShop"
+    currentPageReportTemplate="Page {currentPage} sur {totalPages}"
+    [showCurrentPageReport]="true"
+  >
+
+    <ng-template pTemplate="caption">
+      <div class="flex align-items-center justify-content-between">
+        <h5 class="m-0">Gestion des boutiques</h5>
+        <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Rechercher..." />
+                </span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 4rem">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        <th pSortableColumn="name" style="min-width:11rem">Nom<p-sortIcon field="name"></p-sortIcon></th>
+        <th>Image</th>
+        <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
+        <th pSortableColumn="formattedAddress">Adresse<p-sortIcon field="formattedAddress"></p-sortIcon></th>
+        <th pSortableColumn="description">Description<p-sortIcon field="description"></p-sortIcon></th>
+        <th pSortableColumn="ownerFullName">Maraicher<p-sortIcon field="ownerFullName"></p-sortIcon></th>
+        <th pSortableColumn="enable" style="min-width:5rem">Activité<p-sortIcon field="enable"></p-sortIcon></th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-shop>
+      <tr>
+        <td>
+          <p-tableCheckbox [value]="shop"></p-tableCheckbox>
+        </td>
+        <td>{{ shop.name }}</td>
+        <td><img [src]="shop.pictureUrl" [alt]="shop.name" width="50" class="shadow-4" /></td>
+        <td>{{ shop.email }}</td>
+        <td>{{ shop.address | adressFormat }}</td>
+        <td>{{ shop.description }}</td>
+        <td>{{ shop.owner.surname + ' ' + shop.owner.firstName}}</td>
+        <td>
+          <p-tag [value]="shop.enable ? 'Actif':'Inactif'" [severity]="getSeverity(shop.enable)"></p-tag>
+        </td>
+        <td>
+          <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editShop(shop)"></button>
+          <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteShop(shop)"></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      <div class="flex align-items-center justify-content-between">
+        Il {{ shops && shops.length !== 1 ? 'y a au total ' + shops.length + ' boutiques.' : (shops && shops.length === 1 ? 'y a une seule boutique.' : 'n\'y a aucune boutique.') }}
+      </div>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog [(visible)]="shopDialog" [style]="{ width: '600px' }" header="Détails de la boutique" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <p-toast></p-toast>
+    <p-steps [model]="items" [activeIndex]="currentStepIndex" [readonly]="false"></p-steps>
+    <br>
+
+    <div *ngIf="currentStepIndex === 0">
+      <div class="field">
+        <label for="name">Nom de la boutique</label>
+        <input type="text" pInputText id="name" [(ngModel)]="shop.name" #shopName="ngModel" required autofocus />
+        <small class="p-error" *ngIf="!shop.name && shopName.touched">Le nom est requis.</small>
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input  type="email" pInputText id="email" [(ngModel)]="shop.email" #shopEmail="ngModel" pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" required autofocus />
+        <small class="p-error" *ngIf="!shop.email && shopEmail.touched">L'email est requis.</small>
+        <small class="p-error" *ngIf="shopEmail.touched && !shopEmail.valid">Format d'email incorrect.</small>
+        <small class="p-error" *ngIf="shopEmail.touched && emailExist(shop.idShop, shop.email)" >Cette adresse mail existe déjà.</small>
+      </div>
+
+      <div class="field">
+        <label for="description">Description</label>
+        <textarea id="description" pInputTextarea [(ngModel)]="shop.description" rows="3" cols="20"></textarea>
+      </div>
+
+      <div class="field">
+        <label class="mb-3">Activité</label>
+        <div class="formgrid grid">
+          <div class="field-radiobutton col-6">
+            <p-radioButton id="enable1" name="enable" [value]=true [(ngModel)]="shop.enable"></p-radioButton>
+            <label for="enable1">Actif</label>
+          </div>
+          <div class="field-radiobutton col-6">
+            <p-radioButton id="enable2" name="enable" [value]=false [(ngModel)]="shop.enable"></p-radioButton>
+            <label for="enable2">Inactif</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="picture">Image</label>
+
+        <!-- Afficher l'image actuelle -->
+        <img *ngIf="showCurrentImage && shop.pictureUrl" [src]="shop.pictureUrl" [alt]="shop.name" style="max-width: 100%;" />
+
+        <!-- Afficher le bouton "Modifier image" ou "Annuler" en fonction de showCurrentImage -->
+        <button pButton type="button" pRipple class="p-button" (click)="toggleImageUpload()">
+          {{ showCurrentImage ? 'Modifier Image' : 'Annuler' }}
+        </button>
+
+        <!-- Afficher l'élément p-fileUpload si showCurrentImage est faux -->
+        <p-fileUpload
+          *ngIf="!showCurrentImage"
+          id="picture"
+        [showUploadButton]="false"
+        accept="image/*"
+        [maxFileSize]="100000"
+        name="file"
+        (onSelect)="onFileSelected($event)"
+        chooseLabel="Image"
+        ></p-fileUpload>
+      </div>
+
+    </div>
+
+    <div *ngIf="currentStepIndex === 1">
+      <div class="field">
+        <label for="addressRoad">Adresse</label>
+        <input type="text" pInputText id="addressRoad" [(ngModel)]="shop.address.road" #road="ngModel" [pKeyFilter]="roadRegex" required />
+        <small class="p-error" *ngIf=" road.touched && !shop.address.road">La rue est requise.</small>
+      </div>
+      <div class="field">
+        <label for="addressPostCode">Code postal</label>
+        <input type="text" pInputText id="addressPostCode" [(ngModel)]="shop.address.postCode" #postCode="ngModel" [pKeyFilter]="postCodeRegex" required />
+        <small class="p-error" *ngIf=" postCode.touched && !shop.address.road">Le code postal est requis.</small>
+      </div>
+      <div class="field">
+        <label for="addressCity">Ville</label>
+        <input type="text" pInputText id="addressCity" [(ngModel)]="shop.address.city" #city="ngModel" [pKeyFilter]="cityRegex" required />
+        <small class="p-error" *ngIf=" city.touched && !shop.address.road">La ville est requise.</small>
+      </div>
+      <div class="field">
+        <label for="addressNumber">Numéro d'adresse</label>
+        <input type="text" pInputText id="addressNumber" [(ngModel)]="shop.address.number" #number="ngModel" [pKeyFilter]="numberRegex" required />
+        <small class="p-error" *ngIf=" number.touched && !shop.address.road">Le numéro d'adresse est requis.</small>
+      </div>
+    </div>
+
+    <div *ngIf="currentStepIndex === 2" class="text-center d-flex align-items-center justify-content-center">
+      <br>
+      <div class="field">
+        <label class="label"><b>Nom de la boutique:</b></label>
+        <div class="info">{{ shop.name }}</div>
+      </div>
+      <div class="field">
+        <label class="label"><b>Email:</b></label>
+        <div class="info">{{ shop.email }}</div>
+      </div>
+      <div class="field">
+        <label class="label"><b>Description:</b></label>
+        <div class="info">{{ shop.description }}</div>
+      </div>
+      <div class="field">
+        <label class="label"><b>Maraicher:</b></label>
+        <div class="info">{{ shop.owner.surname + ' ' + shop.owner.firstName}}</div>
+      </div>
+      <div class="field">
+        <label class="label"><b>Adresse:</b></label>
+        <div class="info">{{ shop.address | adressFormat }}</div>
+      </div>
+      <div class="field">
+        <label class="label"><b>Activité:</b></label>
+        <br>
+        <p-tag class="info" [value]="shop.enable ? 'Actif':'Inactif'" [severity]="getSeverity(shop.enable)"></p-tag>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button *ngIf="currentStepIndex > 0" pButton pRipple label="Précédent" icon="pi pi-chevron-left" class="p-button-text" (click)="previousStep()"></button>
+    <button *ngIf="!isLastStep()" pButton pRipple label="Suivant" icon="pi pi-check"
+            class="p-button-text" (click)="nextStep()" [disabled]="!shop.name || !shop.email || !shop.address.road || !shop.address.postCode || !shop.address.city || !shop.address.number || emailExist(shop.idShop, shop.email) || !isEmailValid()" >
+    </button>
+
+    <button *ngIf="isLastStep()" pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveShop()" ></button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }" acceptLabel="Confirmer" rejectLabel="Annuler"></p-confirmDialog>

@@ -2,6 +2,7 @@ import {Address} from "./address";
 import {User} from "./user";
 import {Order} from "./order";
 import {Product} from "./product";
+import {SafeUrl} from "@angular/platform-browser";
 
 export interface Shop {
   idShop: number;
@@ -9,11 +10,11 @@ export interface Shop {
   email: string;
   address: Address;
   picture: string;
+  pictureUrl?: SafeUrl;
   description: string;
   shopIsOkay: boolean;
   enable: boolean;
-  enabled: boolean;
   owner: User;
   orders: Order[];
-  products: Product[];
+  products?: Product[];
 }

@@ -3,13 +3,19 @@ import {AuthService} from "../services/auth.service";
 import {inject} from "@angular/core";
 import {Router} from "@angular/router";
 import {EMPTY, Observable, of} from "rxjs";
+import {CookieService} from "ngx-cookie-service";
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService: AuthService = inject(AuthService);
   const router: Router = inject(Router);
+  const cookieService : CookieService = inject(CookieService);
   if (router.url !== '/connexion' && router.url !== "/inscription" && !router.url.startsWith("/activation")){
     const token = authService.getTokenFromCookie();
-
+    if(authService.isTokenExpired()){
+      cookieService.deleteAll();
+      authService.userRank = undefined;
+      return EMPTY;
+    }
     // Only add the Authorization header if the token is available
     if (token) {
       const authReq = req.clone({

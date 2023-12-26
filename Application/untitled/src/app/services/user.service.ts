@@ -4,6 +4,7 @@ import {catchError, map, Observable} from "rxjs";
 import {User} from "../models/user";
 import {environment} from "../../environments/environment";
 import {RankEnum} from "../models/rankEnum";
+import {Rank} from "../models/rank";
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +31,11 @@ export class UserService {
         );
     }
 
+    getAllRanks(): Observable<Rank[]>{
+      const url = `${environment.apiUrl}/users/getAllRanks`;
+      return this.http.get<Rank[]>(url);
+    }
+
     private mapToUserModel(data: any): User {
         return {
             idUser: data.idUser,
@@ -52,13 +58,17 @@ export class UserService {
   updateUserAdmin(user: User): Observable<User> {
     const url = `${environment.apiUrl}/users/update/admin`;
 
-    return this.http.put<User>(url, user).pipe(
+    // Map the user data before making the PUT request
+    const mappedUser = this.mapToUserModel(user);
+
+    return this.http.put<User>(url, mappedUser).pipe(
       catchError((error: any) => {
         console.error(`Erreur lors de la mise à jour de l'utilisateur : ${error.message || error}`);
         throw error; // relancez l'erreur pour que le composant appelant puisse également la traiter
       })
     );
   }
+
 
   updateUserRestricted(updatedUser: User): Observable<User> {
     return this.http.put<User>(`${environment.apiUrl}/users/update/restricted`, updatedUser);

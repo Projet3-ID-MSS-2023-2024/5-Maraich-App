@@ -31,7 +31,7 @@ public class Shop {
     @Column(nullable = false)
     private boolean shopIsOkay;
     @Column(nullable = false)
-    private boolean enable = false;
+    private boolean enable;
     @OneToOne(mappedBy = "shop")
     @JoinColumn(name = "ownerId")
     private Users owner;
