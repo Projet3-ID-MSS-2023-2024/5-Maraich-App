@@ -24,6 +24,10 @@ public class ShopController {
     }
 
     @GetMapping
+    @RequestMapping("/owner/{id}")
+    public Shop getShopByIdOwner(@PathVariable("id") int id){ return shopService.getShopByIdOwner(id); }
+
+    @GetMapping
     @RequestMapping("/getByName/{name}")
     public List<Shop> getShopByName(@PathVariable("name")String name){
         return shopService.getShopByName(name);
