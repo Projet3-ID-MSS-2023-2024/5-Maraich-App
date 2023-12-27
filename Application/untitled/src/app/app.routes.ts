@@ -33,7 +33,7 @@ export const routes: Routes = [
   {path: 'form-product', canActivate: [authGuard], component: AddProductComponent},
   {path: 'home', canActivate: [authGuard], component: HomePageComponent},
   {path: 'addRequest', canActivate: [authGuard], component: AddRequestComponent},
-  {path: 'shop/:shopId', component:ListProductsComponent},
+  {path: 'shop/:shopId',canActivate: [authGuard], component:ListProductsComponent},
   {path: 'accueil',canActivate: [authGuard], component: AccueilComponent},
 
   //Don't need the guard
