@@ -31,7 +31,6 @@ export const routes: Routes = [
   },
 
   {path: 'categories', canActivate: [authGuard], component: ListCategoriesComponent},
-  {path: 'form-product', canActivate: [authGuard], component: AddProductComponent},
   {path: 'home', canActivate: [authGuard], component: HomePageComponent},
   {path: 'addRequest', canActivate: [authGuard], component: AddRequestComponent},
   {path: 'accueil',canActivate: [authGuard], component: AccueilComponent},
