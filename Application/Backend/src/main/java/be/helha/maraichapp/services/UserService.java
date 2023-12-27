@@ -33,7 +33,10 @@ public class UserService implements UserDetailsService, UserServiceInterface {
     private ValidationRepository validationRepository;
     @Autowired
     private EmailSender emailSender;
-
+    @Autowired
+    private ShopService shopService;
+    @Autowired
+    private ShopRepository shopRepository;
     @Autowired
     private JwtRepository jwtRepository;
 
@@ -152,7 +155,12 @@ public class UserService implements UserDetailsService, UserServiceInterface {
     }
 
 
-    // Ajouter un nouvel user (niveau admin)
+    /**
+     * Add a new user
+     * (only the admin can add here)
+     * @param user
+     * @return
+     */
     @Override
     @Transactional
     public Users addUser(Users user) {
@@ -172,10 +180,15 @@ public class UserService implements UserDetailsService, UserServiceInterface {
         user.setRank(rank); //on set le role au user
         Users users = userRepository.save(user);
         this.validationService.createValidationProcess(users);
+        users = userRepository.save(user);
         return users;
     }
 
-    // Mettre à jour un user existant
+    /**
+     * Admin update users
+     * @param user
+     * @return
+     */
     @Override
     @Transactional
     public Users updateUserAdmin(Users user) {
@@ -196,6 +209,23 @@ public class UserService implements UserDetailsService, UserServiceInterface {
                 String hashedPassword = passwordEncoder.encode(user.getPassword());
                 user.setPassword(hashedPassword);  // Met à jour le mot de passe chiffré dans l'objet user
             }
+            Users userDb = userRepository.findById(user.getIdUser()).orElseThrow(() -> new RuntimeException("User not found !"));
+            if(user.getRank().getName() == RankEnum.MARAICHER &&
+                    userDb.getRank().getName() == RankEnum.CUSTOMER){
+                if(shopRepository.existsByOwnerId(user.getIdUser())){
+                    Shop shop = userDb.getShop();
+                    shopRepository.save(shop);
+                    user.setShop(shop);
+                }else{
+                    shopService.addShopMinimal(user);
+                }
+            } else if(user.getRank().getName() == RankEnum.CUSTOMER &&
+                    userDb.getRank().getName() == RankEnum.MARAICHER){
+                Shop shop = userDb.getShop();
+                shop.setEnable(false);
+                shopRepository.save(shop);
+                user.setShop(shop);
+            }
 
             // Met à jour l'utilisateur
             return userRepository.save(user);
@@ -204,6 +234,12 @@ public class UserService implements UserDetailsService, UserServiceInterface {
         }
     }
 
+    /**
+     * customer and market gardener level user update
+     * (for example : their user profile)
+     * @param updatedUser
+     * @return
+     */
     @Override
     @Transactional
     public Users updateUserRestricted(Users updatedUser) {
@@ -239,7 +275,11 @@ public class UserService implements UserDetailsService, UserServiceInterface {
         }
     }
 
-    //rechercher un user avec un id
+    /**
+     * get a user by id
+     * @param id
+     * @return
+     */
     @Override
     @Transactional
     public Users getUserById(int id) {
@@ -247,6 +287,11 @@ public class UserService implements UserDetailsService, UserServiceInterface {
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + id));//on lève une exception si pas trouvé
     }
 
+    /**
+     * return users by rank name
+     * @param rankEnum
+     * @return
+     */
     @Override
     @Transactional
     public Optional<List<Users>> getUsersByRank(RankEnum rankEnum) {
@@ -262,13 +307,20 @@ public class UserService implements UserDetailsService, UserServiceInterface {
         return Optional.of(usersList);
     }
 
-    //retourne tout les users
+    /**
+     * Return all users
+     * @return
+     */
     @Override
     public List<Users> getAllUsers() {
         return userRepository.findAll();
     }
 
-    // Supprimer un utilisateur depuis son ID
+    /**
+     *
+     * Delete a user by id
+     * @param id
+     */
     @Override
     @Transactional
     public void deleteUserById(int id) {
@@ -277,6 +329,15 @@ public class UserService implements UserDetailsService, UserServiceInterface {
         } else {
             throw new EntityNotFoundException("User not found with ID: " + id);
         }
+    }
+
+    /**
+     * Return all ranks
+     * @return
+     */
+    @Override
+    public List<Rank> getAllRanks() {
+        return rankRepository.findAll();
     }
 }
 

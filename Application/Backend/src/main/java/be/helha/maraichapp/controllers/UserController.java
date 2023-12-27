@@ -1,5 +1,6 @@
 package be.helha.maraichapp.controllers;
 
+import be.helha.maraichapp.models.Rank;
 import be.helha.maraichapp.models.RankEnum;
 import be.helha.maraichapp.models.Users;
 import be.helha.maraichapp.services.UserService;
@@ -32,6 +33,11 @@ public class UserController {
     @GetMapping("/getAll")
     public List<Users> getAllUsers() {
         return userService.getAllUsers();
+    }
+
+    @GetMapping("/getAllRanks")
+    public List<Rank> getAllRanks() {
+        return userService.getAllRanks();
     }
 
     @PostMapping("/newUser")
