@@ -132,10 +132,7 @@ export class ListProductsComponent implements OnInit{
       this.shopService.getShopByOwnerId(payloadData.idUser).subscribe({
         next:(shop) => {
           this.shop = shop;
-      }, error:(error) => {
-        console.log(error);
-      }
-      })
+      }});
     }
   }
 
