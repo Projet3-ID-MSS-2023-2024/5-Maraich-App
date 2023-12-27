@@ -67,6 +67,7 @@ export class ListProductsComponent implements OnInit{
 
       this.getCategories();
       this.getProducts();
+      console.log(this.listProduct[0]);
       this.updateFilteredProducts();
       const jwtToken = this.cookieService.get('access_token');
       this.extractIdUserData(jwtToken);

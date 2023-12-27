@@ -4,12 +4,17 @@ import {inject} from "@angular/core";
 import {Router} from "@angular/router";
 import {EMPTY, Observable, of} from "rxjs";
 import {CookieService} from "ngx-cookie-service";
+import {environment} from "../../environments/environment";
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService: AuthService = inject(AuthService);
   const router: Router = inject(Router);
   const cookieService : CookieService = inject(CookieService);
-  if (router.url !== '/connexion' && router.url !== "/inscription" && !router.url.startsWith("/activation")){
+  const requestUrl = req.url;
+  if (!requestUrl.startsWith(`${environment.apiUrl}/products/get-all-by-shop`) && !requestUrl.startsWith(`${environment.apiUrl}/categories/get`)
+    && !requestUrl.startsWith(`${environment.apiUrl}/images/getImage`)
+    && requestUrl !== `${environment.apiUrl}/login`
+    && requestUrl !== `${environment.apiUrl}/signup` && !requestUrl.startsWith(`${environment.apiUrl}/activation`)){
     const token = authService.getTokenFromCookie();
     if(authService.isTokenExpired()){
       cookieService.deleteAll();

@@ -28,6 +28,7 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
@@ -46,6 +47,9 @@ public class SpringSecurityConfig {
                                     authorize.requestMatchers(POST, "/signup").permitAll();
                                     authorize.requestMatchers(POST, "/activation").permitAll();
                                     authorize.requestMatchers(POST, "/login").permitAll();
+                                    authorize.requestMatchers(GET, "/products/**").permitAll();
+                                    authorize.requestMatchers(GET, "/categories/**").permitAll();
+                                    authorize.requestMatchers(GET, "/images/**").permitAll();
                                     authorize.anyRequest().authenticated();
                                 }
                         )

@@ -57,7 +57,6 @@ export class AuthService {
       if (isValidRank) {
         this.userRank = decodedPayload.rank as RankEnum
       }
-      console.log(this.userRank + "AUTH SERV");
     }
   }
 
