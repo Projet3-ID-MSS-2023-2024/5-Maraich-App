@@ -74,25 +74,29 @@ public class ReservationService {
         return finalReservation;
     }
 
-    @Transactional
+//    @Transactional
     public List<Reservation> getAllReservations() {
-        removeExpirateReservations();
+//        removeExpirateReservations();
         return this.reservationRepository.findAll();
     }
 
-    @Transactional
-    @Scheduled(cron = "0 0/5 * * * *")
-    public void scheduledRemoveExpirateReservations() {
-        removeExpirateReservations();
-    }
+//    @Transactional
+//    @Scheduled(cron = "0 0/5 * * * *")
+//    public void scheduledRemoveExpirateReservations() {
+//        removeExpirateReservations();
+//    }
+//
+//    @Transactional
+//    public void removeExpirateReservations() {
+//        //Get actual times minus 5 minutes
+//        Instant expiredTime = Instant.now().minusSeconds(5 * 60);
+//        log.info("Delete expirate reservation at {}", Instant.now());
+//        // Delete expired reservations directly from the database
+//        this.reservationRepository.deleteExpiredReservations(expiredTime);
+//    }
 
-    @Transactional
-    public void removeExpirateReservations() {
-        //Get actual times minus 5 minutes
-        Instant expiredTime = Instant.now().minusSeconds(5 * 60);
-        log.info("Delete expirate reservation at {}", Instant.now());
-        // Delete expired reservations directly from the database
-        this.reservationRepository.deleteExpiredReservations(expiredTime);
+    public List<Reservation> getShoppingCart(int idUser) {
+        return reservationRepository.findByUserId(idUser);
     }
 }
 

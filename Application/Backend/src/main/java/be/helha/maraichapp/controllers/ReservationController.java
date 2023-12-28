@@ -22,10 +22,15 @@ public class ReservationController {
     }
 
     @GetMapping
-    @RequestMapping("getAll")
+    @RequestMapping("/getAll")
     public List<Reservation> getAllReservations(){
         return this.reservationService.getAllReservations();
     }
 
+    @GetMapping
+    @RequestMapping("/getShoppingCartUser/{id}")
+    public List<Reservation> getShoppingCart(@PathVariable("id") int idUser){
+        return this.reservationService.getShoppingCart(idUser);
+    }
 
 }

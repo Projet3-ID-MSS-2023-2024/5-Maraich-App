@@ -73,6 +73,17 @@ public class ProductServiceImpl implements ProductService{
         }
         return productRepository.findById(id).orElse(null);
     }
+    @Override
+    public double getQuantityAvailableByIdProduct(int idProduct){
+        Product product = productRepository.findById(idProduct).orElseThrow(()-> new RuntimeException("Product not found !"));
+        double quantityWithoutReserve;
+        if(product.isUnity()){
+            quantityWithoutReserve = product.getQuantity();
+        } else {
+            quantityWithoutReserve = product.getWeight();
+        }
+        return quantityWithoutReserve - reservationRepository.getTotalReservedQuantityByProductId(idProduct).orElse(0.0);
+    }
 
     @Override
     public Product addProduct(Product product) {

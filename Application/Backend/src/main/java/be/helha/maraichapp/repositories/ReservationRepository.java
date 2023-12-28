@@ -19,6 +19,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
     @Query("SELECT r FROM Reservation r WHERE r.product.id = :idProduct AND r.users.idUser = :idUser")
     Optional<Reservation> findByProductIdAndUserId(int idProduct, int idUser);
 
+    @Query("SELECT r FROM Reservation r WHERE r.users.idUser = :idUser")
+    List<Reservation> findByUserId(@Param("idUser") int idUser);
+
     @Modifying
     @Query("DELETE FROM Reservation r WHERE r.expirateDate IS NOT NULL AND r.expirateDate < :expiredTime")
     void deleteExpiredReservations(@Param("expiredTime") Instant expiredTime);
