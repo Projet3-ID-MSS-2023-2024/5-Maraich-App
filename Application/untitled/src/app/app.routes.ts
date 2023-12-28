@@ -33,11 +33,11 @@ export const routes: Routes = [
   {path: 'categories', canActivate: [authGuard], component: ListCategoriesComponent},
   {path: 'home', canActivate: [authGuard], component: HomePageComponent},
   {path: 'addRequest', canActivate: [authGuard], component: AddRequestComponent},
-  {path: 'accueil',canActivate: [authGuard], component: AccueilComponent},
-  {path: 'panier', component: PanierComponent},
+  {path: 'accueil', canActivate: [authGuard], component: AccueilComponent},
+  {path: 'panier', canActivate: [authGuard],component: PanierComponent},
 
   //Don't need the guard
-  {path: 'shop/:shopId', component:ListProductsComponent},
+  {path: 'shop/:shopId', canActivate: [authGuard], component:ListProductsComponent},
   {path: 'connexion', component: LoginComponent},
   {path: 'inscription', component: SignupComponent},
   {path: 'activation/:code', component: ActivationComponent},

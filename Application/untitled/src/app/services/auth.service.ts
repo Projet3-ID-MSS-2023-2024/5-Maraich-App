@@ -60,6 +60,19 @@ export class AuthService {
     }
   }
 
+  getIdUserFromCookie() {
+    const token = this.getTokenFromCookie();
+    if (token) {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace('-', '+').replace('_', '/');
+      const decodedPayload = JSON.parse(atob(base64));
+      const userId = decodedPayload.idUser;
+      if (userId) {
+        return userId;
+      }
+    }
+  }
+
   isTokenExpired() {
     const token = this.getTokenFromCookie();
     return token ? this.jwtHelper.isTokenExpired(token) : true;

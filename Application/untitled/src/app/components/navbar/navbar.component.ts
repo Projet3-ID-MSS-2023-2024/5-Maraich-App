@@ -49,6 +49,10 @@ export class NavbarComponent implements OnInit{
     this.route.navigate(["admin/test"]);
   }
 
+  redirectToShoppingCart() {
+    this.route.navigate(["panier"]);
+  }
+
   logout() {
     this.authService.logout().subscribe({
         next: (response: any) => {

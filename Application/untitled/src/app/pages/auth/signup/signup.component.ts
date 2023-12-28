@@ -62,7 +62,7 @@ export class SignupComponent{
     this.addressEmailIsNotOk = !emailRegex.test(this.user.email);
     this.firstNameIsNotOk = !nameRegex.test(this.user.firstName);
     this.surnameIsNotOk = !nameRegex.test(this.user.surname);
-    this.passwordIsNotOk = !passwordRegex.test(this.user.password);
+    this.passwordIsNotOk = !passwordRegex.test(this.user.password ?? "notok");
     this.addressRoadIsNotOk = !roadRegex.test(this.user.address.road);
     this.addressPostCodeIsNotOk = !postCodeRegex.test(this.user.address.postCode);
     this.addressNumberIsNotOk = !numberRegex.test(this.user.address.number);

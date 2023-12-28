@@ -43,4 +43,9 @@ export class ProductService {
   deleteProduct(productId:number){
     return this.http.delete(`${this.apiUrl}/delete/${productId}`);
   }
+
+  getQuantityAvailable(productId:number){
+    return this.http.get<number>(`${this.apiUrl}/getQuantityAvailable/${productId}`);
+  }
+
 }

@@ -14,7 +14,7 @@ export const authGuard: CanActivateFn = (route, state) => {
 
   if (isTokenExpired) {
     cookieService.deleteAll();
-    if (currentRoutePath !== 'accueil') {
+    if (currentRoutePath !== 'accueil' && !currentRoutePath?.startsWith("shop/")) {
       return router.navigate(['accueil']);
     }
   } else if(authService.userRank === undefined) {
