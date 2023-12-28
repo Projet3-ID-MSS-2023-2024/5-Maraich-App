@@ -5,6 +5,7 @@ import be.helha.maraichapp.models.Product;
 import be.helha.maraichapp.models.Shop;
 import be.helha.maraichapp.repositories.CategoryRepository;
 import be.helha.maraichapp.repositories.ProductRepository;
+import be.helha.maraichapp.repositories.ReservationRepository;
 import be.helha.maraichapp.repositories.ShopRepository;
 
 import org.springframework.stereotype.Service;
@@ -21,12 +22,14 @@ public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
 
     private final ImageService imageService;
+    private final ReservationRepository reservationRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository, ImageService imageService, CategoryRepository categoryRepository, ShopRepository shopRepository){
+    public ProductServiceImpl(ProductRepository productRepository, ImageService imageService, CategoryRepository categoryRepository, ShopRepository shopRepository, ReservationRepository reservationRepository){
         this.productRepository = productRepository;
         this.imageService = imageService;
         this.categoryRepository = categoryRepository;
         this.shopRepository = shopRepository;
+        this.reservationRepository = reservationRepository;
     }
 
     @Override
@@ -38,6 +41,19 @@ public class ProductServiceImpl implements ProductService{
     public List<Product> getAllProductByShop(Shop shop) {
         if (shop == null){
             throw new IllegalArgumentException("Shop cannot be null");
+        }
+        List<Product> productList = productRepository.findProductByShop(shop);
+        // Parcourir la liste des produits
+        for (Product product : productList) {
+            // Récupérer la somme des quantités réservées pour le produit donné
+            Double totalReservedQuantity = reservationRepository.getTotalReservedQuantityByProductId(product.getId()).orElse(0.0);
+
+            // Ajouter l'entrée à la map
+            if (product.isUnity()) {
+                product.setQuantity(product.getQuantity() - totalReservedQuantity.intValue());
+            } else {
+                product.setWeight(product.getWeight() - totalReservedQuantity);
+            }
         }
         return productRepository.findProductByShop(shop);
     }

@@ -50,6 +50,8 @@ public class SpringSecurityConfig {
                                     authorize.requestMatchers(GET, "/products/**").permitAll();
                                     authorize.requestMatchers(GET, "/categories/**").permitAll();
                                     authorize.requestMatchers(GET, "/images/**").permitAll();
+                                    authorize.requestMatchers(GET, "/reservations/**").permitAll();
+                                    authorize.requestMatchers(POST, "/reservations/**").authenticated();
                                     authorize.anyRequest().authenticated();
                                 }
                         )

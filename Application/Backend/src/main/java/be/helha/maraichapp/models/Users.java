@@ -31,6 +31,7 @@ public class Users implements UserDetails {
     private String surname;
     @Column(nullable = false)
     private String phoneNumber;
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
     @Embedded
@@ -61,6 +62,10 @@ public class Users implements UserDetails {
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "shopId")
     private Shop shop;
+    @JsonIgnore
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "users")
+    private List<Reservation> reservations;
+
 
     @Override
     public boolean equals(Object o) {
