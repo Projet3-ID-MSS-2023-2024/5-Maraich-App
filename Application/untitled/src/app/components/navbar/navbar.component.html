@@ -32,12 +32,12 @@
       />
 
       <img *ngIf="isLogged && (userRank == RankEnum.MARAICHER || userRank == RankEnum.ADMINISTRATOR)"
-        ngSrc="assets/images/logos/maraicher-profile-icon.svg"
+           ngSrc="assets/images/logos/maraicher-profile-icon.svg"
            (click)="redirectToPanelMaraicher()"
-        width="40"
-        height="40"
-        class="border-circle mr-3"
-        alt="Profil maraicher"
+           width="40"
+           height="40"
+           class="border-circle mr-3"
+           alt="Profil maraicher"
       />
 
       <img *ngIf="isLogged && userRank == RankEnum.ADMINISTRATOR"

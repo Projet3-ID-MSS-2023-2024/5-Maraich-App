@@ -1,15 +1,15 @@
 import {Component, OnInit} from '@angular/core';
-import {Product} from "../../../../models/product";
-import {ProductService} from "../../../../services/product.service";
+import {Product} from "../../../models/product";
+import {ProductService} from "../../../services/product.service";
 import {ActivatedRoute} from "@angular/router";
 import {CardModule} from "primeng/card";
 import {AsyncPipe, CommonModule, NgClass, NgForOf, NgOptimizedImage} from "@angular/common";
-import {ImageService} from "../../../../services/image.service";
+import {ImageService} from "../../../services/image.service";
 import {ButtonModule} from "primeng/button";
-import {CategoryService} from "../../../../services/category.service";
+import {CategoryService} from "../../../services/category.service";
 import {FormsModule} from "@angular/forms";
 import {DomSanitizer} from "@angular/platform-browser";
-import {Category} from "../../../../models/category";
+import {Category} from "../../../models/category";
 import {DataViewModule} from "primeng/dataview";
 import {TagModule} from "primeng/tag";
 import {InputTextModule} from "primeng/inputtext";
@@ -18,12 +18,12 @@ import {DropdownModule} from "primeng/dropdown";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {AddProductComponent} from "../add-product/add-product.component";
 import {CookieService} from "ngx-cookie-service";
-import {ShopService} from "../../../../services/shop.service";
-import {Shop} from "../../../../models/shop";
+import {ShopService} from "../../../services/shop.service";
+import {Shop} from "../../../models/shop";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {ToastModule} from "primeng/toast";
-import {ReservationService} from "../../../../services/reservation.service";
+import {ReservationService} from "../../../services/reservation.service";
 
 @Component({
   selector: 'app-list-products',
@@ -202,6 +202,7 @@ export class ListProductsComponent implements OnInit{
     });
   }
 
+
   addReservation(product : Product) {
     this.reservationService.existShoppingCart(this.idUser, product.shop?.owner.idUser ?? 0).subscribe({
       next: (response : any) => {
@@ -226,12 +227,28 @@ export class ListProductsComponent implements OnInit{
             }
           });
         } else {
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: "Vous ne pouvez avoir qu'un seul panier à la fois. De plus, veuillez noter que vous ne pouvez pas inclure des articles de deux maraîchers différents dans le même panier." });
+          this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Vous ne pouvez avoir qu'un seul panier à la fois. De plus, veuillez noter que vous ne pouvez pas inclure des articles de deux maraîchers différents dans le même panier." });
         }
       },
       error: (error) => {
         console.log(error);
       }
     });
+  }
+
+  // Define the logic for button click
+  handleReservationClick(product: Product): void {
+    // Check if the button is disabled
+    if (
+      !this.isLogged ||
+      (product.quantityWeight === undefined && product.quantityUnity === undefined) ||
+      (product.quantityWeight === 0 || product.quantityUnity === 0)
+    ) {
+      // Different action when the button is disabled
+      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Pour ajouter des produits à votre panier, veuillez vous connecter."});
+    } else {
+      // Normal action when the button is enabled
+      this.addReservation(product);
+    }
   }
 }

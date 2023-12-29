@@ -60,21 +60,12 @@
                 <td>{{ user.email}}</td>
                 <td>{{ user.phoneNumber}}</td>
                 <td>{{ user.address | adressFormat}}</td>
-<<<<<<< HEAD:Application/untitled/src/app/components/admin/user-management/user-management.component.html
-<!--
-                <td>
-                    <p-tag [value]="user.rank.name | rankFormat" [severity]="getRankSeverity(user.rank.name)"></p-tag>
-                </td>
--->
-                <td>
-=======
               <td>
                 <p-tag *ngIf="user.rank" [value]="user.rank.name | rankFormat" [severity]="getRankSeverity(user.rank.name)"></p-tag>
               </td>
 
 
               <td>
->>>>>>> develop:Application/untitled/src/app/pages/admin/user-management/user-management.component.html
                     <p-tag [value]="user.actif ? 'Actif' : 'Inactif'" [severity]="getStatusSeverity(user.actif)"></p-tag>
                 </td>
                 <td>

@@ -14,6 +14,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   if (!requestUrl.startsWith(`${environment.apiUrl}/products/get-all-by-shop`) && !requestUrl.startsWith(`${environment.apiUrl}/categories/get`)
     && !requestUrl.startsWith(`${environment.apiUrl}/images/getImage`)
     && requestUrl !== `${environment.apiUrl}/login`
+    && requestUrl !== `${environment.apiUrl}/shop/getAll`
     && requestUrl !== `${environment.apiUrl}/signup` && !requestUrl.startsWith(`${environment.apiUrl}/activation`)){
     const token = authService.getTokenFromCookie();
     if(authService.isTokenExpired()){

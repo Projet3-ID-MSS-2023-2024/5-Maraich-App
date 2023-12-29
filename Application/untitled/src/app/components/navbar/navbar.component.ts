@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-import { Component } from '@angular/core';
-=======
+
 import {Component, OnInit} from '@angular/core';
 import {RankEnum} from "../../models/rankEnum";
 import {MenuItem} from "primeng/api";
@@ -10,18 +8,11 @@ import {NgIf, NgOptimizedImage} from "@angular/common";
 import {CookieService} from "ngx-cookie-service";
 import {AuthService} from "../../services/auth.service";
 import {NavigationEnd, Router} from "@angular/router";
->>>>>>> develop
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-<<<<<<< HEAD
-  imports: [],
-  templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css'
-})
-export class NavbarComponent {
-=======
+
   imports: [
     MenubarModule,
     ChipsModule,
@@ -100,14 +91,15 @@ export class NavbarComponent implements OnInit{
   itemsCustomer() {
     return [
       {
+        label: 'Accueil',
+        icon: 'pi pi-fw pi-home',
+        routerLink: "/accueil"
+      },
+      {
         label: 'Navbar client connecter',
         icon: 'pi pi-fw pi-home',
         routerLink: "/"
 
-      },
-      {
-        label: 'Edit',
-        icon: ''
       }
     ];
   }
@@ -115,14 +107,15 @@ export class NavbarComponent implements OnInit{
   itemsMaraicher(){
     return [
         {
+          label: 'Accueil',
+          icon: 'pi pi-fw pi-home',
+          routerLink: "/accueil"
+        },
+        {
           label: 'Navbar maraicher',
           icon: 'pi pi-fw pi-home',
           routerLink: "/"
 
-        },
-        {
-          label: 'Edit',
-          icon: ''
         }
       ];
   }
@@ -130,14 +123,15 @@ export class NavbarComponent implements OnInit{
   itemsAdmin() {
     return [
       {
+        label: 'Accueil',
+        icon: 'pi pi-fw pi-home',
+        routerLink: "/accueil"
+      },
+      {
         label: 'NAvbar Admin',
         icon: 'pi pi-fw pi-home',
         routerLink: "/"
 
-      },
-      {
-        label: 'Edit',
-        icon: ''
       }
     ];
   }
@@ -145,18 +139,16 @@ export class NavbarComponent implements OnInit{
   itemsUser() {
     return [
       {
+        label: 'Accueil',
+        icon: 'pi pi-fw pi-home',
+        routerLink: "/accueil"
+      },
+      {
         label: 'Navbar client non connecter',
         icon: 'pi pi-fw pi-home',
         routerLink: "/"
 
-      },
-      {
-        label: 'Edit',
-        icon: ''
       }
     ];
   }
-
->>>>>>> develop
-
 }
