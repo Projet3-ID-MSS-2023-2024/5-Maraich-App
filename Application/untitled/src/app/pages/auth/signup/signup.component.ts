@@ -52,17 +52,17 @@ export class SignupComponent{
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const nameRegex = /^[a-zA-ZÀ-ÿ-]+$/;
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
-    const roadRegex = /^[a-zA-Z0-9\s\-.,'()&]+$/;
+    const roadRegex = /^[a-zA-Z0-9\s\-.,'()&àâäéèêëîïôöùûüçÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ]+$/;
     const postCodeRegex = /^[a-zA-Z0-9\s\-]+$/;
     const numberRegex = /^[a-zA-Z0-9\s\-.,'()&]+$/;
-    const cityRegex = /^[a-zA-Z\s\-.,'()&]+$/;
+    const cityRegex = /^[a-zA-Z\s\-.,'()&àâäéèêëîïôöùûüçÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ]+$/;
     const phoneNumberRegex = /^[0-9]+$/;
 
 
     this.addressEmailIsNotOk = !emailRegex.test(this.user.email);
     this.firstNameIsNotOk = !nameRegex.test(this.user.firstName);
     this.surnameIsNotOk = !nameRegex.test(this.user.surname);
-    this.passwordIsNotOk = !passwordRegex.test(this.user.password);
+    this.passwordIsNotOk = !passwordRegex.test(this.user.password ?? "notok");
     this.addressRoadIsNotOk = !roadRegex.test(this.user.address.road);
     this.addressPostCodeIsNotOk = !postCodeRegex.test(this.user.address.postCode);
     this.addressNumberIsNotOk = !numberRegex.test(this.user.address.number);

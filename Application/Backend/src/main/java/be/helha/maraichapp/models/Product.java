@@ -39,6 +39,9 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "shopId")
     private Shop shop;
+    @JsonIgnore
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "product")
+    private List<Reservation> reservations;
 
     public Product(String name, double price, String description, String picturePath, int quantity, double weight, boolean isUnity, Category category, Shop shop) {
         this.name = name;

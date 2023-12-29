@@ -14,15 +14,15 @@ public class OrderController {
     @Autowired
     OrderServiceImpl orderService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public Orders getOrderById(@PathVariable int id) {
         return orderService.getOrderById(id);
     }
-    @GetMapping
+    @GetMapping("/getAll")
     public List<Orders> getOrders() {
         return orderService.getAllOrders();
     }
-    @PostMapping("newOrder")
+    @PostMapping("addOrder")
     public Orders addOrder(@RequestBody Orders orders) {
         return orderService.addOrder(orders);
     }
@@ -31,7 +31,7 @@ public class OrderController {
         return orderService.updateOrder(orders);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteOrderById(@PathVariable int id) {
         orderService.deleteOrderById(id);
     }

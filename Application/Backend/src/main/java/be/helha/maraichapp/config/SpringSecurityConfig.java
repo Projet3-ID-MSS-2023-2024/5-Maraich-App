@@ -3,6 +3,7 @@ package be.helha.maraichapp.config;
 
 
 import be.helha.maraichapp.services.UserService;
+import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,11 +24,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
@@ -39,37 +41,41 @@ public class SpringSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, JwtFilter jwtFilter) throws Exception {
         return
                 httpSecurity
-                        .cors().and()
                         .csrf(AbstractHttpConfigurer::disable)
                         .authorizeHttpRequests(
                                 authorize -> {
                                     authorize.requestMatchers(POST, "/signup").permitAll();
                                     authorize.requestMatchers(POST, "/activation").permitAll();
                                     authorize.requestMatchers(POST, "/login").permitAll();
+                                    authorize.requestMatchers(GET, "/products/**").permitAll();
+                                    authorize.requestMatchers(GET, "/categories/**").permitAll();
+                                    authorize.requestMatchers(GET, "/images/**").permitAll();
+                                    authorize.requestMatchers(GET, "/reservations/**").permitAll();
+                                    authorize.requestMatchers(POST, "/reservations/**").authenticated();
+                                    authorize.requestMatchers(DELETE, "/reservations/**").authenticated();
+                                    authorize.requestMatchers(PUT, "/reservations/**").authenticated();
                                     authorize.anyRequest().authenticated();
                                 }
                         )
                         .sessionManagement(httpSecuritySessionManagementConfigurer ->
                                 httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
                         )
                         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                        .cors(Customizer.withDefaults())
                         .build();
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+    public CorsFilter corsFilter(){
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        final CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+        configuration.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         source.registerCorsConfiguration("/**", configuration);
-        return source;
+        return new CorsFilter(source);
     }
-
     @Bean
     public AuthenticationManager authenticaticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();

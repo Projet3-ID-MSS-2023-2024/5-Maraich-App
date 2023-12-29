@@ -5,30 +5,33 @@ import be.helha.maraichapp.models.Product;
 import be.helha.maraichapp.models.Shop;
 import be.helha.maraichapp.repositories.CategoryRepository;
 import be.helha.maraichapp.repositories.ProductRepository;
+import be.helha.maraichapp.repositories.ReservationRepository;
 import be.helha.maraichapp.repositories.ShopRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService{
 
-    @Autowired
-    private ProductRepository productRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
-    private ShopRepository shopRepository;
+   
+    private final CategoryRepository categoryRepository;
+
+    private final ShopRepository shopRepository;
+  
+    private final ProductRepository productRepository;
 
     private final ImageService imageService;
+    
+    private final ReservationRepository reservationRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository, ImageService imageService){
+    public ProductServiceImpl(ProductRepository productRepository, ImageService imageService, CategoryRepository categoryRepository, ShopRepository shopRepository, ReservationRepository reservationRepository){
         this.productRepository = productRepository;
         this.imageService = imageService;
+        this.categoryRepository = categoryRepository;
+        this.shopRepository = shopRepository;
+        this.reservationRepository = reservationRepository;
     }
 
     @Override
@@ -40,6 +43,19 @@ public class ProductServiceImpl implements ProductService{
     public List<Product> getAllProductByShop(Shop shop) {
         if (shop == null){
             throw new IllegalArgumentException("Shop cannot be null");
+        }
+        List<Product> productList = productRepository.findProductByShop(shop);
+        // Parcourir la liste des produits
+        for (Product product : productList) {
+            // Récupérer la somme des quantités réservées pour le produit donné
+            Double totalReservedQuantity = reservationRepository.getTotalReservedQuantityByProductId(product.getId()).orElse(0.0);
+
+            // Ajouter l'entrée à la map
+            if (product.isUnity()) {
+                product.setQuantity(product.getQuantity() - totalReservedQuantity.intValue());
+            } else {
+                product.setWeight(product.getWeight() - totalReservedQuantity);
+            }
         }
         return productRepository.findProductByShop(shop);
     }
@@ -59,17 +75,23 @@ public class ProductServiceImpl implements ProductService{
         }
         return productRepository.findById(id).orElse(null);
     }
+    @Override
+    public double getQuantityAvailableByIdProduct(int idProduct){
+        Product product = productRepository.findById(idProduct).orElseThrow(()-> new RuntimeException("Product not found !"));
+        double quantityWithoutReserve;
+        if(product.isUnity()){
+            quantityWithoutReserve = product.getQuantity();
+        } else {
+            quantityWithoutReserve = product.getWeight();
+        }
+        return quantityWithoutReserve - reservationRepository.getTotalReservedQuantityByProductId(idProduct).orElse(0.0);
+    }
 
     @Override
-    public Product addProduct(Product product, MultipartFile file) {
-        if (isInvalidProduct(product)){
-            throw new IllegalArgumentException("Invalid product");
-        }
+    public Product addProduct(Product product) {
         try {
             product.setCategory(categoryRepository.findById(product.getCategory().getIdCategory()).orElseThrow(()-> new RuntimeException("Category not found!")));
             product.setShop(shopRepository.findById(product.getShop().getIdShop()).orElseThrow(() -> new RuntimeException("Shop not found")));
-            String fileName = imageService.saveFile(file);
-            product.setPicturePath(fileName);
             return productRepository.save(product);
         }catch (Exception e){
             throw new RuntimeException("Error adding product", e);
@@ -77,36 +99,17 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Product updateProduct(int id, Product updatedProduct, MultipartFile file) {
-        if (isInvalidProduct(updatedProduct) || !productRepository.existsById(id)){
-            throw new IllegalArgumentException("Invalid product");
-        }
+    public Product updateProduct(int id, Product updatedProduct) {
+        Product existingProduct = getProductById(id);
 
-        try {
-            Product existingProduct = getProductById(id);
-            if (existingProduct != null){
-                existingProduct.setName(updatedProduct.getName());
-                existingProduct.setPrice(updatedProduct.getPrice());
-                existingProduct.setDescription(updatedProduct.getDescription());
-                existingProduct.setUnity(updatedProduct.isUnity());
-                existingProduct.setWeight(updatedProduct.getWeight());
-                existingProduct.setQuantity(updatedProduct.getQuantity());
-                existingProduct.setCategory(updatedProduct.getCategory());
-                existingProduct.setShop(updatedProduct.getShop());
-
-                if (file != null && !file.isEmpty()){
-                    imageService.deleteFile(existingProduct.getPicturePath());
-                    String fileName = imageService.saveFile(file);
-                    existingProduct.setPicturePath(fileName);
-                }
-
-                return productRepository.save(existingProduct);
-            }else {
-                throw new EntityNotFoundException("Product not found with id: " + id);
+        if (productRepository.existsById(updatedProduct.getId())){
+            if (!(updatedProduct.getPicturePath().equals(existingProduct.getPicturePath()))){
+                imageService.deleteFile(existingProduct.getPicturePath());
+                existingProduct.setPicturePath(updatedProduct.getPicturePath());
             }
-        }catch (Exception e){
-            throw new RuntimeException("Error updating product", e);
+            return productRepository.save(updatedProduct);
         }
+        return null;
     }
 
     @Override
@@ -114,18 +117,6 @@ public class ProductServiceImpl implements ProductService{
         if (id <= 0){
             throw new IllegalArgumentException("Invalid product ID");
         }
-        Product product = getProductById(id);
-        imageService.deleteFile(product.getPicturePath());
         productRepository.deleteById(id);
-    }
-
-    private boolean isInvalidProduct(Product product){
-        return product == null ||
-                product.getCategory() == null ||
-                product.getName() == null || product.getName().isEmpty() ||
-                product.getPrice() <= 0 ||
-                product.getDescription() == null || product.getDescription().isEmpty() ||
-                product.getQuantity() <= 0 ||
-                product.getWeight() <= 0;
     }
 }
