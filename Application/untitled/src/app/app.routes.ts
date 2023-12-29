@@ -13,6 +13,7 @@ import {MaraicherComponent} from "./temp/maraicher/maraicher.component";
 import {AdminComponent} from "./temp/admin/admin.component";
 import {MaraicherManagementComponent} from "./pages/admin/maraicher-management/maraicher-management.component";
 import {ListProductsComponent} from "./components/shop/products/list-products/list-products.component";
+import {PanierComponent} from "./pages/panier/panier.component";
 
 export const routes: Routes = [
 
@@ -32,10 +33,11 @@ export const routes: Routes = [
   {path: 'categories', canActivate: [authGuard], component: ListCategoriesComponent},
   {path: 'home', canActivate: [authGuard], component: HomePageComponent},
   {path: 'addRequest', canActivate: [authGuard], component: AddRequestComponent},
-  {path: 'shop/:shopId',canActivate: [authGuard], component:ListProductsComponent},
-  {path: 'accueil',canActivate: [authGuard], component: AccueilComponent},
+  {path: 'accueil', canActivate: [authGuard], component: AccueilComponent},
+  {path: 'panier', canActivate: [authGuard],component: PanierComponent},
 
   //Don't need the guard
+  {path: 'shop/:shopId', canActivate: [authGuard], component:ListProductsComponent},
   {path: 'connexion', component: LoginComponent},
   {path: 'inscription', component: SignupComponent},
   {path: 'activation/:code', component: ActivationComponent},

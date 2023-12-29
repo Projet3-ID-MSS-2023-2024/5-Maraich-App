@@ -10,6 +10,7 @@ import java.util.List;
 public interface ProductService {
     List<Product> getAllProduct();
     List<Product> getAllProductByShop(Shop shop);
+    double getQuantityAvailableByIdProduct(int idProduct);
     List<Product> getAllProductByCategories(Category category);
     Product getProductById(int id);
     Product addProduct(Product product);

@@ -57,7 +57,19 @@ export class AuthService {
       if (isValidRank) {
         this.userRank = decodedPayload.rank as RankEnum
       }
-      console.log(this.userRank + "AUTH SERV");
+    }
+  }
+
+  getIdUserFromCookie() {
+    const token = this.getTokenFromCookie();
+    if (token) {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace('-', '+').replace('_', '/');
+      const decodedPayload = JSON.parse(atob(base64));
+      const userId = decodedPayload.idUser;
+      if (userId) {
+        return userId;
+      }
     }
   }
 

@@ -23,6 +23,7 @@ import {Shop} from "../../../../models/shop";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {ToastModule} from "primeng/toast";
+import {ReservationService} from "../../../../services/reservation.service";
 
 @Component({
   selector: 'app-list-products',
@@ -51,14 +52,16 @@ import {ToastModule} from "primeng/toast";
 export class ListProductsComponent implements OnInit{
   listProduct: Product[] = [];
   shopId!:number;
+  idUser!:number;
   selectedCategory: Category | null = null;
   categories:Category[]=[];
   filteredListProduct: Product[] = [];
   searchTerm: string = '';
   ref: DynamicDialogRef | undefined;
   shop?:Shop;
+  isLogged: boolean = false;
 
-  constructor(private productService:ProductService,private cookieService:CookieService, private confirmationService:ConfirmationService, private shopService:ShopService,private route:ActivatedRoute,private imageService:ImageService, private categoryService:CategoryService, private sanitizer:DomSanitizer, public dialogService:DialogService, private messageService:MessageService) {
+  constructor(private reservationService : ReservationService,private productService:ProductService,private cookieService:CookieService, private confirmationService:ConfirmationService, private shopService:ShopService,private route:ActivatedRoute,private imageService:ImageService, private categoryService:CategoryService, private sanitizer:DomSanitizer, public dialogService:DialogService, private messageService:MessageService) {
   }
 
   ngOnInit(): void {
@@ -128,11 +131,15 @@ export class ListProductsComponent implements OnInit{
 
       // Parse the decoded payload as JSON
       const payloadData = JSON.parse(decodedPayload);
+      this.idUser = payloadData.idUser;
 
-      this.shopService.getShopByOwnerId(payloadData.idUser).subscribe({
+      this.shopService.getShopByOwnerId(this.idUser).subscribe({
         next:(shop) => {
           this.shop = shop;
       }});
+
+      //Oubli du cas ou le token est expirer
+      this.isLogged = true;
     }
   }
 
@@ -145,7 +152,7 @@ export class ListProductsComponent implements OnInit{
   }
 
   showAddProduct(){
-    this.ref = this.dialogService.open(AddProductComponent, {header: "Ajoutez un produit"});
+    this.ref = this.dialogService.open(AddProductComponent, {header: "Ajouter un produit"});
 
     this.ref.onClose.subscribe((response) => {
       if (response == 'success'){
@@ -191,6 +198,39 @@ export class ListProductsComponent implements OnInit{
             console.log(error);
           }
         });
+      }
+    });
+  }
+
+  addReservation(product : Product) {
+    this.reservationService.existShoppingCart(this.idUser, product.shop?.owner.idUser ?? 0).subscribe({
+      next: (response : any) => {
+
+        if(response.message == "1"){
+          let quantityReserve = (product.unity ? product.quantityUnity : product.quantityWeight) ?? 0;
+          this.productService.getQuantityAvailable(product.id).subscribe({
+            next: (response : number) => {
+              if(quantityReserve <= response) {
+                this.reservationService.addReservation(quantityReserve, product.id, this.idUser).subscribe({
+                  next: (response : any) => {
+                    this.getProducts();
+                  },
+                  error: (error) => {
+                    console.log(error);
+                  }
+                });
+              }
+            },
+            error: (error) => {
+              console.log(error);
+            }
+          });
+        } else {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: "Vous ne pouvez avoir qu'un seul panier à la fois. De plus, veuillez noter que vous ne pouvez pas inclure des articles de deux maraîchers différents dans le même panier." });
+        }
+      },
+      error: (error) => {
+        console.log(error);
       }
     });
   }

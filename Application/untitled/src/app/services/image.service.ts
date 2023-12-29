@@ -12,7 +12,7 @@ export class ImageService {
   constructor(private http:HttpClient) { }
 
   getImage(fileName: string): Observable<Blob> {
-    const imageUrl = `${this.apiUrl}/${fileName}`;
+    const imageUrl = `${this.apiUrl}/getImage/${fileName}`;
     return this.http.get(imageUrl, { responseType: 'blob' });
   }
 }

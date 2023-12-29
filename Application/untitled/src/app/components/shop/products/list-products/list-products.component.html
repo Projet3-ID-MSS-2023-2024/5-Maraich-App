@@ -8,11 +8,11 @@
     <ng-template pTemplate="header">
       <div class="flex-container">
         <div class="flex-left">
-          <label for="searchInput">Search:</label>
+          <label class="mr-1" for="searchInput">Rechercher:</label>
           <input type="text" pInputText  id="searchInput" [(ngModel)]="searchTerm" (input)="updateFilteredProducts()" placeholder="Nom d'un produit">
         </div>
         <div class="flex-center">
-          <label>Choissisez une catégorie:</label>
+          <label class="mr-1">Choisissez une catégorie:</label>
           <p-dropdown [options]="categories" [(ngModel)]="selectedCategory" optionLabel="nomCategory" placeholder="Tous" (onChange)="updateFilteredProducts()"></p-dropdown>
         </div>
         <div class="flex-right">
@@ -39,6 +39,7 @@
               </div>
               <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
                 <span class="text-2xl font-semibold">{{ product.price + '€' }}</span>
+                <div> {{ product.unity ? (product.quantity > 1 ? product.quantity + ' unités' : product.quantity + ' unité') : product.weight + ' kg' }} disponibles </div>
                 <div *ngIf="product.unity">
                   <label  for="quantityInputUnit{{product.id}}">Quantité (unité):</label>
                   <p-inputNumber inputId="quantityInputUnit{{product.id}}" [(ngModel)]="product.quantityUnity" [min]="0"> </p-inputNumber>
@@ -47,7 +48,7 @@
                   <label for="weightInputUnit{{product.id}}">Quantité (kg):</label>
                   <p-inputNumber [(ngModel)]="product.quantityWeight" inputId="weightInputUnit{{product.id}}" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"> </p-inputNumber>
                 </div>
-                <button pButton icon="pi pi-shopping-cart" class="md:align-self-end mb-2 p-button-rounded"></button>
+                <button pButton (click)="addReservation(product)" icon="pi pi-shopping-cart" [disabled]="!isLogged || (product.quantityWeight === undefined && product.quantityUnity === undefined) || (product.quantityWeight === 0 || product.quantityUnity === 0)" class="md:align-self-end mb-2 p-button-rounded"></button>
                 <div class="flex align-items-center justify-content-between" *ngIf="shop?.idShop == shopId">
                   <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-success" (click)="showEditProduct(product)"></button>
                   <button pButton icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="showDeleteProduct(product.id)"></button>
@@ -74,6 +75,7 @@
             </div>
             <div class="flex align-items-center justify-content-between">
               <span class="text-2xl font-semibold">{{ product.price + '€' }}</span>
+              <div> {{ product.unity ? (product.quantity > 1 ? product.quantity + ' unités' : product.quantity + ' unité') : product.weight + ' kg' }} disponibles </div>
               <div *ngIf="product.unity">
                 <label  for="quantityInputCard{{product.id}}">Quantité (unité):</label>
                 <p-inputNumber inputId="quantityInputCard{{product.id}}" [(ngModel)]="product.quantityUnity" [min]="0"> </p-inputNumber>
@@ -82,7 +84,11 @@
                 <label for="weightInputCard{{product.id}}">Quantité (kg):</label>
                 <p-inputNumber [(ngModel)]="product.quantityWeight" inputId="weightInputCard{{product.id}}" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"> </p-inputNumber>
               </div>
-              <button pButton icon="pi pi-shopping-cart" class="p-button-rounded"></button>
+              <button pButton (click)="addReservation(product)" icon="pi pi-shopping-cart" [disabled]="!isLogged || (product.quantityWeight === undefined && product.quantityUnity === undefined) || (product.quantityWeight === 0 || product.quantityUnity === 0)" class="md:align-self-end mb-2 p-button-rounded"></button>
+              <div class="flex align-items-center justify-content-between" *ngIf="shop?.idShop == shopId">
+                <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-success" (click)="showEditProduct(product)"></button>
+                <button pButton icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="showDeleteProduct(product.id)"></button>
+              </div>
             </div>
           </div>
         </div>

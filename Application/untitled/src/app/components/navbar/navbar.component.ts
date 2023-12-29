@@ -49,6 +49,10 @@ export class NavbarComponent implements OnInit{
     this.route.navigate(["admin/test"]);
   }
 
+  redirectToShoppingCart() {
+    this.route.navigate(["panier"]);
+  }
+
   logout() {
     this.authService.logout().subscribe({
         next: (response: any) => {
@@ -57,7 +61,6 @@ export class NavbarComponent implements OnInit{
           this.userRank = undefined;
           this.authService.userRank = this.userRank;
           this.route.navigate(["/accueil"]);
-          this.handleRouteChange();
         },
         error: (error) => {
         }

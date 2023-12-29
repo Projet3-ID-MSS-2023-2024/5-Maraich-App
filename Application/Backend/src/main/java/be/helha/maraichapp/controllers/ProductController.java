@@ -15,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/products")
@@ -48,6 +50,11 @@ public class ProductController {
         } else {
           return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/getQuantityAvailable/{id}")
+    public double getQuantityAvailableByIdProduct(@PathVariable("id") int idProduct){
+        return this.productService.getQuantityAvailableByIdProduct(idProduct);
     }
 
     @GetMapping("/get-all-by-shop/{id}")
