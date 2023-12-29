@@ -1,16 +1,18 @@
-<div class="p-grid p-justify-center">
-  <div class="p-col-12 p-md-4" *ngFor="let item of shops">
-    <div class="p-shadow-4">
-      <p-card header="{{item.name}}" subheader="Location: {{item.address.city}}" [style]="{'width': '300px'}">
-        <ng-template pTemplate="header">
-          <img alt="Card" [src]="item.picture" style="border-radius: 8px 8px 0 0; width: 100%;">
-        </ng-template>
-        <ng-template pTemplate="body">
-          <p>
-            {{ item.description }}
-          </p>
-        </ng-template>
-      </p-card>
-    </div>
+<div class="container">
+  <div class="row">
+    <ng-container *ngFor="let item of shops">
+      <div class="col-md-4 mb-4">
+        <p-card [style]="{'width': '100%', 'border': '1px solid #dee2e6', 'border-radius': '8px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.1)'}">
+          <ng-template pTemplate="header">
+            <img alt="Card" [src]="item.picture" class="card-img-top" style="border-radius: 8px 8px 0 0;">
+          </ng-template>
+          <ng-template pTemplate="body">
+            <h5 class="card-title">{{ item.name }}</h5>
+            <p class="card-text"><strong>Location:</strong> {{ item.address.city }}</p>
+            <p class="card-text">{{ item.description }}</p>
+          </ng-template>
+        </p-card>
+      </div>
+    </ng-container>
   </div>
 </div>
