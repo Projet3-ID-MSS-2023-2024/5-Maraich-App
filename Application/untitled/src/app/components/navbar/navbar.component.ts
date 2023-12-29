@@ -61,7 +61,6 @@ export class NavbarComponent implements OnInit{
           this.userRank = undefined;
           this.authService.userRank = this.userRank;
           this.route.navigate(["/accueil"]);
-          this.handleRouteChange();
         },
         error: (error) => {
         }

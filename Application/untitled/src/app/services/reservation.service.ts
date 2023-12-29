@@ -18,4 +18,21 @@ export class ReservationService {
   getShoppingCart(idUser : number) {
     return this.http.get<Reservation[]>(`${this.apiUrl}/getShoppingCartUser/` + idUser);
   }
+
+  deleteReservation(idReservation : number) {
+    return this.http.delete(`${this.apiUrl}/delete/` + idReservation)
+  }
+
+  updateReservation(idReservation: number, newQuantity: number) {
+    const credentials = {idReservation: idReservation, newQuantity: newQuantity}
+    return this.http.put(`${this.apiUrl}/update`, credentials)
+  }
+
+  deleteShoppingCartByUserId(idUser: number) {
+    return this.http.delete(`${this.apiUrl}/deleteShoppingCart/` + idUser)
+  }
+
+  existShoppingCart(idUser : number, idShop : number) {
+    return this.http.get(`${this.apiUrl}/existShoppingCart/` + idUser + "/" + idShop);
+  }
 }

@@ -85,6 +85,10 @@
                 <p-inputNumber [(ngModel)]="product.quantityWeight" inputId="weightInputCard{{product.id}}" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"> </p-inputNumber>
               </div>
               <button pButton (click)="addReservation(product)" icon="pi pi-shopping-cart" [disabled]="!isLogged || (product.quantityWeight === undefined && product.quantityUnity === undefined) || (product.quantityWeight === 0 || product.quantityUnity === 0)" class="md:align-self-end mb-2 p-button-rounded"></button>
+              <div class="flex align-items-center justify-content-between" *ngIf="shop?.idShop == shopId">
+                <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-success" (click)="showEditProduct(product)"></button>
+                <button pButton icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="showDeleteProduct(product.id)"></button>
+              </div>
             </div>
           </div>
         </div>

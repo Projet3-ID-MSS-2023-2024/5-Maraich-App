@@ -70,7 +70,6 @@ export class ListProductsComponent implements OnInit{
 
       this.getCategories();
       this.getProducts();
-      console.log(this.listProduct[0]);
       this.updateFilteredProducts();
       const jwtToken = this.cookieService.get('access_token');
       this.extractIdUserData(jwtToken);
@@ -82,7 +81,6 @@ export class ListProductsComponent implements OnInit{
       next: (products) => {
         this.listProduct = products;
         this.loadImages();
-        console.log(this.listProduct);
       },
       error: (error) => {
         console.log(error);
@@ -205,18 +203,30 @@ export class ListProductsComponent implements OnInit{
   }
 
   addReservation(product : Product) {
-    let quantityReserve = (product.unity ? product.quantityUnity : product.quantityWeight) ?? 0;
-    this.productService.getQuantityAvailable(product.id).subscribe({
-      next: (response : number) => {
-        if(quantityReserve <= response) {
-          this.reservationService.addReservation(quantityReserve, product.id, this.idUser).subscribe({
-            next: (response : any) => {
-              this.getProducts();
+    this.reservationService.existShoppingCart(this.idUser, product.shop?.owner.idUser ?? 0).subscribe({
+      next: (response : any) => {
+
+        if(response.message == "1"){
+          let quantityReserve = (product.unity ? product.quantityUnity : product.quantityWeight) ?? 0;
+          this.productService.getQuantityAvailable(product.id).subscribe({
+            next: (response : number) => {
+              if(quantityReserve <= response) {
+                this.reservationService.addReservation(quantityReserve, product.id, this.idUser).subscribe({
+                  next: (response : any) => {
+                    this.getProducts();
+                  },
+                  error: (error) => {
+                    console.log(error);
+                  }
+                });
+              }
             },
             error: (error) => {
               console.log(error);
             }
           });
+        } else {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: "Vous ne pouvez avoir qu'un seul panier à la fois. De plus, veuillez noter que vous ne pouvez pas inclure des articles de deux maraîchers différents dans le même panier." });
         }
       },
       error: (error) => {
