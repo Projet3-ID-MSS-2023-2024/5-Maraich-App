@@ -68,6 +68,7 @@ public class ProductController {
         }
     }
 
+    /*
     @PostMapping("/new")
     public ResponseEntity<Product> addProduct(@RequestBody Product product) {
         try {
@@ -84,6 +85,7 @@ public class ProductController {
     public Product updateProduct(@PathVariable("id") int id, @RequestBody Product updatedProduct){
         return productService.updateProduct(id, updatedProduct);
     }
+
 
     @DeleteMapping
     @RequestMapping("/delete/{id}")
@@ -104,4 +106,6 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+     */
 }

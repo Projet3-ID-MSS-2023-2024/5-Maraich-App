@@ -59,10 +59,17 @@ export class LoginComponent {
             console.log(response.message);
           } else {
             // Save the token in a cookie
+<<<<<<< HEAD:Application/untitled/src/app/components/auth/login/login.component.ts
+            document.cookie = `access_token=${response.bearer}`;
+
+            // Navigate to the farmers display TO BE DONE
+            this.route.navigate(["/home"]);
+=======
             this.cookieService.set("access_token", response.bearer, undefined,  undefined, undefined, true, "Lax");
             this.authService.getRankFromCookie();
             // Navigate to the home page display
             this.route.navigate(["/accueil"]);
+>>>>>>> develop:Application/untitled/src/app/pages/auth/login/login.component.ts
           }
 
         },

@@ -1,22 +1,18 @@
-<!--
-<p-card header="Chez Patoche" [style]="{'width' : '20rem', 'margin-bottom' : '1em'}">
-
-  <ng-template pTemplate="header">
-    <img alt="Patrick.png" src="../../assets/images/shop/Patrick.jpg">
-  </ng-template>
-
-  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt
-    quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque quas!</p>
-  <p-button label="Consulter ce maraicher" icon="pi pi-check"></p-button>
-
-</p-card>
--->
-
-<div class="card" style="width: 18rem;">
-  <img src="..." class="card-img-top" alt="...">
-  <div class="card-body">
-    <h5 class="card-title">Card with stretched link</h5>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    <a href="#" class="btn btn-primary stretched-link">Go somewhere</a>
+<div class="container">
+  <div class="row">
+    <ng-container *ngFor="let item of shops">
+      <div class="col-md-4 mb-4">
+        <p-card [style]="{'width': '100%', 'border': '1px solid #dee2e6', 'border-radius': '8px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.1)'}">
+          <ng-template pTemplate="header">
+            <img alt="Card" [src]="item.picture" class="card-img-top" style="border-radius: 8px 8px 0 0;">
+          </ng-template>
+          <ng-template pTemplate="body">
+            <h5 class="card-title">{{ item.name }}</h5>
+            <p class="card-text"><strong>Location:</strong> {{ item.address.city }}</p>
+            <p class="card-text">{{ item.description }}</p>
+          </ng-template>
+        </p-card>
+      </div>
+    </ng-container>
   </div>
 </div>

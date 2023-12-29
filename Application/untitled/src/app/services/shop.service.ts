@@ -13,7 +13,7 @@ export class ShopService {
 
   getShopById(id: number): Observable<Shop> {
     return this.http.get<Shop>(`${environment.apiUrl}/shops/get/${id}`);
-  }
+  } 
 
   getShopByOwnerId(idOwner: number){
     return this.http.get<Shop>(`${environment.apiUrl}/shop/owner/${idOwner}`);
