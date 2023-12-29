@@ -7,6 +7,7 @@ import be.helha.maraichapp.models.Users;
 import be.helha.maraichapp.repositories.ProductRepository;
 import be.helha.maraichapp.repositories.ReservationRepository;
 import be.helha.maraichapp.repositories.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -74,10 +76,61 @@ public class ReservationService {
         return finalReservation;
     }
 
+    public List<Reservation> getShoppingCart(int idUser) {
+        return reservationRepository.findByUserId(idUser);
+    }
+
+    public Reservation updateReservationQuantity(int idReservation, double newQuantity){
+        Reservation reservation = reservationRepository.findById(idReservation).orElseThrow(()-> new RuntimeException("Reservation not found !"));
+        // Verify if the product isUnity and accept decimal or not
+        if (!reservation.getProduct().isUnity()) {
+            reservation.setReserveQuantity(newQuantity);
+        } else {
+            // If the product isUnity, verify if the new Quantity have decimal
+            if (newQuantity % 1 == 0) {
+                reservation.setReserveQuantity(newQuantity);
+            } else {
+                throw new RuntimeException("Decimal values are not allowed for unity products.");
+            }
+        }
+        return reservationRepository.save(reservation);
+    }
+
+    public void deleteReservationById(int id) {
+            if (reservationRepository.existsById(id)) {
+                reservationRepository.deleteById(id);
+            } else {
+                throw new EntityNotFoundException("Reservation not found with ID: " + id);
+            }
+    }
+
 //    @Transactional
     public List<Reservation> getAllReservations() {
 //        removeExpirateReservations();
         return this.reservationRepository.findAll();
+    }
+    @Transactional
+    public void deleteShoppingCartByUserId(int idUser) {
+        reservationRepository.deleteAllByUserId(idUser);
+    }
+
+    /**
+     * If the user have any shopping cart or the shopping cart feat with the idShop return 1
+     * If the user have a shopping cart but it don't feat with idShop return 0
+     * @param idUser
+     * @param idShop
+     * @return
+     */
+    public Map<String, String> existShoppingCart(int idUser, int idShop) {
+        Map<String, String> returnMap = new HashMap<>();
+        List<Reservation> reservationList = reservationRepository.findByUserId(idUser);
+        if(reservationList.isEmpty() || reservationList.get(0).getProduct().getShop().getIdShop() == idShop)
+        {
+            returnMap.put("message", "1");
+        } else {
+            returnMap.put("message", "0");
+        }
+        return returnMap;
     }
 
 //    @Transactional
@@ -95,8 +148,6 @@ public class ReservationService {
 //        this.reservationRepository.deleteExpiredReservations(expiredTime);
 //    }
 
-    public List<Reservation> getShoppingCart(int idUser) {
-        return reservationRepository.findByUserId(idUser);
-    }
+
 }
 

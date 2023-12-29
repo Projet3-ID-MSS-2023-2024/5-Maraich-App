@@ -3,6 +3,7 @@ package be.helha.maraichapp.config;
 
 
 import be.helha.maraichapp.services.UserService;
+import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,8 +29,7 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
@@ -52,6 +52,8 @@ public class SpringSecurityConfig {
                                     authorize.requestMatchers(GET, "/images/**").permitAll();
                                     authorize.requestMatchers(GET, "/reservations/**").permitAll();
                                     authorize.requestMatchers(POST, "/reservations/**").authenticated();
+                                    authorize.requestMatchers(DELETE, "/reservations/**").authenticated();
+                                    authorize.requestMatchers(PUT, "/reservations/**").authenticated();
                                     authorize.anyRequest().authenticated();
                                 }
                         )
