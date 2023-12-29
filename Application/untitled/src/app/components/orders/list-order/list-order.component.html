@@ -1,1 +1,31 @@
-<p>list-order works!</p>
+<div>
+  <h3>Shop Orders</h3>
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Date</th>
+        <th scope="col">Total</th>
+        <th scope="col">Status</th>
+        <th scope="col">Archived</th>
+        <th scope="col">Customer</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (order of orders; track order.idOrder) {
+        <tr (click)="viewOrder(order.idOrder)">
+          <th>{{order.idOrder}}</th>
+          <th>{{order.orderDate}}</th>
+          <th>{{order.total}}</th>
+          <th>{{order.orderIsReady}}</th>
+          <th>{{order.isArchived}}</th>
+          <th>{{order.customer}}</th>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="4">No order found</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
