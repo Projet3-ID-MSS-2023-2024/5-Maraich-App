@@ -59,6 +59,15 @@ export class NavbarComponent implements OnInit{
     this.route.navigate(["panier"]);
   }
 
+  userProfileClick() {
+    if(this.isLogged){
+      this.route.navigate(["modifier-profil"]);
+
+    } else {
+      this.route.navigate(["connexion"]);
+    }
+  }
+
   logout() {
     this.authService.logout().subscribe({
         next: (response: any) => {
@@ -69,6 +78,11 @@ export class NavbarComponent implements OnInit{
           this.route.navigate(["/accueil"]);
         },
         error: (error) => {
+          this.cookieService.deleteAll()
+          this.isLogged = false;
+          this.userRank = undefined;
+          this.authService.userRank = this.userRank;
+          this.route.navigate(["/accueil"]);
         }
       }
     );

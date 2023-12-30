@@ -13,10 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Service
@@ -118,7 +115,6 @@ public class UserService implements UserDetailsService, UserServiceInterface {
             throw new RuntimeException("Your email is already used !");
         }
 
-
         if (!Pattern.compile(passwordRegex).matcher(users.getPassword()).matches()) {
             throw new RuntimeException("The password must contain minimum: 8 characters, 1 uppercase and 1 digit !");
         }
@@ -192,43 +188,49 @@ public class UserService implements UserDetailsService, UserServiceInterface {
     @Override
     @Transactional
     public Users updateUserAdmin(Users user) {
-        // Vérifie si les données sont valides
+        // Verify if the data is valid
         boolean dataIsOk = dataUserVerification(user, false);
         if (!dataIsOk) {
             throw new RuntimeException("Invalid user data");
         }
 
-        // Vérifie si l'utilisateur existe
+        // Verify if the user exist
         Optional<Users> existingUserOptional = userRepository.findById(user.getIdUser());
         if (existingUserOptional.isPresent()) {
             Users existingUser = existingUserOptional.get();
 
-            // Vérifie si le mot de passe a changé
+            // Verify if the password was change
             if (!existingUser.getPassword().equals(user.getPassword())) {
-                // Hachez le nouveau mot de passe
+                // Hash the new password
                 String hashedPassword = passwordEncoder.encode(user.getPassword());
-                user.setPassword(hashedPassword);  // Met à jour le mot de passe chiffré dans l'objet user
+                user.setPassword(hashedPassword);  // Update the crypted password in the user
             }
+
+             user.setValidation(existingUser.getValidation());
+             user.setShop(existingUser.getShop());
+             user.setRequests(existingUser.getRequests());
+
+            Users updatedUser = userRepository.save(user);
             Users userDb = userRepository.findById(user.getIdUser()).orElseThrow(() -> new RuntimeException("User not found !"));
             if(user.getRank().getName() == RankEnum.MARAICHER &&
                     userDb.getRank().getName() == RankEnum.CUSTOMER){
                 if(shopRepository.existsByOwnerId(user.getIdUser())){
                     Shop shop = userDb.getShop();
                     shopRepository.save(shop);
-                    user.setShop(shop);
+                    updatedUser.setShop(shop);
                 }else{
-                    shopService.addShopMinimal(user);
+                    shopService.addShopMinimal(updatedUser);
                 }
             } else if(user.getRank().getName() == RankEnum.CUSTOMER &&
                     userDb.getRank().getName() == RankEnum.MARAICHER){
                 Shop shop = userDb.getShop();
                 shop.setEnable(false);
                 shopRepository.save(shop);
-                user.setShop(shop);
+                updatedUser.setShop(shop);
             }
 
-            // Met à jour l'utilisateur
-            return userRepository.save(user);
+            // Update the user
+            return updatedUser;
         } else {
             throw new EntityNotFoundException("User not found with ID: " + user.getIdUser());
         }
@@ -249,26 +251,26 @@ public class UserService implements UserDetailsService, UserServiceInterface {
             throw new RuntimeException("Invalid user data");
         }
 
-        // Vérifie si l'utilisateur existe
+        // Verify if the user exist
         Optional<Users> existingUserOptional = userRepository.findById(updatedUser.getIdUser());
 
         if (existingUserOptional.isPresent()) {
             Users existingUser = existingUserOptional.get();
 
-            // Restreint les modifications autorisées
+            // Modify authorize things
             existingUser.setFirstName(updatedUser.getFirstName());
             existingUser.setSurname(updatedUser.getSurname());
             existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
             existingUser.setAddress(updatedUser.getAddress());
 
-            // Vérifie si le mot de passe a changé
+            // Verify if the password was change
             if (!existingUser.getPassword().equals(updatedUser.getPassword())) {
-                // Hachez le nouveau mot de passe
+                // Hash the new password
                 String hashedPassword = passwordEncoder.encode(updatedUser.getPassword());
                 existingUser.setPassword(hashedPassword);
             }
 
-            // Met à jour l'utilisateur
+            // Update the user
             return userRepository.save(existingUser);
         } else {
             throw new EntityNotFoundException("User not found with ID: " + updatedUser.getIdUser());

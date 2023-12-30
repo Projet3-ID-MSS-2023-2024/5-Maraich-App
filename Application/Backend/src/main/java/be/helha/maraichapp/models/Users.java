@@ -31,7 +31,6 @@ public class Users implements UserDetails {
     private String surname;
     @Column(nullable = false)
     private String phoneNumber;
-    @JsonIgnore
     @Column(nullable = false)
     private String password;
     @Embedded
@@ -48,22 +47,22 @@ public class Users implements UserDetails {
     @JoinColumn(name = "rankId")
     private Rank rank;
     @JsonIgnore
-    @OneToOne(cascade = {CascadeType.ALL})
+    @OneToOne(cascade = {CascadeType.REMOVE})
     @JoinColumn(name="requestId")
     private Requests requests;
     @JsonIgnore
-    @OneToMany(mappedBy = "users", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "users", cascade = {CascadeType.REMOVE})
     private List<Jwt> jwts;
     @JsonIgnore
-    @OneToOne(cascade = {CascadeType.ALL})
+    @OneToOne(cascade = {CascadeType.REMOVE})
     @JoinColumn(name="validationId")
     private Validation validation;
     @JsonIgnore
-    @OneToOne(cascade = {CascadeType.ALL})
+    @OneToOne(cascade = {CascadeType.REMOVE})
     @JoinColumn(name = "shopId")
     private Shop shop;
     @JsonIgnore
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "users")
+    @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "users")
     private List<Reservation> reservations;
 
 
