@@ -1,0 +1,74 @@
+<div class="flex justify-content-center">
+  <div class="surface-card p-4 shadow-2 border-round w-full lg:w-6">
+    <div class="text-center mb-5">
+      <img src="../../../../assets/images/logos/vegetables.svg" alt="Image" height="100" class="mb-3"
+           width="100">
+      <div class="text-900 text-3xl font-medium mb-3">Modifier vos informations personnelles</div>
+    </div>
+
+    <div>
+      <div class="flex justify-content-center">
+        <div class="w-6 mr-2">
+          <label for="firstName" class="block text-900 font-medium mb-2">Nom</label>
+          <input id="firstName" type="text" [(ngModel)]="user.firstName" placeholder="Nom" pInputText class="w-full" [class.ng-invalid]="firstNameIsNotOk" [class.ng-dirty]="firstNameIsNotOk">
+          <div *ngIf="firstNameIsNotOk" class="text-red-500 mt-2">Le nom entré est invalide.</div>
+        </div>
+
+        <div class="w-6 ml-2">
+          <label for="surname" class="block text-900 font-medium mb-2">Prénom</label>
+          <input id="surname" type="text" [(ngModel)]="user.surname" placeholder="Prénom" pInputText class="w-full" [class.ng-invalid]="surnameIsNotOk" [class.ng-dirty]="surnameIsNotOk">
+          <div *ngIf="surnameIsNotOk" class="text-red-500 mt-2" >Le prénom entré est invalide.</div>
+        </div>
+      </div>
+
+      <label for="phoneNumber" class="block text-900 font-medium mb-2 mt-3">Numéro de téléphone</label>
+      <input id="phoneNumber" type="text" [(ngModel)]="user.phoneNumber" placeholder="Numéro de téléphone" pInputText class="w-full" [class.ng-invalid]="phoneNumberIsNotOk" [class.ng-dirty]="phoneNumberIsNotOk">
+      <div *ngIf="phoneNumberIsNotOk" class="text-red-500 mt-2">Le numéro de téléphone est entré invalide.</div>
+
+      <label for="mail" class="block text-900 font-medium mb-2 mt-3">Email</label>
+      <input id="mail" type="email" disabled [(ngModel)]="user.email" placeholder="Email" pInputText class="w-full" [class.ng-invalid]="addressEmailIsNotOk || addressEmailIsAlreadyUse" [class.ng-dirty]="addressEmailIsNotOk || addressEmailIsAlreadyUse">
+      <div *ngIf="addressEmailIsNotOk" class="text-red-500 mt-2">L'email entré est invalide.</div>
+      <div *ngIf="addressEmailIsAlreadyUse" class="text-red-500 mt-2">L'email est déjà utilisé.</div>
+
+      <button *ngIf="!wantChangePassword" (click)="activeForChangePassword()" pButton pRipple type="submit" label="Modifier mon mot de passe" class="w-full mt-3"></button>
+      <div *ngIf="wantChangePassword">
+        <label class="block text-900 font-medium mb-2 mt-3">Mot de passe</label>
+        <p-password [(ngModel)]="user.password" placeholder="Mot de passe" [toggleMask]="true" styleClass="w-full" [class.ng-invalid]="passwordIsNotOk || !passwordFeatIsOk" [class.ng-dirty]="passwordIsNotOk || !passwordFeatIsOk" [inputStyle]="{'width':'100%'}"></p-password>
+        <div *ngIf="passwordIsNotOk" class="text-red-500 mt-2">Le mot de passe doit contenir 1 majuscule, 1 chiffre et minimum 8 caractères.</div>
+
+        <label class="block text-900 font-medium mb-2 mt-3">Confirmer le mot de passe</label>
+        <p-password [(ngModel)]="passwordConfirmation" [feedback]="false" placeholder="Confirmation de mot de passe" [toggleMask]="true" styleClass="w-full" [class.ng-invalid]="!passwordFeatIsOk" [class.ng-dirty]="!passwordFeatIsOk" [inputStyle]="{'width':'100%'}"></p-password>
+        <div *ngIf="!passwordFeatIsOk" class="text-red-500 mt-2">Le mot de passe ne correspond pas.</div>
+      </div>
+      <div class="flex mb-3">
+        <div class="w-6 mr-2">
+          <label for="road" class="block text-900 font-medium mb-2 mt-3">Rue</label>
+          <input id="road" type="text" [(ngModel)]="user.address.road" placeholder="Rue" pInputText class="w-full" [class.ng-invalid]="addressRoadIsNotOk" [class.ng-dirty]="addressRoadIsNotOk">
+          <div *ngIf="addressRoadIsNotOk" class="text-red-500 mt-2">Le nom de rue est invalide.</div>
+        </div>
+
+        <div class="w-6 ml-2">
+          <label for="city" class="block text-900 font-medium mb-2 mt-3">Ville</label>
+          <input id="city" type="text" [(ngModel)]="user.address.city" placeholder="Ville" pInputText class="w-full" [class.ng-invalid]="addressCityIsNotOk" [class.ng-dirty]="addressCityIsNotOk">
+          <div *ngIf="addressCityIsNotOk" class="text-red-500 mt-2">Le nom de ville est invalide.</div>
+        </div>
+      </div>
+
+      <div class="flex mb-3 justify-content-center">
+        <div class="w-6 mr-2">
+          <label for="number" class="block text-900 font-medium mb-2 mt-3">Numéro</label>
+          <input id="number" type="text" [(ngModel)]="user.address.number" placeholder="Numéro" pInputText class="w-full" [class.ng-invalid]="addressNumberIsNotOk" [class.ng-dirty]="addressNumberIsNotOk">
+          <div *ngIf="addressNumberIsNotOk" class="text-red-500 mt-2">Le numéro de maison est invalide.</div>
+        </div>
+
+        <div class="w-6 ml-2">
+          <label for="postCode" class="block text-900 font-medium mb-2 mt-3">Code postal</label>
+          <input id="postCode" type="text" [(ngModel)]="user.address.postCode" placeholder="Code postal" pInputText class="w-full mb-3" [class.ng-invalid]="addressPostCodeIsNotOk" [class.ng-dirty]="addressPostCodeIsNotOk">
+          <div *ngIf="addressPostCodeIsNotOk" class="text-red-500 mt-2">Le code postal est invalide.</div>
+        </div>
+      </div>
+
+      <button (click)="onSubmitForm()" pButton pRipple type="submit" label="S'inscrire" icon="pi pi-user" class="w-full"></button>
+    </div>
+  </div>
+</div>

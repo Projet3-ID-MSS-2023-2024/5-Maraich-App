@@ -11,6 +11,7 @@ import {MaraicherManagementComponent} from "./pages/admin/maraicher-management/m
 import {ListProductsComponent} from "./pages/products/list-products/list-products.component";
 import {PanierComponent} from "./pages/panier/panier.component";
 import {ListCategoriesComponent} from "./pages/admin/categories/list-categories/list-categories.component";
+import {EditUserProfileComponent} from "./pages/edit-user-profile/edit-user-profile.component";
 
 export const routes: Routes = [
   {
@@ -29,6 +30,7 @@ export const routes: Routes = [
   {path: 'addRequest', canActivate: [authGuard], component: AddRequestComponent},
   {path: 'panier', canActivate: [authGuard],component: PanierComponent},
   {path: 'shop/:shopId', canActivate: [authGuard], component:ListProductsComponent},
+  {path: 'modifier-profil', canActivate: [authGuard], component:EditUserProfileComponent},
 
   //Don't need the guard
   {path: 'connexion', component: LoginComponent},
