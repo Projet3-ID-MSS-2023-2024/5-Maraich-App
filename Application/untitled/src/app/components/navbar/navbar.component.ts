@@ -48,7 +48,7 @@ export class NavbarComponent implements OnInit{
   }
 
   redirectToPanelMaraicher(){
-    this.route.navigate(["maraicher/test"]);
+    this.route.navigate(["maraicher/modifier-profil"]);
   }
 
   redirectToPanelAdmin(){
@@ -59,7 +59,7 @@ export class NavbarComponent implements OnInit{
     this.route.navigate(["panier"]);
   }
 
-  userProfileClick() {
+  redirectToEditProfilUser() {
     if(this.isLogged){
       this.route.navigate(["modifier-profil"]);
 
@@ -67,6 +67,8 @@ export class NavbarComponent implements OnInit{
       this.route.navigate(["connexion"]);
     }
   }
+
+
 
   logout() {
     this.authService.logout().subscribe({

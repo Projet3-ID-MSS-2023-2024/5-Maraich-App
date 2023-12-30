@@ -1,0 +1,103 @@
+<div *ngIf="shop">
+  <div *ngIf="!shopIsOkay || wantModify" class="flex justify-content-center">
+
+    <div class="surface-card p-4 shadow-2 border-round w-full lg:w-6">
+      <div class="text-center mb-5">
+        <img src="../../../../assets/images/logos/vegetables.svg" alt="Image" height="100" class="mb-3"
+             width="100">
+        <div *ngIf="shopIsOkay" class="text-900 text-3xl font-medium mb-3">Modifier les informations de votre boutique
+        </div>
+        <div *ngIf="!shopIsOkay" class="text-900 text-3xl font-medium mb-3">Remplissez ces informations pour que votre
+          boutique soit accessible
+        </div>
+      </div>
+
+      <div>
+        <label for="name" class="block text-900 font-medium mb-2">Nom</label>
+        <input id="name" type="text" [(ngModel)]="shop.name" placeholder="Nom" pInputText class="w-full"
+               [class.ng-invalid]="nameIsNotOk" [class.ng-dirty]="nameIsNotOk">
+        <div *ngIf="nameIsNotOk" class="text-red-500 mt-2">Le nom entré est invalide.</div>
+
+        <label for="mail" class="block text-900 font-medium mb-2 mt-3">Email</label>
+        <input id="mail" type="email" [(ngModel)]="shop.email" placeholder="Email" pInputText class="w-full"
+               [class.ng-invalid]="addressEmailIsNotOk || addressEmailIsAlreadyUse"
+               [class.ng-dirty]="addressEmailIsNotOk || addressEmailIsAlreadyUse">
+        <div *ngIf="addressEmailIsNotOk" class="text-red-500 mt-2">L'email entré est invalide.</div>
+        <div *ngIf="addressEmailIsAlreadyUse" class="text-red-500 mt-2">L'email est déjà utilisé.</div>
+
+        <label for="description" class="block text-900 font-medium mb-2 mt-3">Description</label>
+        <textarea id="description" class="block text-900 font-medium mb-2 w-full" rows="5" [autoResize]="true"
+                  pInputTextarea [(ngModel)]="shop.description"></textarea>
+
+        <div>
+          <p-fileUpload [showUploadButton]="false" accept="image/*" [maxFileSize]="100000" name="file"
+                        (onSelect)="onFileSelected($event)" chooseLabel="Image"></p-fileUpload>
+        </div>
+
+        <div class="flex mb-3">
+          <div class="w-6 mr-2">
+            <label for="road" class="block text-900 font-medium mb-2 mt-3">Rue</label>
+            <input id="road" type="text" [(ngModel)]="shop.address.road" placeholder="Rue" pInputText class="w-full"
+                   [class.ng-invalid]="addressRoadIsNotOk" [class.ng-dirty]="addressRoadIsNotOk">
+            <div *ngIf="addressRoadIsNotOk" class="text-red-500 mt-2">Le nom de rue est invalide.</div>
+          </div>
+
+          <div class="w-6 ml-2">
+            <label for="city" class="block text-900 font-medium mb-2 mt-3">Ville</label>
+            <input id="city" type="text" [(ngModel)]="shop.address.city" placeholder="Ville" pInputText class="w-full"
+                   [class.ng-invalid]="addressCityIsNotOk" [class.ng-dirty]="addressCityIsNotOk">
+            <div *ngIf="addressCityIsNotOk" class="text-red-500 mt-2">Le nom de ville est invalide.</div>
+          </div>
+        </div>
+
+        <div class="flex mb-3 justify-content-center">
+          <div class="w-6 mr-2">
+            <label for="number" class="block text-900 font-medium mb-2 mt-3">Numéro</label>
+            <input id="number" type="text" [(ngModel)]="shop.address.number" placeholder="Numéro" pInputText
+                   class="w-full" [class.ng-invalid]="addressNumberIsNotOk" [class.ng-dirty]="addressNumberIsNotOk">
+            <div *ngIf="addressNumberIsNotOk" class="text-red-500 mt-2">Le numéro de maison est invalide.</div>
+          </div>
+
+          <div class="w-6 ml-2">
+            <label for="postCode" class="block text-900 font-medium mb-2 mt-3">Code postal</label>
+            <input id="postCode" type="text" [(ngModel)]="shop.address.postCode" placeholder="Code postal" pInputText
+                   class="w-full mb-3" [class.ng-invalid]="addressPostCodeIsNotOk"
+                   [class.ng-dirty]="addressPostCodeIsNotOk">
+            <div *ngIf="addressPostCodeIsNotOk" class="text-red-500 mt-2">Le code postal est invalide.</div>
+          </div>
+        </div>
+
+        <button (click)="onSubmitForm()" pButton pRipple type="submit" label="Sauvegarder" icon="pi pi-save"
+                class="w-full"></button>
+      </div>
+    </div>
+  </div>
+
+<div *ngIf="shopIsOkay && !wantModify">
+  <div class="card flex justify-content-between mr-5 ml-5 mb-2">
+    <p-button class="mr-1" label="Modifier les informations de ma boutique" (click)="wantModify = true"></p-button>
+    <p-button class="mr-1" label="Gérer mes produits" (click)="redirectToShop()"></p-button>
+    <p-toggleButton [(ngModel)]="shop.enable" onLabel="Ouvert" offLabel="Fermer" (onChange)="turnOnOff()"></p-toggleButton>
+  </div>
+
+
+
+  <div class="p-4 border-1 surface-border surface-card border-round shadow-6">
+
+    <div class="flex flex-wrap align-items-center justify-content-between gap-2">
+      <p-tag [value]="'Ouvert'" severity="success"></p-tag>
+    </div>
+    <div class="flex flex-column align-items-center gap-3 py-5">
+      <img class="w-9 shadow-2 border-round max-h-12rem max-w-12rem" [src]="shop.pictureUrl"
+           [alt]="shop.owner.surname"/>
+      <div class="text-2xl font-bold">{{ shop.owner.surname }}</div>
+    </div>
+    <div class="flex align-items-center justify-content-between">
+      <span class="block text-2xl"><strong>Localisation: </strong>{{ shop.address | adressFormat }}</span>
+    </div>
+    <div class="flex align-items-center justify-content-between">
+      <span class="block text-2xl"><strong>Description: </strong>{{ shop.description }}</span>
+    </div>
+  </div>
+</div>
+</div>

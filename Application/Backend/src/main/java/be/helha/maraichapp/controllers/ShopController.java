@@ -49,6 +49,13 @@ public class ShopController {
     public Shop updateShop(@RequestBody Shop shop){
         return shopService.updateShop(shop);
     }
+
+    @GetMapping
+    @RequestMapping("/turnOnOrOff/{idShop}")
+    public boolean turnOnOff(@PathVariable("idShop") int idShop) {
+        return shopService.turnOnOff(idShop);
+    }
+
     @DeleteMapping
     @RequestMapping("/delete/{id}")
     public void deleteShop(@PathVariable("id")int id) {
