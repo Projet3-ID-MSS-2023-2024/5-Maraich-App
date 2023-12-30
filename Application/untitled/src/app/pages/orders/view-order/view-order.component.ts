@@ -31,7 +31,7 @@ export class ViewOrderComponent {
       error: error => {
         console.error("Error : ", error);
       }
-    })
+    });
   }
 
   ReadyOrder() {

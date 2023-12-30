@@ -1,5 +1,5 @@
 <div>
-  <h3>Commande n° : {{order.idOrder}}</h3>
+  <h3>Commande n° :  {{order.idOrder}}</h3>
   <table>
     <thead>
     <tr>
@@ -22,17 +22,7 @@
       }
     </tbody>
   </table>
-  <button
-    class="btn btn-succes text-light fw-bold"
-    (click)="ReadyOrder()"
-  >
-    Commande prête
-  </button>
-  <button
-    class="btn btn-dark"
-    (click)="ArchiveOrder()"
-  >
-    Archiver la commande
-  </button>
-  <a class="btn btn-primary" routerLink="/order/list">Retour à la liste</a>
+  <a class="btn btn-primary" routerLink="/order/client/list">
+    Retour à la liste
+  </a>
 </div>
