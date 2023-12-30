@@ -8,11 +8,14 @@ import {Shop} from "../../models/shop";
 import {Router} from "@angular/router";
 import {ImageService} from "../../services/image.service";
 import {DomSanitizer} from "@angular/platform-browser";
+import {DataViewModule} from "primeng/dataview";
+import {TagModule} from "primeng/tag";
+import {AdressFormatPipe} from "../../pipe/adress-format.pipe";
 
 @Component({
   selector: 'app-shop-card',
   standalone: true,
-    imports: [CommonModule, ButtonModule, CardModule, SharedModule],
+  imports: [CommonModule, ButtonModule, CardModule, SharedModule, DataViewModule, TagModule, AdressFormatPipe],
   templateUrl: './shop-card.component.html',
   styleUrl: './shop-card.component.css'
 })

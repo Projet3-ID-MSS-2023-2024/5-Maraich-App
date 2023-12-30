@@ -1,18 +1,25 @@
-<div class="container">
-  <div class="row">
-    <ng-container *ngFor="let item of shops">
-      <div class="col-md-4 mb-4">
-        <p-card (click)="goToShopPage(item.idShop)" [style]="{'width': '100%', 'border': '1px solid #dee2e6', 'border-radius': '8px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.1)'}">
-          <ng-template pTemplate="header">
-            <img alt="Card" [src]="item.pictureUrl" class="card-img-top" style="border-radius: 8px 8px 0 0;">
-          </ng-template>
-          <ng-template pTemplate="body">
-            <h5 class="card-title">{{ item.name }}</h5>
-            <p class="card-text"><strong>Location:</strong> {{ item.address.city }}</p>
-            <p class="card-text">{{ item.description }}</p>
-          </ng-template>
-        </p-card>
+<div class="card">
+  <p-dataView [value]="shops" layout="grid">
+    <ng-template let-shop pTemplate="grid" let-shops>
+      <div class="grid grid-nogutter">
+        <div class="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" *ngFor="let shop of shops">
+          <div (click)="goToShopPage(shop.idShop)" class="p-4 border-1 surface-border surface-card border-round shadow-6">
+            <div class="flex flex-wrap align-items-center justify-content-between gap-2">
+              <p-tag [value]="'Ouvert'" severity="success"></p-tag>
+            </div>
+            <div class="flex flex-column align-items-center gap-3 py-5">
+              <img class="w-9 shadow-2 border-round" [src]="shop.pictureUrl" [alt]="shop.owner.surname" />
+              <div class="text-2xl font-bold">{{ shop.owner.surname }}</div>
+            </div>
+            <div class="flex align-items-center justify-content-between">
+              <span class="block"><strong>Localisation: </strong>{{ shop.address | adressFormat }}</span>
+            </div>
+            <div class="flex align-items-center justify-content-between">
+              <span class="block"><strong>Description: </strong>{{ shop.description }}</span>
+            </div>
+          </div>
+        </div>
       </div>
-    </ng-container>
-  </div>
+    </ng-template>
+  </p-dataView>
 </div>
