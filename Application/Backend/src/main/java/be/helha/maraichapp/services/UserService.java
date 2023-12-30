@@ -210,27 +210,25 @@ public class UserService implements UserDetailsService, UserServiceInterface {
              user.setShop(existingUser.getShop());
              user.setRequests(existingUser.getRequests());
 
-            Users updatedUser = userRepository.save(user);
-            Users userDb = userRepository.findById(user.getIdUser()).orElseThrow(() -> new RuntimeException("User not found !"));
-            if(user.getRank().getName() == RankEnum.MARAICHER &&
-                    userDb.getRank().getName() == RankEnum.CUSTOMER){
+             if(user.getRank().getName() == RankEnum.MARAICHER &&
+                    existingUser.getRank().getName() == RankEnum.CUSTOMER){
                 if(shopRepository.existsByOwnerId(user.getIdUser())){
-                    Shop shop = userDb.getShop();
+                    Shop shop = existingUser.getShop();
                     shopRepository.save(shop);
-                    updatedUser.setShop(shop);
+                    user.setShop(shop);
                 }else{
-                    shopService.addShopMinimal(updatedUser);
+                    shopService.addShopMinimal(user);
                 }
             } else if(user.getRank().getName() == RankEnum.CUSTOMER &&
-                    userDb.getRank().getName() == RankEnum.MARAICHER){
-                Shop shop = userDb.getShop();
+                    existingUser.getRank().getName() == RankEnum.MARAICHER){
+                Shop shop = existingUser.getShop();
                 shop.setEnable(false);
                 shopRepository.save(shop);
-                updatedUser.setShop(shop);
+                user.setShop(shop);
             }
 
             // Update the user
-            return updatedUser;
+            return userRepository.save(user);
         } else {
             throw new EntityNotFoundException("User not found with ID: " + user.getIdUser());
         }

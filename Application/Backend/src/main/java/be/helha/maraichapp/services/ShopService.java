@@ -96,10 +96,11 @@ public class ShopService {
         Optional<Shop> shopDB = shopRepository.findById(id);
         Users usersDB;
         if (shopDB.isPresent()) {
-            shopRepository.deleteById(id);
             usersDB = shopDB.get().getOwner();
             usersDB.setRank(rankRepository.findByName(RankEnum.CUSTOMER).orElseThrow(() -> new RuntimeException("Unknown rank")));
+            usersDB.setShop(null);
             userService.updateUserAdmin(usersDB);
+            shopRepository.deleteById(id);
         } else {
             throw new RuntimeException("Shop not found with ID : " + id);
         }
