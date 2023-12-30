@@ -16,6 +16,7 @@ import {ListProductsComponent} from "./components/shop/products/list-products/li
 import {PanierComponent} from "./pages/panier/panier.component";
 import {ListOrderComponent} from "./pages/orders/list-order/list-order.component";
 import {ViewOrderComponent} from "./pages/orders/view-order/view-order.component";
+import {ClientOrderListComponent} from "./pages/orders/client-side/client-order-list/client-order-list.component";
 
 export const routes: Routes = [
 
@@ -37,8 +38,11 @@ export const routes: Routes = [
   {path: 'addRequest', canActivate: [authGuard], component: AddRequestComponent},
   {path: 'accueil', canActivate: [authGuard], component: AccueilComponent},
   {path: 'panier', canActivate: [authGuard],component: PanierComponent},
+
   {path: 'order/list', canActivate: [authGuard], component: ListOrderComponent},
   {path: 'order/view/:id', canActivate: [authGuard], component: ViewOrderComponent},
+  {path: 'order/client/list', canActivate: [authGuard], component:ClientOrderListComponent},
+  {path: 'order/client/view/:id', canActivate: [authGuard], component:ClientOrderListComponent},
 
   //Don't need the guard
   {path: 'shop/:shopId', canActivate: [authGuard], component:ListProductsComponent},
