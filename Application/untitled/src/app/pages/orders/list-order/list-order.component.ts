@@ -25,7 +25,7 @@ export class ListOrderComponent implements OnInit{
   }
 
   getAllOrders() {
-    return this.orderService.getOrders().subscribe({
+    this.orderService.getOrders().subscribe({
       next: response => {
         this.orders = response;
         console.log("Success : ", response);

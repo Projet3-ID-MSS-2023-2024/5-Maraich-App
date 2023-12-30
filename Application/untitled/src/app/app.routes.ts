@@ -14,7 +14,7 @@ import {AdminComponent} from "./temp/admin/admin.component";
 import {MaraicherManagementComponent} from "./pages/admin/maraicher-management/maraicher-management.component";
 import {ListProductsComponent} from "./components/shop/products/list-products/list-products.component";
 import {PanierComponent} from "./pages/panier/panier.component";
-import {ListOrderComponent} from "./components/orders/list-order/list-order.component";
+import {ListOrderComponent} from "./pages/orders/list-order/list-order.component";
 import {ViewOrderComponent} from "./pages/orders/view-order/view-order.component";
 
 export const routes: Routes = [
