@@ -8,16 +8,11 @@ import be.helha.maraichapp.services.ImageService;
 import be.helha.maraichapp.services.ProductService;
 import be.helha.maraichapp.services.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/products")
@@ -68,7 +63,6 @@ public class ProductController {
         }
     }
 
-    /*
     @PostMapping("/new")
     public ResponseEntity<Product> addProduct(@RequestBody Product product) {
         try {
@@ -106,6 +100,4 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-     */
 }

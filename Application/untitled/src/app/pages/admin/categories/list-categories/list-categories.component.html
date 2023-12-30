@@ -1,40 +1,61 @@
-<p-table
-        [value]="categories"
-        [paginator]="true"
-        [rows]="5"
-        [rowsPerPageOptions]="[5, 10,20]"
-        [tableStyle]="{'min-width': '50rem'}">
+<div class="card">
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
+  <p-toolbar styleClass="mb-4 gap-2">
+    <ng-template pTemplate="left">
+      <button pButton pRipple label="Ajouter" icon="pi pi-plus" class="p-button-success mr-2" (click)="showAdd()"></button>
+      <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger" (click)="showDeleteSelected()" [disabled]="!selectedCategories || !selectedCategories.length"></button>
+    </ng-template>
+  </p-toolbar>
+
+  <p-table
+    #dt
+    [value]="categories"
+    [paginator]="true"
+    [rows]="10"
+    [globalFilterFields]="['id, nom']"
+    [rowHover]="true"
+    [(selection)]="selectedCategories"
+    dataKey="idCategory"
+    currentPageReportTemplate="Page {currentPage} sur {totalPages}"
+    [showCurrentPageReport]="true"
+    [tableStyle]="{'min-width': '75rem'}">
+
+    <ng-template pTemplate="caption">
+      <div class="flex align-items-center justify-content-between">
+        <h5 class="m-0">Gestion des catégories</h5>
+        <span class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Rechercher..."/>
+        </span>
+      </div>
+    </ng-template>
+
     <ng-template pTemplate="header">
-        <tr>
-            <th>Id</th>
-            <th>Nom</th>
-            <th></th>
-        </tr>
+      <tr>
+        <th style="width: 4rem">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        <th pSortableColumn="nomCategory" style="min-width:15rem">Nom <p-sortIcon field="nomCategory"></p-sortIcon> </th>
+        <th></th>
+      </tr>
     </ng-template>
     <ng-template pTemplate="body" let-category>
-        <tr>
-            <td>{{ category.idCategory}}</td>
-            <td>{{ category.nomCategory}}</td>
-            <td style="width: 1%; white-space: nowrap;">
-                <p-button
-                        icon="pi pi-pencil"
-                        (click)="showEdit(category.idCategory)"
-                        styleClass="p-button-text p-button-success"
-                ></p-button>
-                <p-button
-                    icon="pi pi-trash"
-                    (click)="showDelete(category.idCategory)"
-                    styleClass="p-button-text p-button-danger">
-                </p-button>
-            </td>
-        </tr>
+      <tr>
+        <td>
+          <p-tableCheckbox [value]="category"></p-tableCheckbox>
+        </td>
+        <td>{{ category.nomCategory}}</td>
+        <td class="right-align-buttons">
+          <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="showEdit(category.idCategory)"></button>
+          <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="showDelete(category.idCategory)"></button>
+        </td>
+      </tr>
     </ng-template>
-    <ng-template pTemplate="emptymessage">
-        <tr>
-            <td colspan="3">Il n'y a aucune catégorie existante</td>
-        </tr>
+    <ng-template pTemplate="summary">
+      <div class="flex align-items-center justify-content-between">
+        Il {{ categories && categories.length !== 1 ? 'y a au total ' + categories.length + ' utilisateurs.' : (categories && categories.length === 1 ? 'y a un seul utilisateur.' : 'n\'y a aucun utilisateur.') }}
+      </div>
     </ng-template>
-    <ng-template pTemplate="paginatorleft">
-        <p-button (click)="showAdd()" icon="pi pi-plus" styleClass="p-button-text"></p-button>
-    </ng-template>
-</p-table>
+  </p-table>
+</div>
