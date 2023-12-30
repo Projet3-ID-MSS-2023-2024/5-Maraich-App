@@ -12,10 +12,12 @@ import {ListProductsComponent} from "./pages/products/list-products/list-product
 import {PanierComponent} from "./pages/panier/panier.component";
 import {ListCategoriesComponent} from "./pages/admin/categories/list-categories/list-categories.component";
 import {EditUserProfileComponent} from "./pages/edit-user-profile/edit-user-profile.component";
+import {EditShopProfileComponent} from "./pages/edit-shop-profile/edit-shop-profile.component";
 
 export const routes: Routes = [
   {
     path: 'maraicher', canActivate: [authGuard], children: [
+      {path: 'modifier-profil', canActivate: [authGuard], component:EditShopProfileComponent},
     ]
   },
   {

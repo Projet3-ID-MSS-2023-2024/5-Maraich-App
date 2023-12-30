@@ -12,7 +12,7 @@ export class ShopService {
   constructor(private http: HttpClient) {}
 
   getShopById(id: number): Observable<Shop> {
-    return this.http.get<Shop>(`${environment.apiUrl}/shops/get/${id}`);
+    return this.http.get<Shop>(`${environment.apiUrl}/shop/get/${id}`);
   }
 
   getShopByOwnerId(idOwner: number){
@@ -69,6 +69,9 @@ export class ShopService {
     };
   }
 
+  turnOnOff(idShop : number) {
+    return this.http.get<boolean>(`${environment.apiUrl}/shop/turnOnOrOff/${idShop}`);
+  }
   postImage(file: File){
     const formData = new FormData();
     formData.append('file', file);

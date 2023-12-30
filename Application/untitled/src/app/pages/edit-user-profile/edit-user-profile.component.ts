@@ -56,8 +56,8 @@ export class EditUserProfileComponent implements OnInit{
   addressPostCodeIsNotOk : boolean = false;
   addressNumberIsNotOk : boolean = false;
   addressEmailIsNotOk : boolean = false;
-  passwordFeatIsOk : boolean = true;
   addressEmailIsAlreadyUse : boolean = false;
+  passwordFeatIsOk : boolean = true;
 
   ngOnInit(): void {
     this.extractIdUserData();
