@@ -18,6 +18,13 @@ public class ShopController {
     }
 
     @GetMapping
+    @RequestMapping("/getAllAdmin")
+    public List<Shop> getShopAdmin(){
+        List<Shop> shops = shopService.getShopAdmin();
+        return shops;
+    }
+
+    @GetMapping
     @RequestMapping("/getById/{id}")
     public Shop getShopById(@PathVariable("id")int id){
         return shopService.getShopById(id);

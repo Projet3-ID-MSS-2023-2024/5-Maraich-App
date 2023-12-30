@@ -13,7 +13,7 @@ export class ShopService {
 
   getShopById(id: number): Observable<Shop> {
     return this.http.get<Shop>(`${environment.apiUrl}/shops/get/${id}`);
-  } 
+  }
 
   getShopByOwnerId(idOwner: number){
     return this.http.get<Shop>(`${environment.apiUrl}/shop/owner/${idOwner}`);
@@ -21,6 +21,14 @@ export class ShopService {
 
   getAllShops(): Observable<Shop[]> {
     const url = `${environment.apiUrl}/shop/getAll`;
+
+    return this.http.get<any[]>(url).pipe(
+      map(shopsData => shopsData.map(shop => this.mapToShopModel(shop)))
+    );
+  }
+
+  getAllShopsAdmin(): Observable<Shop[]> {
+    const url = `${environment.apiUrl}/shop/getAllAdmin`;
 
     return this.http.get<any[]>(url).pipe(
       map(shopsData => shopsData.map(shop => this.mapToShopModel(shop)))

@@ -8,6 +8,10 @@ import {NgIf, NgOptimizedImage} from "@angular/common";
 import {CookieService} from "ngx-cookie-service";
 import {AuthService} from "../../services/auth.service";
 import {NavigationEnd, Router} from "@angular/router";
+import {authGuard} from "../../guard/auth.guard";
+import {MaraicherManagementComponent} from "../../pages/admin/maraicher-management/maraicher-management.component";
+import {UserManagementComponent} from "../../pages/admin/user-management/user-management.component";
+import {ListCategoriesComponent} from "../../pages/admin/categories/list-categories/list-categories.component";
 
 @Component({
   selector: 'app-navbar',
@@ -48,7 +52,7 @@ export class NavbarComponent implements OnInit{
   }
 
   redirectToPanelAdmin(){
-    this.route.navigate(["admin/test"]);
+    this.route.navigate(["admin/utilisateurs"]);
   }
 
   redirectToShoppingCart() {
@@ -128,11 +132,21 @@ export class NavbarComponent implements OnInit{
         routerLink: "/accueil"
       },
       {
-        label: 'NAvbar Admin',
-        icon: 'pi pi-fw pi-home',
-        routerLink: "/"
+        label: 'Gérer les catégories',
+        icon: 'pi pi-fw pi-tag',
+        routerLink: "/admin/categories"
+      },
+      {
+        label: 'Gérer les utilisateurs',
+        icon: 'pi pi-fw pi-users',
+        routerLink: "/admin/utilisateurs"
+      },
+      {
+        label: 'Gérer les maraichers',
+        icon: 'pi pi-fw pi-shopping-cart',
+        routerLink: "/admin/maraichers"
+      },
 
-      }
     ];
   }
 

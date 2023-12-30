@@ -19,9 +19,9 @@ export const routes: Routes = [
   },
   {
     path: 'admin', canActivate: [authGuard], children: [
-      {path: 'user', component: UserManagementComponent},
-      {path: 'maraicher', component: MaraicherManagementComponent},
-      {path: 'categories', component: ListCategoriesComponent},
+      {path: 'utilisateurs', component: UserManagementComponent},
+      {path: 'maraichers', component: MaraicherManagementComponent},
+      {path: 'categories', component: ListCategoriesComponent}
     ]
   },
 

@@ -8,8 +8,8 @@
       <img *ngIf="isLogged"
            ngSrc="assets/images/logos/disconnection-icon.svg"
            (click)="logout()"
-           width="35"
-           height="35"
+           width="29"
+           height="29"
            class="mr-3"
            alt="Déconnexion"
       />
@@ -17,16 +17,16 @@
       <img *ngIf="isLogged"
            ngSrc="assets/images/logos/shopping-cart-icon.svg"
            (click)="redirectToShoppingCart()"
-           width="40"
-           height="40"
+           width="34"
+           height="34"
            class="mr-3"
            alt="Profil maraicher"
       />
 
       <img
         ngSrc="assets/images/logos/user-profile-icon.svg"
-        width="40"
-        height="40"
+        width="34"
+        height="34"
         class="border-circle mr-3"
         alt="Profil utilisateur"
       />
@@ -34,8 +34,8 @@
       <img *ngIf="isLogged && (userRank == RankEnum.MARAICHER || userRank == RankEnum.ADMINISTRATOR)"
            ngSrc="assets/images/logos/maraicher-profile-icon.svg"
            (click)="redirectToPanelMaraicher()"
-           width="40"
-           height="40"
+           width="34"
+           height="34"
            class="border-circle mr-3"
            alt="Profil maraicher"
       />
@@ -43,8 +43,8 @@
       <img *ngIf="isLogged && userRank == RankEnum.ADMINISTRATOR"
            ngSrc="../../../assets/images/logos/admin-place-icon.svg"
            (click)="redirectToPanelAdmin()"
-           width="40"
-           height="40"
+           width="34"
+           height="34"
            class="border-circle mr-3"
            alt="Vers panel administrateur"
       />

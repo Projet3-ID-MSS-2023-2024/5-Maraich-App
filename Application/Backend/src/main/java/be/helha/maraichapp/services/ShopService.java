@@ -28,7 +28,7 @@ public class ShopService {
     @Autowired
     RankRepository rankRepository;
 
-    public List<Shop> getShop() {
+    public List<Shop> getShopAdmin() {
         return shopRepository.findAll();
     }
 
@@ -126,5 +126,9 @@ public class ShopService {
         if (!Pattern.matches(emailRegex, shop.getEmail())) {
             throw new RuntimeException("Invalid email");
         } else return true;
+    }
+
+    public List<Shop> getShop() {
+        return shopRepository.findAllEnabledShops();
     }
 }
