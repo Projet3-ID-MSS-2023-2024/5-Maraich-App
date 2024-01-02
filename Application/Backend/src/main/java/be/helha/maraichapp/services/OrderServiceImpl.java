@@ -81,6 +81,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<Orders> getAllFromCustomer(int customerId) {
+        return this.orderRepository.findByCustomerId(customerId);
+    }
+
+    @Override
+    public List<Orders> getAllFromShopSeller(int shopSellerId) {
+        return this.orderRepository.findByShopSellerId(shopSellerId);
+    }
+
+    @Override
     public Orders getOrderById(int id) {
         Optional<Orders> orderOptional = this.orderRepository.findById(id);
         return orderOptional.orElse(null);
