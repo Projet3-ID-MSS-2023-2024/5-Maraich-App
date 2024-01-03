@@ -27,9 +27,7 @@ export class UpdateCategoriesComponent implements OnInit{
   onSubmit(){
     this.modifiedCategory.nomCategory=this.nom;
     this.categoryService.updateCategory(this.modifiedCategory).subscribe(
-        (response) => {
-      console.log('Succès:', response);
-
+        () => {
       this.ref?.close();
 
       this.updateCategoryList();

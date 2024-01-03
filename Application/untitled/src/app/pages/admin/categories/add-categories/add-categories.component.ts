@@ -25,8 +25,6 @@ export class AddCategoriesComponent {
     this.newCategory.nomCategory=this.nom;
     this.categoryService.postCategory(this.newCategory).subscribe(
       (response) => {
-        console.log('Succès :', response);
-
         this.ref?.close();
 
         this.updateCategoryList();

@@ -7,19 +7,20 @@
   <p-dataView [value]="filteredListProduct" emptyMessage="Aucun produit disponible !">
     <ng-template pTemplate="header">
       <div class="flex-container">
-        <div class="flex-left">
+        <div class="flex-item">
           <label class="mr-1" for="searchInput">Rechercher:</label>
-          <input type="text" pInputText  id="searchInput" [(ngModel)]="searchTerm" (input)="updateFilteredProducts()" placeholder="Nom d'un produit">
+          <input type="text" pInputText id="searchInput" [(ngModel)]="searchTerm" (input)="updateFilteredProducts()" placeholder="Nom d'un produit">
         </div>
-        <div class="flex-center">
-          <label class="mr-1">Choisissez une catégorie:</label>
+        <div class="flex-item">
+          <label class="mr-1">Catégorie:</label>
           <p-dropdown [options]="categories" [(ngModel)]="selectedCategory" optionLabel="nomCategory" placeholder="Tous" (onChange)="updateFilteredProducts()"></p-dropdown>
         </div>
-        <div class="flex-right">
+        <div class="flex-item">
           <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
         </div>
       </div>
     </ng-template>
+
     <ng-template pTemplate="list" let-products>
       <div class="grid grid-nogutter">
         <div class="col-12" *ngFor="let product of products; let first = first">
@@ -60,33 +61,36 @@
       </div>
     </ng-template>
     <ng-template pTemplate="grid" let-products>
-      <div class="grid grid-nogutter">
-        <div class="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" *ngFor="let product of products">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div class="col-span-1 sm:col-span-2 lg:col-span-1 xl:col-span-1 p-2" *ngFor="let product of products">
           <div class="p-4 border-1 surface-border surface-card border-round">
-            <div class="flex flex-wrap align-items-center justify-content-between gap-2">
-                        <span class="flex align-items-center gap-2">
-                            <i class="pi pi-tag"></i>
-                            <span class="font-semibold">{{ product.category.nomCategory }}</span>
-                        </span>
+            <span class="font-semibold">{{ product.category.nomCategory }}</span>
+            <div>
+              <img class="w-9 h-9 sm:w-16 sm:h-16 shadow-2 border-round" [src]="product.imageUrl" [alt]="product.name" />
             </div>
-            <div class="flex flex-column align-items-center gap-3 py-5">
-              <img class="w-9 shadow-2 border-round" [src]="product.imageUrl" [alt]="product.name" />
-              <div class="text-2xl font-bold">{{ product.name }}</div>
-            </div>
-            <div class="flex align-items-center justify-content-between">
+            <div class="text-2xl font-bold text-center">{{ product.name }}</div>
+            <div class="text-center">
               <span class="text-2xl font-semibold">{{ product.price + '€' }}</span>
-              <div> {{ product.unity ? (product.quantity > 1 ? product.quantity + ' unités' : product.quantity + ' unité') : product.weight + ' kg' }} disponibles </div>
-              <div *ngIf="product.unity">
-                <label  for="quantityInputCard{{product.id}}">Quantité (unité):</label>
-                <p-inputNumber inputId="quantityInputCard{{product.id}}" [(ngModel)]="product.quantityUnity" [min]="0"> </p-inputNumber>
-              </div>
-              <div *ngIf="!product.unity">
-                <label for="weightInputCard{{product.id}}">Quantité (kg):</label>
-                <p-inputNumber [(ngModel)]="product.quantityWeight" inputId="weightInputCard{{product.id}}" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"> </p-inputNumber>
-              </div>
+            </div>
+            <div class="text-center">
+              <div>{{ product.unity ? (product.quantity > 1 ? product.quantity + ' unités' : product.quantity + ' unité') : product.weight + ' kg' }} disponibles </div>
+            </div>
+            <div *ngIf="product.unity" class="text-center">
+              <label for="quantityInputCard{{product.id}}">Quantité (unité):</label>
+              <p-inputNumber inputId="quantityInputCard{{product.id}}" [(ngModel)]="product.quantityUnity" [min]="0"> </p-inputNumber>
+            </div>
+            <div *ngIf="!product.unity" class="text-center">
+              <label for="weightInputCard{{product.id}}">Quantité (kg):</label>
+              <p-inputNumber [(ngModel)]="product.quantityWeight" inputId="weightInputCard{{product.id}}" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"> </p-inputNumber>
+            </div>
+            <div class="text-center">
               <button pButton (click)="addReservation(product)" icon="pi pi-shopping-cart" [disabled]="(product.quantityWeight === undefined && product.quantityUnity === undefined) || (product.quantityWeight === 0 || product.quantityUnity === 0)" class="md:align-self-end mb-2 p-button-rounded"></button>
-              <div class="flex align-items-center justify-content-between" *ngIf="shop?.idShop == shopId">
+            </div>
+            <div *ngIf="shop?.idShop == shopId" class="text-center">
+              <div>
                 <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-success" (click)="showEditProduct(product)"></button>
+              </div>
+              <div>
                 <button pButton icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="showDeleteProduct(product.id)"></button>
               </div>
             </div>
@@ -94,5 +98,7 @@
         </div>
       </div>
     </ng-template>
+
+
   </p-dataView>
 </div>
