@@ -10,8 +10,8 @@ import {authGuard} from "./guard/auth.guard";
 import {MaraicherManagementComponent} from "./pages/admin/maraicher-management/maraicher-management.component";
 import {ListProductsComponent} from "./pages/products/list-products/list-products.component";
 import {PanierComponent} from "./pages/panier/panier.component";
-import {ListOrderComponent} from "./pages/orders/list-order/list-order.component";
-import {ViewOrderComponent} from "./pages/orders/view-order/view-order.component";
+import {ListOrderComponent} from "./pages/orders/vendor-side/list-order/list-order.component";
+import {ViewOrderComponent} from "./pages/orders/vendor-side/view-order/view-order.component";
 import {ClientOrderListComponent} from "./pages/orders/client-side/client-order-list/client-order-list.component";
 import {ClientOrderViewComponent} from "./pages/orders/client-side/client-order-view/client-order-view.component";
 import {ListCategoriesComponent} from "./pages/admin/categories/list-categories/list-categories.component";
@@ -22,6 +22,8 @@ export const routes: Routes = [
   {
     path: 'maraicher', canActivate: [authGuard], children: [
       {path: 'modifier-profil', canActivate: [authGuard], component:EditShopProfileComponent},
+      {path: 'commande/liste', canActivate: [authGuard], component: ListOrderComponent},
+      {path: 'commande/consulter/:id', canActivate: [authGuard], component: ViewOrderComponent}
     ]
   },
   {
@@ -33,15 +35,13 @@ export const routes: Routes = [
   },
 
   {path: 'accueil', canActivate: [authGuard], component: HomePageComponent},
-  {path: 'addRequest', canActivate: [authGuard], component: AddRequestComponent},
+  {path: 'ajouterRequête', canActivate: [authGuard], component: AddRequestComponent},
   {path: 'panier', canActivate: [authGuard],component: PanierComponent},
   {path: 'shop/:shopId', canActivate: [authGuard], component:ListProductsComponent},
   {path: 'modifier-profil', canActivate: [authGuard], component:EditUserProfileComponent},
 
-  {path: 'order/list', canActivate: [authGuard], component: ListOrderComponent},
-  {path: 'order/view/:id', canActivate: [authGuard], component: ViewOrderComponent},
-  {path: 'order/client/list', canActivate: [authGuard], component:ClientOrderListComponent},
-  {path: 'order/client/view/:id', canActivate: [authGuard], component:ClientOrderViewComponent},
+  {path: 'commande/client/liste', canActivate: [authGuard], component:ClientOrderListComponent},
+  {path: 'commande/client/consulter/:id', canActivate: [authGuard], component:ClientOrderViewComponent},
 
   //Don't need the guard
   {path: 'connexion', component: LoginComponent},
