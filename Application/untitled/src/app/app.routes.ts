@@ -10,6 +10,10 @@ import {authGuard} from "./guard/auth.guard";
 import {MaraicherManagementComponent} from "./pages/admin/maraicher-management/maraicher-management.component";
 import {ListProductsComponent} from "./pages/products/list-products/list-products.component";
 import {PanierComponent} from "./pages/panier/panier.component";
+import {ListOrderComponent} from "./pages/orders/list-order/list-order.component";
+import {ViewOrderComponent} from "./pages/orders/view-order/view-order.component";
+import {ClientOrderListComponent} from "./pages/orders/client-side/client-order-list/client-order-list.component";
+import {ClientOrderViewComponent} from "./pages/orders/client-side/client-order-view/client-order-view.component";
 import {ListCategoriesComponent} from "./pages/admin/categories/list-categories/list-categories.component";
 import {EditUserProfileComponent} from "./pages/edit-user-profile/edit-user-profile.component";
 import {EditShopProfileComponent} from "./pages/edit-shop-profile/edit-shop-profile.component";
@@ -33,6 +37,11 @@ export const routes: Routes = [
   {path: 'panier', canActivate: [authGuard],component: PanierComponent},
   {path: 'shop/:shopId', canActivate: [authGuard], component:ListProductsComponent},
   {path: 'modifier-profil', canActivate: [authGuard], component:EditUserProfileComponent},
+
+  {path: 'order/list', canActivate: [authGuard], component: ListOrderComponent},
+  {path: 'order/view/:id', canActivate: [authGuard], component: ViewOrderComponent},
+  {path: 'order/client/list', canActivate: [authGuard], component:ClientOrderListComponent},
+  {path: 'order/client/view/:id', canActivate: [authGuard], component:ClientOrderViewComponent},
 
   //Don't need the guard
   {path: 'connexion', component: LoginComponent},

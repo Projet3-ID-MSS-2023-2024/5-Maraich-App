@@ -1,0 +1,28 @@
+<div>
+  <h3>Commande n° :  {{order.idOrder}}</h3>
+  <table>
+    <thead>
+    <tr>
+      <th>Nom du produit</th>
+      <th>Prix à l'unité / au poids</th>
+      <th>Quantité</th>
+    </tr>
+    </thead>
+    <tbody>
+      @for (product of order.orderProducts; track product.id) {
+        <tr>
+          <th>{{product.name}}</th>
+          <td>{{product.price}}</td>
+          <td>{{product.quantity}}</td>
+        </tr>
+      } @empty {
+        <tr>
+          <th colspan="3">Pas de produit dans la commande</th>
+        </tr>
+      }
+    </tbody>
+  </table>
+  <a class="btn btn-primary" routerLink="/order/client/list">
+    Retour à la liste
+  </a>
+</div>

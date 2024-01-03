@@ -20,6 +20,14 @@ export class OrderService {
     return this.http.get<Order>(`${this.apiUrl}/get/${id}`);
   }
 
+  getOrdersByCustomerId(customerId: number): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.apiUrl}/get/customer/${customerId}`);
+  }
+
+  getOrdersByShopSellerId(shopSellerId: number): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.apiUrl}/get/shop/${shopSellerId}`)
+  }
+
   addOrder(order: Order): Observable<Order> {
     return this.http.post<Order>(`${this.apiUrl}/addOrder`, order);
   }

@@ -12,5 +12,5 @@ export interface Order {
   isArchived: boolean;
   customer: User;
   shopSeller: Shop;
-  orderProucts: Product[];
+  orderProducts: Product[];
 }
