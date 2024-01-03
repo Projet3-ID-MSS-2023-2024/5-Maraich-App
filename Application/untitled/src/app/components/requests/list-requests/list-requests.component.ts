@@ -6,9 +6,9 @@ import {Requests} from "../../../models/requests";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {RequestService} from "../../../services/request.service";
 import {AddRequestComponent} from "../add-request/add-request.component";
-import {DeleteCategoriesComponent} from "../../shop/categories/delete-categories/delete-categories.component";
 import {UpdateRequestComponent} from "../update-request/update-request.component";
 import {DeleteRequestComponent} from "../delete-request/delete-request.component";
+import {GetRequestComponent} from "../get-request/get-request.component";
 
 @Component({
   selector: 'app-list-requests',
@@ -42,9 +42,16 @@ export class ListRequestsComponent implements OnInit{
     });
   }
 
+  showGet(id: number) {
+    this.ref = this.dialogService.open(GetRequestComponent, {
+      header: 'Consulter une requête',
+      data: {ref : this.ref, id: id, refreshRequest: this.refreshRequests.bind(this)}
+    })
+  }
+
   showAdd() {
     this.ref = this.dialogService.open(AddRequestComponent, {
-      header: 'Crée une requête',
+      header: 'Créer une requête',
       data: {ref : this.ref, refreshRequests: this.refreshRequests.bind(this)}
     });
   }
