@@ -71,6 +71,9 @@ export class UserService {
 
 
   updateUserRestricted(updatedUser: User): Observable<User> {
+    // Map the user data before making the PUT request
+    const mappedUser = this.mapToUserModel(updatedUser);
+
     return this.http.put<User>(`${environment.apiUrl}/users/update/restricted`, updatedUser);
   }
 

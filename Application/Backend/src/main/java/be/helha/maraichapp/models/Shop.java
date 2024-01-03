@@ -36,10 +36,10 @@ public class Shop {
     @JoinColumn(name = "ownerId")
     private Users owner;
     @JsonIgnore
-    @OneToMany (mappedBy = "shopSeller", cascade = {CascadeType.ALL})
+    @OneToMany (mappedBy = "shopSeller", cascade = {CascadeType.REMOVE})
     private List<Orders> orders;
     @JsonIgnore
-    @OneToMany(mappedBy = "shop", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "shop", cascade = {CascadeType.REMOVE})
     private List<Product> products;
 
 

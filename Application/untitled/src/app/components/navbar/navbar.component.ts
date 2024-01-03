@@ -1,3 +1,4 @@
+
 import {Component, OnInit} from '@angular/core';
 import {RankEnum} from "../../models/rankEnum";
 import {MenuItem} from "primeng/api";
@@ -7,10 +8,15 @@ import {NgIf, NgOptimizedImage} from "@angular/common";
 import {CookieService} from "ngx-cookie-service";
 import {AuthService} from "../../services/auth.service";
 import {NavigationEnd, Router} from "@angular/router";
+import {authGuard} from "../../guard/auth.guard";
+import {MaraicherManagementComponent} from "../../pages/admin/maraicher-management/maraicher-management.component";
+import {UserManagementComponent} from "../../pages/admin/user-management/user-management.component";
+import {ListCategoriesComponent} from "../../pages/admin/categories/list-categories/list-categories.component";
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
+
   imports: [
     MenubarModule,
     ChipsModule,
@@ -42,16 +48,27 @@ export class NavbarComponent implements OnInit{
   }
 
   redirectToPanelMaraicher(){
-    this.route.navigate(["maraicher/test"]);
+    this.route.navigate(["maraicher/modifier-profil"]);
   }
 
   redirectToPanelAdmin(){
-    this.route.navigate(["admin/test"]);
+    this.route.navigate(["admin/utilisateurs"]);
   }
 
   redirectToShoppingCart() {
     this.route.navigate(["panier"]);
   }
+
+  redirectToEditProfilUser() {
+    if(this.isLogged){
+      this.route.navigate(["modifier-profil"]);
+
+    } else {
+      this.route.navigate(["connexion"]);
+    }
+  }
+
+
 
   logout() {
     this.authService.logout().subscribe({
@@ -63,6 +80,11 @@ export class NavbarComponent implements OnInit{
           this.route.navigate(["/accueil"]);
         },
         error: (error) => {
+          this.cookieService.deleteAll()
+          this.isLogged = false;
+          this.userRank = undefined;
+          this.authService.userRank = this.userRank;
+          this.route.navigate(["/accueil"]);
         }
       }
     );
@@ -89,14 +111,15 @@ export class NavbarComponent implements OnInit{
   itemsCustomer() {
     return [
       {
+        label: 'Accueil',
+        icon: 'pi pi-fw pi-home',
+        routerLink: "/accueil"
+      },
+      {
         label: 'Navbar client connecter',
         icon: 'pi pi-fw pi-home',
         routerLink: "/"
 
-      },
-      {
-        label: 'Edit',
-        icon: ''
       }
     ];
   }
@@ -104,14 +127,15 @@ export class NavbarComponent implements OnInit{
   itemsMaraicher(){
     return [
         {
+          label: 'Accueil',
+          icon: 'pi pi-fw pi-home',
+          routerLink: "/accueil"
+        },
+        {
           label: 'Navbar maraicher',
           icon: 'pi pi-fw pi-home',
           routerLink: "/"
 
-        },
-        {
-          label: 'Edit',
-          icon: ''
         }
       ];
   }
@@ -119,32 +143,42 @@ export class NavbarComponent implements OnInit{
   itemsAdmin() {
     return [
       {
-        label: 'NAvbar Admin',
+        label: 'Accueil',
         icon: 'pi pi-fw pi-home',
-        routerLink: "/"
-
+        routerLink: "/accueil"
       },
       {
-        label: 'Edit',
-        icon: ''
-      }
+        label: 'Gérer les catégories',
+        icon: 'pi pi-fw pi-tag',
+        routerLink: "/admin/categories"
+      },
+      {
+        label: 'Gérer les utilisateurs',
+        icon: 'pi pi-fw pi-users',
+        routerLink: "/admin/utilisateurs"
+      },
+      {
+        label: 'Gérer les maraichers',
+        icon: 'pi pi-fw pi-shopping-cart',
+        routerLink: "/admin/maraichers"
+      },
+
     ];
   }
 
   itemsUser() {
     return [
       {
+        label: 'Accueil',
+        icon: 'pi pi-fw pi-home',
+        routerLink: "/accueil"
+      },
+      {
         label: 'Navbar client non connecter',
         icon: 'pi pi-fw pi-home',
         routerLink: "/"
 
-      },
-      {
-        label: 'Edit',
-        icon: ''
       }
     ];
   }
-
-
 }

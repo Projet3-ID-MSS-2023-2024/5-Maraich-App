@@ -12,7 +12,7 @@ export class ShopService {
   constructor(private http: HttpClient) {}
 
   getShopById(id: number): Observable<Shop> {
-    return this.http.get<Shop>(`${environment.apiUrl}/shops/get/${id}`);
+    return this.http.get<Shop>(`${environment.apiUrl}/shop/get/${id}`);
   }
 
   getShopByOwnerId(idOwner: number){
@@ -21,6 +21,14 @@ export class ShopService {
 
   getAllShops(): Observable<Shop[]> {
     const url = `${environment.apiUrl}/shop/getAll`;
+
+    return this.http.get<any[]>(url).pipe(
+      map(shopsData => shopsData.map(shop => this.mapToShopModel(shop)))
+    );
+  }
+
+  getAllShopsAdmin(): Observable<Shop[]> {
+    const url = `${environment.apiUrl}/shop/getAllAdmin`;
 
     return this.http.get<any[]>(url).pipe(
       map(shopsData => shopsData.map(shop => this.mapToShopModel(shop)))
@@ -61,6 +69,9 @@ export class ShopService {
     };
   }
 
+  turnOnOff(idShop : number) {
+    return this.http.get<boolean>(`${environment.apiUrl}/shop/turnOnOrOff/${idShop}`);
+  }
   postImage(file: File){
     const formData = new FormData();
     formData.append('file', file);

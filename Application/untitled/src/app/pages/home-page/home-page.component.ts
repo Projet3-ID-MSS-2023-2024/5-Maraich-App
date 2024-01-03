@@ -3,7 +3,7 @@ import {CardModule} from "primeng/card";
 import {Shop} from "../../models/shop";
 import {NgForOf} from "@angular/common";
 import {ButtonModule} from "primeng/button";
-import {ShopCardComponent} from "../../components/shop/shop-card/shop-card.component";
+import {ShopCardComponent} from "../../components/shop-card/shop-card.component";
 
 @Component({
   selector: 'app-home-page',
@@ -12,7 +12,7 @@ import {ShopCardComponent} from "../../components/shop/shop-card/shop-card.compo
     CardModule,
     NgForOf,
     ButtonModule,
-    ShopCardComponent
+    ShopCardComponent,
   ],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css'

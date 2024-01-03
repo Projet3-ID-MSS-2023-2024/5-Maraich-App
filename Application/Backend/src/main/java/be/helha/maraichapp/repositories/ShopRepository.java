@@ -12,4 +12,6 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
     List<Shop> findByName(String name);
     @Query("SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END FROM Shop s WHERE s.owner.idUser = ?1")
     boolean existsByOwnerId(int userId);
+    @Query("SELECT s FROM Shop s WHERE s.enable = true")
+    List<Shop> findAllEnabledShops();
 }

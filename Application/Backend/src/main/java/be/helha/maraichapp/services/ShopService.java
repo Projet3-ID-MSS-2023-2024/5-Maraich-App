@@ -28,7 +28,7 @@ public class ShopService {
     @Autowired
     RankRepository rankRepository;
 
-    public List<Shop> getShop() {
+    public List<Shop> getShopAdmin() {
         return shopRepository.findAll();
     }
 
@@ -87,8 +87,10 @@ public class ShopService {
         shop.setOwner(users);
         boolean dataIsOk = dataShopVerification(shop);
         if (!dataIsOk) throw new RuntimeException("Invalid data");
-        if (shopRepository.existsById(shop.getIdShop()))
+        if (shopRepository.existsById(shop.getIdShop())) {
+            shop.setShopIsOkay(true);
             return shopRepository.save(shop);
+        }
         throw new RuntimeException("Shop not found with ID : " + shop.getIdShop());
     }
 
@@ -96,10 +98,11 @@ public class ShopService {
         Optional<Shop> shopDB = shopRepository.findById(id);
         Users usersDB;
         if (shopDB.isPresent()) {
-            shopRepository.deleteById(id);
             usersDB = shopDB.get().getOwner();
             usersDB.setRank(rankRepository.findByName(RankEnum.CUSTOMER).orElseThrow(() -> new RuntimeException("Unknown rank")));
+            usersDB.setShop(null);
             userService.updateUserAdmin(usersDB);
+            shopRepository.deleteById(id);
         } else {
             throw new RuntimeException("Shop not found with ID : " + id);
         }
@@ -126,5 +129,17 @@ public class ShopService {
         if (!Pattern.matches(emailRegex, shop.getEmail())) {
             throw new RuntimeException("Invalid email");
         } else return true;
+    }
+
+    public List<Shop> getShop() {
+        return shopRepository.findAllEnabledShops();
+    }
+
+    public boolean turnOnOff(int idShop) {
+        Shop shop = shopRepository.findById(idShop).orElseThrow(() -> new RuntimeException("Shop not found !"));
+        boolean turnTo = !shop.isEnable();
+        shop.setEnable(turnTo);
+        shopRepository.save(shop);
+        return turnTo;
     }
 }

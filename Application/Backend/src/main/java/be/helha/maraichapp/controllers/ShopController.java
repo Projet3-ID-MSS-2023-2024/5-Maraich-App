@@ -18,6 +18,13 @@ public class ShopController {
     }
 
     @GetMapping
+    @RequestMapping("/getAllAdmin")
+    public List<Shop> getShopAdmin(){
+        List<Shop> shops = shopService.getShopAdmin();
+        return shops;
+    }
+
+    @GetMapping
     @RequestMapping("/getById/{id}")
     public Shop getShopById(@PathVariable("id")int id){
         return shopService.getShopById(id);
@@ -42,6 +49,13 @@ public class ShopController {
     public Shop updateShop(@RequestBody Shop shop){
         return shopService.updateShop(shop);
     }
+
+    @GetMapping
+    @RequestMapping("/turnOnOrOff/{idShop}")
+    public boolean turnOnOff(@PathVariable("idShop") int idShop) {
+        return shopService.turnOnOff(idShop);
+    }
+
     @DeleteMapping
     @RequestMapping("/delete/{id}")
     public void deleteShop(@PathVariable("id")int id) {

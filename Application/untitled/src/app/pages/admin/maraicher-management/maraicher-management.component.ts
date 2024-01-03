@@ -93,7 +93,7 @@ export class MaraicherManagementComponent implements OnInit{
   }
 
   getAllShops() {
-    this.shopService.getAllShops().subscribe(
+    this.shopService.getAllShopsAdmin().subscribe(
       (data: Shop[]) => {
         this.shops = data.map(shop => ({
           ...shop,
