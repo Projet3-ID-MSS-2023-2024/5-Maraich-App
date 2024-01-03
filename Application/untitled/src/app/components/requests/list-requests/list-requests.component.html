@@ -17,6 +17,7 @@
         <td>{{ request.user }}</td>
         <td>{{ request.body }}</td>
         <td style="width: 1%; white-space: nowrap;">
+          <p-button icon="pi pi-eye" (click)="showGet(request.id)" styleClass="p-button-text p-button-secondary"></p-button>
           <p-button icon="pi pi-pencil" (click)="showEdit(request.id)" styleClass="p-button-text p-button-succes"></p-button>
           <p-button icon="pi pi-trash" (click)="showDelete(request.id)" styleClass="p-button-text p-button-danger"></p-button>
         </td>

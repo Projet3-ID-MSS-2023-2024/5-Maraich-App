@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ButtonModule} from "primeng/button";
 import {EditorModule} from "primeng/editor";
-import {FormsModule} from "@angular/forms";
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {PaginatorModule} from "primeng/paginator";
 import {CommonModule} from "@angular/common";
 import {Requests} from "../../../models/requests";
@@ -17,18 +17,34 @@ import {error} from "@angular/compiler-cli/src/transformers/util";
     ButtonModule,
     EditorModule,
     FormsModule,
-    PaginatorModule
+    PaginatorModule,
+    ReactiveFormsModule
   ],
   templateUrl: './update-request.component.html',
   styleUrl: './update-request.component.css'
 })
-export class UpdateRequestComponent implements OnInit{
+export class UpdateRequestComponent{
   requestBody: string = '';
   modifiedRequest : Requests = {idRequest:0, requestBody: ''};
 
-  constructor(private requestService: RequestService, private ref: DynamicDialogRef, private config: DynamicDialogConfig) {}
+  constructor(private requestService: RequestService, private ref: DynamicDialogRef, private config: DynamicDialogConfig) {
+    this.requestService.getRequestById(this.config.data.id).subscribe({
+      next: (response) => {
+        this.modifiedRequest = response;
+        this.requestBody = this.modifiedRequest.requestBody;
+        console.log('Succès: ', this.modifiedRequest);
+      },
+      error: (error) => {
+        console.error('Erreur: ', error);
+      }
+    })
+  }
 
-  ngOnInit() {
+  requestForm = new FormGroup({
+    requestBody: new FormControl('', [Validators.required])
+  })
+
+  onSubmit() {
     this.modifiedRequest.requestBody=this.requestBody;
     this.requestService.updateRequest(this.modifiedRequest).subscribe({
       next: (response) => {
@@ -49,16 +65,4 @@ export class UpdateRequestComponent implements OnInit{
     }
   }
 
-  private getRequestById() {
-    this.requestService.getRequestById(this.config.data.id).subscribe({
-      next: (response) => {
-        this.modifiedRequest = response;
-        this.requestBody = this.modifiedRequest.requestBody;
-        console.log('Succès: ', this.modifiedRequest);
-      },
-      error: (error) => {
-        console.error('Erreur: ', error);
-      }
-    })
-  }
 }
