@@ -3,9 +3,7 @@ import {LoginComponent} from "./pages/auth/login/login.component";
 import {SignupComponent} from "./pages/auth/signup/signup.component";
 import {ActivationComponent} from "./pages/auth/activation/activation.component";
 import {UserManagementComponent} from "./pages/admin/user-management/user-management.component";
-import {AddProductComponent} from "./pages/products/add-product/add-product.component";
 import {HomePageComponent} from "./pages/home-page/home-page.component";
-import {AddRequestComponent} from "./components/requests/add-request/add-request.component";
 import {authGuard} from "./guard/auth.guard";
 import {MaraicherManagementComponent} from "./pages/admin/maraicher-management/maraicher-management.component";
 import {ListProductsComponent} from "./pages/products/list-products/list-products.component";
@@ -17,6 +15,7 @@ import {ClientOrderViewComponent} from "./pages/orders/client-side/client-order-
 import {ListCategoriesComponent} from "./pages/admin/categories/list-categories/list-categories.component";
 import {EditUserProfileComponent} from "./pages/edit-user-profile/edit-user-profile.component";
 import {EditShopProfileComponent} from "./pages/edit-shop-profile/edit-shop-profile.component";
+import {AddRequestComponent} from "./pages/requests/add-request/add-request.component";
 
 export const routes: Routes = [
   {
