@@ -30,7 +30,6 @@ public class JwtFilter extends OncePerRequestFilter {
         Jwt tokenInDb = null;
         String email = null;
         boolean isTokenExpired = true;
-        log.info("je passe");
         final String authorization = request.getHeader("Authorization");
         if(authorization != null && authorization.startsWith("Bearer ")) {
             token = authorization.substring(7);

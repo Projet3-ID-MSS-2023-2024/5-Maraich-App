@@ -7,6 +7,13 @@ services:
     environment:
       - POSTGRES_PASSWORD=helha
 
+  db-test:
+    image: postgres:16-alpine
+    ports:
+      - 5430:5432
+    environment:
+      - POSTGRES_PASSWORD=helha
+
   #Local mailing server if you want to use this go application.properties
   smtp4dev:
     image: rnwood/smtp4dev:v3

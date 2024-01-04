@@ -40,12 +40,6 @@ public class AuthController {
         return this.userService.activation(activation);
     }
 
-    @GetMapping(path = "disconnection")
-    public void disconnection() {
-        log.info("Disconnection");
-        this.jwtService.disconnection();
-    }
-
     @PostMapping(path = "login")
     public Map<String, String> connection(@RequestBody AuthentificationDTO authentificationDTO) {
         return this.jwtService.connection(authentificationDTO);

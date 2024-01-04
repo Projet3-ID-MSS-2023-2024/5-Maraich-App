@@ -11,6 +11,7 @@ import be.helha.maraichapp.repositories.UserRepository;
 import be.helha.maraichapp.repositories.ValidationRepository;
 import be.helha.maraichapp.services.UserService;
 import jakarta.transaction.Transactional;
+import org.apache.catalina.User;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,12 +29,14 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@SpringBootTest
+@SpringBootTest(properties = "spring.config.location=classpath:application-test.properties")
 public class AuthTest {
 
     public static final String EMAIL = "test@test.be";
     public static final String PASSWORD = "Password1";
+    public static final String INVALIDEMAIL = "invalidemail";
     @Autowired
     UserService userService;
     @Autowired
@@ -41,7 +44,7 @@ public class AuthTest {
     @Autowired
     AuthenticationManager authenticationManager;
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
     ValidationRepository validationRepository;
     @Autowired
@@ -50,10 +53,6 @@ public class AuthTest {
 
     Users users;
 
-//@Test
-//@Order(1)
-//@Transactional
-//public void
     @Test
     @Order(1)
     @Transactional
@@ -91,6 +90,34 @@ public class AuthTest {
     public void testConnection(){
         tokenBearer = jwtService.connection(new AuthentificationDTO(EMAIL, PASSWORD)).get("bearer");
         assertTrue(jwtRepository.existsByValue(tokenBearer));
+    }
+
+    @Test
+    @Order(4)
+    @Transactional
+    @Commit
+    public void testInvalidEmail() {
+        Map<String, String> mapError;
+        userRepository.deleteByEmail(INVALIDEMAIL);
+        users = new Users("Castino", "Matteoo", "04973061143", PASSWORD, "712", "Rue de Fossess", "50600", "Falisollee", INVALIDEMAIL);
+        mapError = userService.inscription(users);
+        assertEquals(mapError.get("message"), "Your email is invalid !");
+        mapError.clear();
+        users.setEmail(EMAIL);
+        mapError = userService.inscription(users);
+        assertEquals(mapError.get("message"), "Your email is already used !");
+    }
+
+    @Test
+    @Order(5)
+    @Transactional
+    @Commit
+    public void testInvalidPassword() {
+        Map<String, String> mapError;
+        userRepository.deleteByEmail(EMAIL);
+        users = new Users("Castino", "Matteoo", "04973061143", "password", "712", "Rue de Fossess", "50600", "Falisollee", EMAIL);
+        mapError = userService.inscription(users);
+        assertEquals(mapError.get("message"), "The password must contain minimum: 8 characters, 1 uppercase and 1 digit !");
     }
 
 }
