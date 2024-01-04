@@ -1,10 +1,10 @@
 import {Component} from '@angular/core';
-import {Order} from "../../../models/order";
-import {OrderService} from "../../../services/order.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {error} from "@angular/compiler-cli/src/transformers/util";
 import {compareSegments} from "@angular/compiler-cli/src/ngtsc/sourcemaps/src/segment_marker";
 import {resolve} from "@angular/compiler-cli";
+import {Order} from "../../../../models/order";
+import {OrderService} from "../../../../services/order.service";
 
 @Component({
   selector: 'app-view-order',

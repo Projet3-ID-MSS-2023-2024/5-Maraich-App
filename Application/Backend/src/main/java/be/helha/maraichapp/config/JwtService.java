@@ -121,15 +121,6 @@ public class JwtService {
         return Keys.hmacShaKeyFor(decoder);
     }
 
-    public void disconnection() {
-        Users users = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Jwt jwt = this.jwtRepository.findByUsersValidToken(users.getEmail(), false, false)
-                .orElseThrow(() -> new RuntimeException("Invalid token"));
-        jwt.setExpired(true);
-        jwt.setDisable(true);
-        this.jwtRepository.save(jwt);
-    }
-
     @Scheduled(cron = "0 */10 * * * *")
     public void removeUselessJwt() {
         log.info("Delete tokens at {}", Instant.now());

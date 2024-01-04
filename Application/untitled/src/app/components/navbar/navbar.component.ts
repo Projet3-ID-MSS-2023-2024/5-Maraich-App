@@ -68,28 +68,10 @@ export class NavbarComponent implements OnInit{
     }
   }
 
-
-
   logout() {
-    this.authService.logout().subscribe({
-        next: (response: any) => {
-          this.cookieService.deleteAll()
-          this.isLogged = false;
-          this.userRank = undefined;
-          this.authService.userRank = this.userRank;
-          this.route.navigate(["/accueil"]);
-        },
-        error: (error) => {
-          this.cookieService.deleteAll()
-          this.isLogged = false;
-          this.userRank = undefined;
-          this.authService.userRank = this.userRank;
-          this.route.navigate(["/accueil"]);
-        }
-      }
-    );
-    this.handleRouteChange();
+    this.authService.logout();
   }
+
   handleRouteChange(){
     this.userRank = this.authService.userRank;
     this.isLogged = !!this.userRank;

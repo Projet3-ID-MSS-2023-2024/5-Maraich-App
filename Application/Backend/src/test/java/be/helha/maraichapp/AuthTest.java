@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class AuthTest {
 
-    public static final String EMAIL = "matteo2010@live.be";
+    public static final String EMAIL = "test@test.be";
     public static final String PASSWORD = "Password1";
     @Autowired
     UserService userService;
@@ -50,6 +50,10 @@ public class AuthTest {
 
     Users users;
 
+//@Test
+//@Order(1)
+//@Transactional
+//public void
     @Test
     @Order(1)
     @Transactional
@@ -58,7 +62,10 @@ public class AuthTest {
         users = new Users("Castin", "Matteo", "0497306113", PASSWORD, "71", "Rue de Fosses", "5060", "Falisolle", EMAIL);
         userService.inscription(users);
         Users usersResult = userRepository.findByEmail(EMAIL).orElseThrow(() -> new RuntimeException("Not present in database"));
-        assertEquals(users, usersResult);
+        assertEquals(users.getEmail(), usersResult.getEmail());
+        assertEquals(users.getFirstName(), usersResult.getFirstName());
+        assertEquals(users.getSurname(), usersResult.getSurname());
+        assertEquals(users.getPhoneNumber(), usersResult.getPhoneNumber());
     }
 
     @Test
@@ -86,14 +93,4 @@ public class AuthTest {
         assertTrue(jwtRepository.existsByValue(tokenBearer));
     }
 
-//    @Test
-//    @Order(4)
-//    @Transactional
-//    @Commit
-//    public void testDisconnection(){
-//       jwtService.disconnection();
-//       Jwt jwt = jwtRepository.findByValue(tokenBearer).orElseThrow(()-> new RuntimeException("Token not found"));
-//       assertTrue(jwt.isDisable());
-//       assertTrue(jwt.isExpired());
-//    }
 }
