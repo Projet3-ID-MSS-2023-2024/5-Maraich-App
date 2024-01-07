@@ -13,6 +13,7 @@ import {PanierComponent} from "./pages/panier/panier.component";
 import {ListCategoriesComponent} from "./pages/admin/categories/list-categories/list-categories.component";
 import {EditUserProfileComponent} from "./pages/edit-user-profile/edit-user-profile.component";
 import {EditShopProfileComponent} from "./pages/edit-shop-profile/edit-shop-profile.component";
+import {OrderComponent} from "./pages/order/order.component";
 
 export const routes: Routes = [
   {
@@ -31,6 +32,7 @@ export const routes: Routes = [
   {path: 'accueil', canActivate: [authGuard], component: HomePageComponent},
   {path: 'addRequest', canActivate: [authGuard], component: AddRequestComponent},
   {path: 'panier', canActivate: [authGuard],component: PanierComponent},
+  {path: 'order', canActivate: [authGuard],component: OrderComponent},
   {path: 'shop/:shopId', canActivate: [authGuard], component:ListProductsComponent},
   {path: 'modifier-profil', canActivate: [authGuard], component:EditUserProfileComponent},
 
