@@ -204,7 +204,7 @@ export class ListProductsComponent implements OnInit{
 
 
   addReservation(product : Product) {
-    this.reservationService.existShoppingCart(this.idUser, product.shop?.owner.idUser ?? 0).subscribe({
+    this.reservationService.existShoppingCart(this.idUser, product.shop?.idShop ?? 0).subscribe({
       next: (response : any) => {
 
         if(response.message == "1"){

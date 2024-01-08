@@ -9,7 +9,7 @@
             </div>
             <div class="flex flex-column align-items-center gap-3 py-5">
               <img class="w-9 shadow-2 border-round" [src]="shop.pictureUrl" [alt]="shop.owner.surname" />
-              <div class="text-2xl font-bold">{{ shop.owner.surname }}</div>
+              <div class="text-2xl font-bold">{{ shop.name }}</div>
             </div>
             <div class="flex align-items-center justify-content-between">
               <span class="block"><strong>Localisation: </strong>{{ shop.address | adressFormat }}</span>

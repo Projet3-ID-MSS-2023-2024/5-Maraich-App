@@ -66,4 +66,16 @@ public class Shop {
         this.shopIsOkay = false;
         this.enable = false;
     }
+
+    public Shop(int idShop, String name, String email, Address address, String picture, String description, boolean shopIsOkay, boolean enable, Users owner) {
+        this.idShop = idShop;
+        this.name = name;
+        this.email = email;
+        this.address = address;
+        this.picture = picture;
+        this.description = description;
+        this.shopIsOkay = shopIsOkay;
+        this.enable = enable;
+        this.owner = owner;
+    }
 }

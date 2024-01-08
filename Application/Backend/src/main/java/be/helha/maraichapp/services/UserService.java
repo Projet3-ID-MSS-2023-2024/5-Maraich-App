@@ -53,6 +53,7 @@ public class UserService implements UserDetailsService, UserServiceInterface {
 
             Rank rank = rankRepository.findByName(rankEnum).orElseThrow(() -> new RuntimeException("Back issue: Rank initialization issue"));
             users.setRank(rank);
+            users.setActif(false);
             users = this.userRepository.save(users);
             Validation validation = this.validationService.createValidationProcess(users);
             users.setValidation(validation);
@@ -75,6 +76,7 @@ public class UserService implements UserDetailsService, UserServiceInterface {
                 }
                 Users usersActiver = this.userRepository.findById(validation.getUsers().getIdUser()).orElseThrow(() -> new RuntimeException("Unknown user"));
                 usersActiver.setActif(true);
+                validation.setUsers(usersActiver);
                 this.userRepository.save(usersActiver);
                 validation.setActivationDate(Instant.now());
                 this.validationRepository.save(validation);

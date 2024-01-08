@@ -4,6 +4,7 @@ import be.helha.maraichapp.config.JwtService;
 import be.helha.maraichapp.controllers.AuthController;
 import be.helha.maraichapp.dto.AuthentificationDTO;
 import be.helha.maraichapp.models.Jwt;
+import be.helha.maraichapp.models.Rank;
 import be.helha.maraichapp.models.Users;
 import be.helha.maraichapp.models.Validation;
 import be.helha.maraichapp.repositories.JwtRepository;
@@ -49,6 +50,8 @@ public class AuthTest {
     ValidationRepository validationRepository;
     @Autowired
     JwtRepository jwtRepository;
+    @Autowired
+    List<Rank> ranks;
     String tokenBearer;
 
     Users users;
@@ -57,7 +60,8 @@ public class AuthTest {
     @Order(1)
     @Transactional
     @Commit
-    public void testInscription(){
+    public void testInscriptionInFirst(){
+        userRepository.deleteAll();
         users = new Users("Castin", "Matteo", "0497306113", PASSWORD, "71", "Rue de Fosses", "5060", "Falisolle", EMAIL);
         userService.inscription(users);
         Users usersResult = userRepository.findByEmail(EMAIL).orElseThrow(() -> new RuntimeException("Not present in database"));
@@ -65,6 +69,7 @@ public class AuthTest {
         assertEquals(users.getFirstName(), usersResult.getFirstName());
         assertEquals(users.getSurname(), usersResult.getSurname());
         assertEquals(users.getPhoneNumber(), usersResult.getPhoneNumber());
+        assertEquals(users.getRank(), ranks.get(2));
     }
 
     @Test

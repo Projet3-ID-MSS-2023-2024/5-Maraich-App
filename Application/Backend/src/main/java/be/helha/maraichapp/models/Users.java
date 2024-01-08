@@ -101,6 +101,17 @@ public class Users implements UserDetails {
         this.email = email;
     }
 
+    public Users(String firstName, String surname, String phoneNumber, String password, String number, String road, String postCode, String city, String email, Rank rank) {
+        this.firstName = firstName;
+        this.surname = surname;
+        this.isActif = false;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.address = new Address(road,postCode,city, number);
+        this.email = email;
+        this.rank = rank;
+    }
+
 
 
     @Override

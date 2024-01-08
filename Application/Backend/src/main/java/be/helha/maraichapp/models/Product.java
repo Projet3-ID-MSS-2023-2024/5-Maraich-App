@@ -55,6 +55,8 @@ public class Product {
         this.shop = shop;
     }
 
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
