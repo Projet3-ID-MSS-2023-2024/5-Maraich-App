@@ -7,7 +7,7 @@
           <p>Votre panier coûte : {{totalPrice}} €</p>
         </div>
         <p-button *ngIf="currentShop" class="mr-1" label="Votre maraicher : {{currentShop.name}}" (click)="goToShopPage()"></p-button>
-        <p-button label="Finaliser le panier" class="mr-1" (click)="true"></p-button>
+        <p-button label="Finaliser le panier" class="mr-1" (click)="goToOrderPage()" [disabled]="reservations.length<1"></p-button>
         <p-button severity="danger" label="Supprimer tout le panier" class="mr-1" (click)="deleteShoppingCart()"></p-button>
       </div>
     </ng-template>

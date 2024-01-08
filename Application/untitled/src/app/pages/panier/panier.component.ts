@@ -84,6 +84,10 @@ export class PanierComponent implements OnInit, OnDestroy{
     this.route.navigate(["/shop/" + this.currentShop?.idShop ?? 0]);
   }
 
+  goToOrderPage(){
+    this.route.navigate(["/order"]);
+  }
+
   loadImages(): void {
     const loadImagePromises = this.reservations.map((r) => {
       this.totalPrice += r.product.price * r.reserveQuantity;

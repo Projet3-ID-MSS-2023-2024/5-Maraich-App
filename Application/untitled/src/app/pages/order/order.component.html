@@ -1,0 +1,49 @@
+<div class="card">
+  <p-dataView #dv [value]="reservations" emptyMessage="Aucun produit dans votre commande !">
+    <ng-template pTemplate="header">
+      <div class="flex-container">
+        <div class="flex-left">
+          <h1>Votre commande</h1>
+          <p>Votre commande coûte : {{totalPrice}} €</p>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="list" let-products>
+      <div class="grid grid-nogutter">
+        <div class="col-12" *ngFor="let item of reservations; let first = first">
+          <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4" [ngClass]="{ 'border-top-1 surface-border': !first }">
+            <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" [src]="item.product.imageUrl" [alt]="item.product.name" />
+            <div class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
+              <div class="flex flex-column align-items-center sm:align-items-start gap-3">
+                <div class="text-2xl font-bold text-900">{{ item.product.name }}</div>
+                <div class="flex align-items-center gap-3">
+                                    <span class="flex align-items-center gap-2">
+                                        <i class="pi pi-tag"></i>
+                                        <span class="font-semibold">{{ item.product.category.nomCategory }}</span>
+                                    </span>
+                </div>
+              </div>
+              <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
+                <div> {{ item.product.unity ? (item.reserveQuantity > 1 ? item.reserveQuantity + ' unités' : item.reserveQuantity + ' unité') : item.reserveQuantity + ' kg' }} réservé </div>
+                <p>Côut : {{item.product.price * item.reserveQuantity}} €</p>
+              </div>
+
+<!--              <div class="flex align-items-center justify-content-between">-->
+<!--                <div class="flex align-items-center gap-2">-->
+<!--                  <p-inputNumber [(ngModel)]="inputValues[item.idReservation]" [min]="1" [max]="item.reserveQuantity" *ngIf="item.product.unity" size="3"></p-inputNumber>-->
+<!--                  <p-inputNumber [(ngModel)]="inputValues[item.idReservation]" [min]="1" [max]="item.reserveQuantity" *ngIf="!item.product.unity" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" size="3"></p-inputNumber>-->
+<!--                  <button pButton icon="pi pi-minus" class="p-button-rounded p-button-info" (click)="updateReservation(item.idReservation, item.reserveQuantity)"></button>-->
+<!--                  <button pButton icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="deleteReservation(item.idReservation)"></button>-->
+<!--                </div>-->
+<!--              </div>-->
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-dataView>
+  <div class="p-d-flex p-jc-center p-ai-center">
+    <ngx-paypal [config]="paypalConfig"></ngx-paypal>
+  </div>
+</div>

@@ -547,3 +547,9 @@ gradle-app.setting
 ### Gradle Patch ###
 # Java heap dump
 *.hprof
+
+### Other ###
+# Image
+*.png
+*.jpg
+*.jpeg
