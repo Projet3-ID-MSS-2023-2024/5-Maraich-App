@@ -34,9 +34,10 @@ export class AuthService {
     return this.http.post(`${environment.apiUrl}/activation`, credentials);
   }
 
-   logout(){ // Supprimez le cookie du token en l'expirant
-    return this.http.get(`${environment.apiUrl}/disconnection`)
-
+   logout(){ // Delete the token on the cookie
+     this.cookieService.deleteAll()
+     this.userRank = undefined;
+     this.route.navigate(["/redirection"]);
   }
 
   getTokenFromCookie(): string | null {

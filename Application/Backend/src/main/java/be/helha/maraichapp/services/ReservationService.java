@@ -104,11 +104,10 @@ public class ReservationService {
             }
     }
 
-    @Transactional
     public List<Reservation> getAllReservations() {
-        removeExpirateReservations();
         return this.reservationRepository.findAll();
     }
+
     @Transactional
     public void deleteShoppingCartByUserId(int idUser) {
         reservationRepository.deleteAllByUserId(idUser);

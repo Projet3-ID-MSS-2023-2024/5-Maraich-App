@@ -1,0 +1,10 @@
+<form [formGroup]="requestForm">
+  <textarea
+    formControlName="requestBody"
+    readonly
+    required
+    rows="20"
+  ></textarea>
+  <p-button label="Accepter la requête" severity="success" (click)="validateRequest()"></p-button>
+  <p-button label="Refuser la requête" severity="danger" (click)="declineRequest()"></p-button>
+</form>

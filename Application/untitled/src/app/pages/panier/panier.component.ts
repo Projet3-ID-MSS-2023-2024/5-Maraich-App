@@ -7,16 +7,12 @@ import {SharedModule} from "primeng/api";
 import {RatingModule} from "primeng/rating";
 import {TagModule} from "primeng/tag";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
-import {Product} from "../../models/product";
 import {ButtonModule} from "primeng/button";
 import {ReservationService} from "../../services/reservation.service";
-import {CookieService} from "ngx-cookie-service";
 import {AuthService} from "../../services/auth.service";
 import {Reservation} from "../../models/reservation";
-import {Image} from "primeng/image";
 import {ImageService} from "../../services/image.service";
 import {DomSanitizer} from "@angular/platform-browser";
-import {KnobModule} from "primeng/knob";
 import {PaginatorModule} from "primeng/paginator";
 import {Subscription} from "rxjs";
 import {ProductService} from "../../services/product.service";
@@ -38,7 +34,6 @@ import {Router} from "@angular/router";
     ButtonModule,
     NgForOf,
     NgIf,
-    KnobModule,
     PaginatorModule
   ],
   templateUrl: './panier.component.html',
@@ -49,6 +44,7 @@ export class PanierComponent implements OnInit, OnDestroy{
   private refreshSubscription!: Subscription;
   reservations! : Reservation[];
   currentShop! : Shop | undefined;
+  totalPrice = 0;
   idUser = 0;
   inputValues: { [key: string]: number } = {};
 
@@ -94,6 +90,7 @@ export class PanierComponent implements OnInit, OnDestroy{
 
   loadImages(): void {
     const loadImagePromises = this.reservations.map((r) => {
+      this.totalPrice += r.product.price * r.reserveQuantity;
       const fileName = r.product.picturePath;
       return new Promise<void>((resolve) => {
         this.imageService.getImage(fileName).subscribe({

@@ -1,5 +1,5 @@
 <div class="card">
-  <p-dataView [value]="shops" layout="grid">
+  <p-dataView [value]="shops" layout="grid" emptyMessage="Aucun boutique disponible !">
     <ng-template let-shop pTemplate="grid" let-shops>
       <div class="grid grid-nogutter">
         <div class="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" *ngFor="let shop of shops">

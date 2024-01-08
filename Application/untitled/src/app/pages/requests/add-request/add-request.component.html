@@ -1,0 +1,8 @@
+<form [formGroup]="requestForm">
+  <textarea
+    formControlName="requestBody"
+    required
+    rows="20"
+  ></textarea>
+  <p-button label="Créer ma requête" severity="success" (click)="onSubmit()"></p-button>
+</form>
