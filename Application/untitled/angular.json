@@ -68,6 +68,9 @@
           },
           "defaultConfiguration": "development",
           "options": {
+            "ssl": true,
+            "sslKey": "../Certificat/localhost.key",
+            "sslCert": "../Certificat/localhost.crt",
             "browserTarget": "untitled:build",
             "proxyConfig": "proxy.conf.json"
           }
