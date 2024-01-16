@@ -12,7 +12,13 @@ import {DomSanitizer} from "@angular/platform-browser";
 import {ReservationService} from "../../services/reservation.service";
 import {AuthService} from "../../services/auth.service";
 import {Shop} from "../../models/shop";
+import {Order} from "../../models/order";
 import {ICreateOrderRequest, IPayPalConfig, NgxPayPalModule} from "ngx-paypal";
+import {User} from "../../models/user";
+import {UserService} from "../../services/user.service";
+import {OrderService} from "../../services/order.service";
+import {map} from "rxjs";
+import {OrderProduct} from "../../models/orderProduct";
 
 @Component({
   selector: 'app-order',
@@ -34,15 +40,25 @@ export class OrderComponent implements OnInit, OnDestroy {
   reservations! : Reservation[];
   currentShop! : Shop| undefined;
   idUser = 0;
+  user!: User;
   paypalConfig?: IPayPalConfig;
   totalPrice: number = 0;
 
-  constructor(private route: Router, private productService: ProductService, private imageService: ImageService, private sanitizer: DomSanitizer, private reservationService: ReservationService, private authService: AuthService) {
+  constructor(private route: Router, private productService: ProductService, private imageService: ImageService, private sanitizer: DomSanitizer, private reservationService: ReservationService, private authService: AuthService, private userService: UserService, private orderService: OrderService) {
 
   }
 
   ngOnInit(): void {
     this.idUser = this.authService.getIdUserFromCookie();
+    this.userService.getUserById(this.idUser).subscribe({
+      next: response => {
+        console.log("Success : ", response);
+        this.user=response;
+      },
+      error: error => {
+        console.error("Error : ", error);
+      }
+    });
     this.getShoppingCart();
     this.refreshInterval = setInterval(() => {
       this.getShoppingCart();
@@ -123,7 +139,7 @@ export class OrderComponent implements OnInit, OnDestroy {
       },
       style: {
         label: 'paypal',
-        layout: 'horizontal',
+        layout: 'vertical',
         shape: 'pill',
         height: 40,
         fundingicons: true,
@@ -133,6 +149,7 @@ export class OrderComponent implements OnInit, OnDestroy {
         console.log('onApprove - transaction was approved, but not authorized', data, actions);
         actions.order.get().then((details: any) => {
           console.log('onApprove - you can get full order details inside onApprove: ', details);
+          this.createOrder();
         });
       },
       onClientAuthorization: (data) => {
@@ -148,6 +165,49 @@ export class OrderComponent implements OnInit, OnDestroy {
         console.log('onClick', data, actions);
       },
     };
+  }
+
+
+  protected createOrder() {
+    let orderDate = new Date();
+    let redeemDate = new Date(orderDate);
+    redeemDate.setDate(redeemDate.getDate() + 3);
+    let orderProducts: OrderProduct[] = [];
+    this.reservations.forEach(r => {
+      orderProducts.push({
+        quantity: r.reserveQuantity,
+        product: r.product
+      });
+    });
+    let order: Order = {
+      idOrder: -1,
+      orderDate: orderDate,
+      totalPrice: this.totalPrice,
+      redeemDate: redeemDate,
+      orderIsReady: false,
+      readyDate: undefined,
+      isArchived: false,
+      customer: this.user,
+      shopSeller: this.currentShop!,
+      orderProducts: orderProducts
+    }
+    this.orderService.addOrder(order).subscribe({
+      next: response => {
+        console.log("Success : ", response);
+        this.reservationService.deleteShoppingCartByUserId(this.idUser).subscribe({
+          next: response => {
+            console.log("Success : ", response);
+            this.route.navigate(['/accueil']);
+          },
+          error: error => {
+            console.error("Error : ", error);
+          }
+        });
+      },
+      error: error => {
+        console.error("Error : ", error);
+      }
+    });
   }
 
 }

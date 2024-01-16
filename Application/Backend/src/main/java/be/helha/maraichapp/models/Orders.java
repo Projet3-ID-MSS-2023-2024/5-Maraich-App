@@ -1,13 +1,11 @@
 package be.helha.maraichapp.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
-import java.util.Calendar;
 import java.util.List;
 
 @Entity
@@ -28,7 +26,7 @@ public class Orders {
     private float totalPrice;
 
     @Column (nullable = false)
-    private Instant reedeemDate;
+    private Instant redeemDate;
     @Column (nullable = false)
     private boolean orderIsReady;
 
@@ -47,7 +45,7 @@ public class Orders {
     public Orders(Instant orderDate, float totalPrice, Instant reedeemDate, Users customer, Shop shopSeller) {
         this.orderDate = orderDate;
         this.totalPrice = totalPrice;
-        this.reedeemDate = reedeemDate;
+        this.redeemDate = reedeemDate;
         this.orderIsReady = false;
         this.isArchived = false;
         this.customer = customer;
@@ -60,7 +58,7 @@ public class Orders {
                 "Id=" + Id +
                 ", orderDate=" + orderDate +
                 ", totalPrice=" + totalPrice +
-                ", reedeemDate=" + reedeemDate +
+                ", redeemDate=" + redeemDate +
                 ", orderIsReady=" + orderIsReady +
                 ", readyDate=" + readyDate +
                 ", isArchived=" + isArchived +
