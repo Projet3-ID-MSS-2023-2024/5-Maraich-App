@@ -100,48 +100,46 @@ export class UserManagementComponent implements OnInit{
       header: 'Confirmer',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        // Vérifie s'il y a des utilisateurs sélectionnés
         if (this.selectedUsers && this.selectedUsers.length > 0) {
-          // Récupère les identifiants des utilisateurs sélectionnés
           const userIds = this.selectedUsers.map((user) => user.idUser);
 
-          //  tableau d'Observables pour suivre les appels de suppression
-          const deleteObservables = userIds.map((userId) => {
-            // Appelle le service pour supprimer l'id
-            return this.userService.deleteUserById(userId);
-          });
+          // Exclure l'utilisateur actuellement connecté de la liste d'identifiants à supprimer
+          const userIdsToExclude = this.idUser ? [this.idUser] : [];
+          const userIdsToDelete = userIds.filter((id) => !userIdsToExclude.includes(id));
 
-          //  forkJoin pour attendre que tous les appels soient terminés
-          forkJoin(deleteObservables).subscribe(
-            () => {
-              // Supprime les id de la liste
-              this.users = this.users.filter((u) => !userIds.includes(u.idUser));
+          if (userIdsToDelete.length > 0) {
+            const deleteObservables = userIdsToDelete.map((userId) => {
+              return this.userService.deleteUserById(userId);
+            });
 
-              // Message de succès une fois que toutes les suppressions sont terminées
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Succès',
-                detail: 'Utilisateurs supprimés avec succès',
-                life: 3000,
-              });
-            },
-            (error) => {
-              // En cas d'erreur
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Erreur',
-                detail: 'Une erreur est survenue lors de la suppression des utilisateurs',
-                life: 3000,
-              });
-            }
-          );
+            forkJoin(deleteObservables).subscribe(
+                () => {
+                  this.users = this.users.filter((u) => !userIdsToDelete.includes(u.idUser));
 
-          // Réinitialise la liste des utilisateurs sélectionnés
-          this.selectedUsers = null;
+                  this.messageService.add({
+                    severity: 'success',
+                    summary: 'Succès',
+                    detail: 'Utilisateurs supprimés avec succès',
+                    life: 3000,
+                  });
+                },
+                (error) => {
+                  this.messageService.add({
+                    severity: 'error',
+                    summary: 'Erreur',
+                    detail: 'Une erreur est survenue lors de la suppression des utilisateurs',
+                    life: 3000,
+                  });
+                }
+            );
+
+            this.selectedUsers = null;
+          }
         }
       }
     });
   }
+
 
 
 
