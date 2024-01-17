@@ -8,9 +8,7 @@ import be.helha.maraichapp.repositories.UserRepository;
 import be.helha.maraichapp.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,7 +19,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@SpringBootTest(properties = "spring.config.location=classpath:application-test.properties")
 public class UserServiceTest {
 
     @Autowired
@@ -169,8 +169,8 @@ public class UserServiceTest {
 
 
         // Créez des utilisateurs pour le test
-        Users testUser1 = new Users("User1", "Test", "123456789", "Test12345", "6", "Test Street", "12345", "TestCity", "test1@test.be", rank.get(), null);
-        Users testUser2 = new Users("User2", "Test", "987654321", "Test45645", "7", "Test Avenue", "67890", "TestCity", "test2@test.be", rank.get(), null);
+        Users testUser1 = new Users("UserUn", "Test", "123456789", "Test12345", "6", "Test Street", "12345", "TestCity", "test1@test.be", rank.get(), null);
+        Users testUser2 = new Users("UserDeux", "Test", "987654321", "Test45645", "7", "Test Avenue", "67890", "TestCity", "test2@test.be", rank.get(), null);
 
         // Ajoutez les utilisateurs à la base de données
         userService.addUser(testUser1);
@@ -199,8 +199,8 @@ public class UserServiceTest {
     @Order(6)
     public void testGetAllUsers() {
         // Ajoutez quelques utilisateurs pour le test
-        Users testUser1 = new Users("User3", "Test", "123456789", "Test12345", "6", "Test Street", "12345", "TestCity", "test3@test.be", new Rank(RankEnum.CUSTOMER, 1), null);
-        Users testUser2 = new Users("User4", "Test", "987654321", "Test45645", "7", "Test Avenue", "67890", "TestCity", "test4@test.be", new Rank(RankEnum.CUSTOMER, 1), null);
+        Users testUser1 = new Users("Usertrois", "Test", "123456789", "Test12345", "6", "Test Street", "12345", "TestCity", "test3@test.be", new Rank(RankEnum.CUSTOMER, 1), null);
+        Users testUser2 = new Users("UserQuatre", "Test", "987654321", "Test45645", "7", "Test Avenue", "67890", "TestCity", "test4@test.be", new Rank(RankEnum.CUSTOMER, 1), null);
 
         // Ajoutez les utilisateurs à la base de données
         userService.addUser(testUser1);
@@ -272,5 +272,29 @@ public class UserServiceTest {
         assertTrue(passwordEncoder.matches("NewPassword123", resultUser.getPassword()));
     }
 
+
+    @Test
+    @Order(9)
+    public void updateUserRankToMaraicherShouldCreateShop() {
+        // Créez un utilisateur avec un rang CUSTOMER
+        RankEnum initialRankEnum = RankEnum.CUSTOMER;
+        Rank initialRank = new Rank(initialRankEnum, 1);
+        Users testUser = new Users("John", "Doe", "0123456789", "HELHa456", "2", "Avenue des Fleurs", "1000", "Bruxelles", "johlon@test.be", initialRank, null);
+
+        // Ajoutez l'utilisateur à la base de données
+        Users savedUser = userService.addUser(testUser);
+
+        // Mettez à jour le rang de l'utilisateur en MARAICHER
+        RankEnum updatedRankEnum = RankEnum.MARAICHER;
+        savedUser.getRank().setName(updatedRankEnum);
+        Users updatedUser = userService.updateUserAdmin(savedUser);
+
+        // Vérifiez que l'utilisateur mis à jour a le bon rang
+        assertEquals(updatedRankEnum, updatedUser.getRank().getName());
+
+        // Vérifiez que le shop a été créé
+        assertNotNull(updatedUser.getShop());
+
+    }
 
 }
