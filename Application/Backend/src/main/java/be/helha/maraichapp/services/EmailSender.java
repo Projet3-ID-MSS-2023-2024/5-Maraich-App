@@ -44,5 +44,19 @@ public class EmailSender {
                         + "Cordialement,\nL'équipe Maraich'App",
                 users.getFirstName(), users.getSurname());
 
-        sendEmail(users.getEmail(), subject, message);}
+        sendEmail(users.getEmail(), subject, message);
+    }
+
+    // Envoi du mail à l'admin lorsqu'un client fait une demande de passage à marraicher
+    public void sendRequestEmail(Users users){
+        String subject = "Nouvelle Requête";
+        String message = String.format("Un nouvel utilisateur a formulé une requête de passage à maraicher \n\n"
+                         + "Accédez à la liste des requêtes pour la traiter");
+        sendEmail(users.getEmail(), subject, message);
+    }
+
+    // Envoi du mail au maraicher lorsqu'une commande a été effectuée sur son shop
+    public void sendNewOrderEmail(Users users){
+        String subject = "Nouvelle commande";
+    }
 }
