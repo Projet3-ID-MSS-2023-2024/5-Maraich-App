@@ -27,7 +27,7 @@ export class GetRequestComponent {
   constructor(private requestService: RequestService, private userService: UserService, private ref: DynamicDialogRef, private config: DynamicDialogConfig) {
     this.requestService.getRequestById(this.config.data.id).subscribe({
       next: (response) => {
-        console.log('Succes : ', response);
+        // console.log('Succes : ', response);
         this.request = response;
       },
       error: (error) => {
@@ -44,7 +44,7 @@ export class GetRequestComponent {
     this.user.rank.name = RankEnum.MARAICHER;
     this.userService.updateUserRestricted(this.user).subscribe({
       next: response => {
-        console.log("Success : ", response);
+        // console.log("Success : ", response);
         this.ref?.close();
         this.updateRequestsList();
       },
@@ -57,7 +57,7 @@ export class GetRequestComponent {
   declineRequest() {
     this.requestService.deleteRequestById(this.request.idRequest).subscribe({
       next: response => {
-        console.log("Success : ", response);
+        // console.log("Success : ", response);
         this.ref?.close();
         this.updateRequestsList();
       },

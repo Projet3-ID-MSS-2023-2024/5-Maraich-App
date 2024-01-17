@@ -11,8 +11,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@SpringBootTest(properties = "spring.config.location=classpath:application-test.properties")
 public class CategoryServiceTest {
 
     @Autowired

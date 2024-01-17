@@ -26,7 +26,7 @@ export class ViewOrderComponent {
     this.orderService.getOrderById(this.idOrder).subscribe({
       next: response => {
         this.order = response;
-        console.log("Success : ", response);
+        // console.log("Success : ", response);
       },
       error: error => {
         console.error("Error : ", error);
@@ -39,7 +39,7 @@ export class ViewOrderComponent {
     updatedOrder.orderIsReady = true;
     this.orderService.updateOrder(updatedOrder).subscribe({
       next: response => {
-        console.log("Success : " ,response);
+        // console.log("Success : " ,response);
       },
       error: error => {
         console.error("Error : ", error);
@@ -52,7 +52,7 @@ export class ViewOrderComponent {
     updatedOrder.isArchived = true;
     this.orderService.updateOrder(updatedOrder).subscribe({
       next: response => {
-        console.log("Success : ", response);
+        // console.log("Success : ", response);
       },
       error: error => {
         console.error("Error : ", error);

@@ -56,7 +56,7 @@ export class LoginComponent {
             } else if (response.message === "Bad credentials") {
               this.errorMessage = 'Échec de connexion : Vérifiez votre mot de passe et/ou votre adresse mail.';
             }
-            console.log(response.message);
+            // console.log(response.message);
           } else {
             // Save the token in a cookie
             this.cookieService.set("access_token", response.bearer, undefined,  undefined, undefined, true, "Lax");

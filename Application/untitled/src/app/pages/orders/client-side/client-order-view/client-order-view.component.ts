@@ -25,7 +25,7 @@ export class ClientOrderViewComponent {
     this.orderService.getOrderById(this.idOrder).subscribe({
       next: response => {
         this.order = response;
-        console.log("Success : ", response);
+        // console.log("Success : ", response);
       },
       error: error => {
         console.error("Error : ", error);

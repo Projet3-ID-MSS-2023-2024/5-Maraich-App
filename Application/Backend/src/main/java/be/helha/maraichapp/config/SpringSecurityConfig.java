@@ -44,7 +44,6 @@ public class SpringSecurityConfig {
                         .csrf(AbstractHttpConfigurer::disable)
                         .authorizeHttpRequests(
                                 authorize -> {
-
                                     //.Auth Controller
                                     authorize.requestMatchers(POST, "/signup").permitAll();
                                     authorize.requestMatchers(POST, "/activation").permitAll();

@@ -27,7 +27,7 @@ export class ListOrderComponent implements OnInit{
     this.idUser = this.authService.getIdUserFromCookie();
     this.userService.getUserById(this.idUser).subscribe({
       next: response => {
-        console.log("Success : ", response);
+        // console.log("Success : ", response);
         this.user=response;
       },
       error: error => {
@@ -50,7 +50,7 @@ export class ListOrderComponent implements OnInit{
     this.orderService.getOrdersByShopSellerId(this.idShop).subscribe({
       next: response => {
         this.orders = response;
-        console.log("Success : ", response);
+        // console.log("Success : ", response);
       },
       error: error => {
         console.error("Error : ", error);

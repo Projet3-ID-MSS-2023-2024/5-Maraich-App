@@ -11,9 +11,9 @@ import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@SpringBootTest(properties = "spring.config.location=classpath:application-test.properties")
 public class ImageServiceTest {
 
     @Autowired

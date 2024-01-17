@@ -32,7 +32,7 @@ export class UpdateRequestComponent{
       next: (response) => {
         this.modifiedRequest = response;
         this.requestBody = this.modifiedRequest.requestBody;
-        console.log('Succès: ', this.modifiedRequest);
+        // console.log('Succès: ', this.modifiedRequest);
       },
       error: (error) => {
         console.error('Erreur: ', error);
@@ -48,7 +48,7 @@ export class UpdateRequestComponent{
     this.modifiedRequest.requestBody=this.requestBody;
     this.requestService.updateRequest(this.modifiedRequest).subscribe({
       next: (response) => {
-          console.log('Succès: ', response);
+          // console.log('Succès: ', response);
           this.ref?.close();
           this.updateRequestsList();
         },

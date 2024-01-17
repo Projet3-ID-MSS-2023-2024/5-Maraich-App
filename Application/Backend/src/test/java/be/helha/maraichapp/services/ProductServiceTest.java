@@ -2,6 +2,7 @@ package be.helha.maraichapp.services;
 
 import be.helha.maraichapp.models.*;
 import be.helha.maraichapp.repositories.ProductRepository;
+import be.helha.maraichapp.repositories.UserRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Order;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class ProductServiceTest {
     private UserService userService;
     @Autowired
     private ValidationService validationService;
+    @Autowired
+    private UserRepository userRepository;
 
     private Category testCategory;
     private Category testCategory2;
@@ -45,16 +48,6 @@ public class ProductServiceTest {
     private MockMultipartFile file;
     private static final String FILE_CONTENT = "file content";
 
-    @AfterAll
-    public void cleanUp(){
-        categoryService.deleteCategoryById(testCategory.getIdCategory());
-        categoryService.deleteCategoryById(testCategory2.getIdCategory());
-        shopService.deleteShop(testShop.getIdShop());
-        shopService.deleteShop(testShop2.getIdShop());
-        userService.deleteUserById(testUser.getIdUser());
-        userService.deleteUserById(testUser2.getIdUser());
-    }
-
     @BeforeAll
     public void setUp() {
         file = new MockMultipartFile("file", "test.png", "image/png", FILE_CONTENT.getBytes());
@@ -62,8 +55,12 @@ public class ProductServiceTest {
         testCategory2 = categoryService.addCategory(new Category("Fruits"));
         testUser = userService.addUser(new Users("Celik","Esad","0483000000","Password1","40","Rue du du","6030","Charleroi","la00000@student.helha.be",null,null));
         testShop = shopService.addShop(new Shop("Marché","la111@student.helha.be","Rue du du","40","6030","Charleroi","png.png","C'est un marché",testUser));
+        testUser.setShop(testShop);
+        userRepository.save(testUser);
         testUser2 = userService.addUser(new Users("CelikBis","EsadBis","0483000000","Password2","40","Rue du du","6030","Charleroi","la222222@student.helha.be",null,null));
         testShop2 = shopService.addShop(new Shop("Marchée","la33@student.helha.be","Rue du du","40","6030","Charleroi","png.png","C'est un marché",testUser2));
+        testUser2.setShop(testShop2);
+        userRepository.save(testUser2);
     }
 
     @Test

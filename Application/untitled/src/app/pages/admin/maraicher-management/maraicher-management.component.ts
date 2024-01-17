@@ -290,7 +290,7 @@ export class MaraicherManagementComponent implements OnInit{
   }
 
   saveShop() {
-    console.log(this.shop);
+    // console.log(this.shop);
 
     if (this.selectedFile) {
       // Si un fichier est sélectionné, téléchargez l'image.
@@ -312,7 +312,7 @@ export class MaraicherManagementComponent implements OnInit{
 
 
   submitShop(){
-    console.log(this.shop);
+    // console.log(this.shop);
     this.submitted = true;
     this.shopService.updateShop(this.shop).subscribe(updatedShop => {
       this.shops[this.findIndexById(updatedShop.idShop)] = updatedShop;

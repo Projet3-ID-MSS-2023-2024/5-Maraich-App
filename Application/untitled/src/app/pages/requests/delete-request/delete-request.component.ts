@@ -18,7 +18,7 @@ export class DeleteRequestComponent {
   deleteRequest() {
     this.requestService.deleteRequestById(this.config?.data.id).subscribe({
       next: (response) => {
-       console.log('Deleted: ', response);
+       // console.log('Deleted: ', response);
        this.ref?.close();
        this.updateRequestsList();
       },

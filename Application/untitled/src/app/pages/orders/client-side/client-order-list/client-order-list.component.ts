@@ -25,7 +25,7 @@ export class ClientOrderListComponent implements OnInit{
     this.userService.getUserById(this.idUser).subscribe({
       next: response => {
         this.user = response;
-        console.log("Success : ", response);
+        // console.log("Success : ", response);
       },
       error: error => {
         console.error("Error : ", error);
@@ -41,7 +41,7 @@ export class ClientOrderListComponent implements OnInit{
     this.orderService.getOrders().subscribe({
       next: response => {
         this.orders = response;
-        console.log("Success : ", response);
+        // console.log("Success : ", response);
       },
       error: error => {
         console.error("Error : ", error);

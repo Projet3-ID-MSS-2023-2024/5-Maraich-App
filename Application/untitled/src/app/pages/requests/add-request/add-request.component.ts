@@ -28,7 +28,7 @@ export class AddRequestComponent {
     this.newRequest.requestBody=this.requestBody;
     this.requestService.addRequest(this.newRequest).subscribe({
       next: (response) => {
-          console.log('Succès', response);
+          // console.log('Succès', response);
           this.ref?.close();
           this.updateRequestsList();
         },

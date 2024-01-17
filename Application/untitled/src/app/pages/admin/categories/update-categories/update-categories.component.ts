@@ -51,7 +51,7 @@ export class UpdateCategoriesComponent implements OnInit{
           this.modifiedCategory = data;
           this.nom = this.modifiedCategory.nomCategory;
 
-          console.log(this.modifiedCategory);
+          // console.log(this.modifiedCategory);
         },
         (error) => {
           console.error('Erreur :', error);
