@@ -53,27 +53,29 @@
 
         <ng-template pTemplate="body" let-user>
             <tr>
-                <td>
+                <td *ngIf="user.idUser !== idUser">
                     <p-tableCheckbox [value]="user"></p-tableCheckbox>
                 </td>
+                <td *ngIf="user.idUser == idUser"></td>
                 <td>{{ user.surname + ' ' + user.firstName}}</td>
                 <td>{{ user.email}}</td>
                 <td>{{ user.phoneNumber}}</td>
                 <td>{{ user.address | adressFormat}}</td>
-              <td>
-                <p-tag *ngIf="user.rank" [value]="user.rank.name | rankFormat" [severity]="getRankSeverity(user.rank.name)"></p-tag>
-              </td>
-
-
-              <td>
+                <td>
+                    <p-tag *ngIf="user.rank" [value]="user.rank.name | rankFormat" [severity]="getRankSeverity(user.rank.name)"></p-tag>
+                </td>
+                <td>
                     <p-tag [value]="user.actif ? 'Actif' : 'Inactif'" [severity]="getStatusSeverity(user.actif)"></p-tag>
                 </td>
                 <td>
                     <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editUser(user)"></button>
-                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteUser(user)"></button>
+                    <button *ngIf="user.idUser != idUser" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteUser(user)"></button>
                 </td>
             </tr>
         </ng-template>
+
+
+
       <ng-template pTemplate="summary">
         <div class="flex align-items-center justify-content-between">
           Il {{ users && users.length !== 1 ? 'y a au total ' + users.length + ' utilisateurs.' : (users && users.length === 1 ? 'y a un seul utilisateur.' : 'n\'y a aucun utilisateur.') }}
