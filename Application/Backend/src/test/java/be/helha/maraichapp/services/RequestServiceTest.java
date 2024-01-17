@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-@SpringBootTest
+@SpringBootTest(properties = "spring.config.location=classpath:application-test.properties")
 public class RequestServiceTest {
 
     @Autowired
@@ -27,15 +27,6 @@ public class RequestServiceTest {
     @BeforeEach
     public void setUp() {
         Users testUser = userService.addUser(new Users("Bilal",  "Maachi", "0456212365","HELHa123", "1","Rue des potiers", "6200","Châtelet", "bilal@test.be", null, null));
-    }
-
-    @AfterEach
-    public void cleanUp() {
-        List<Requests> allRequests = requestsService.getAllRequests();
-        for (Requests requests : allRequests) {
-            requestsService.deleteRequestsById(requests.getId());
-        }
-        userService.deleteUserById(testUser.getIdUser());
     }
 
     @Test

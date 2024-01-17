@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.config.location=classpath:application-test.properties")
 public class OrdersServiceTest {
     @Autowired
     private OrderService orderService;
@@ -23,28 +23,6 @@ public class OrdersServiceTest {
     private ShopService shopService;
     @Autowired
     private UserService userService;
-
-    @AfterEach
-    public void cleanUp() {
-        List<Orders> allOrders = orderService.getAllOrders();
-        if (!allOrders.isEmpty()) {
-            for (Orders orders : allOrders) {
-                orderService.deleteOrderById(orders.getId());
-            }
-        }
-        List<Shop> allShops = shopService.getShop();
-        if (!allShops.isEmpty()) {
-            for (Shop shop: allShops) {
-                shopService.deleteShop(shop.getIdShop());
-            }
-        }
-        List<Users> allUsers = userService.getAllUsers();
-        if (!allUsers.isEmpty()) {
-            for (Users user: allUsers) {
-                userService.deleteUserById(user.getIdUser());
-            }
-        }
-    }
 
     @Test
     @Order(1)
