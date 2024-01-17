@@ -66,6 +66,14 @@ public class OrderServiceImpl implements OrderService {
         for (OrderProduct orderProduct : orderProductList) {
             orderProduct.setId(new OrderProduct.OrderProductId(orderProduct.getOrders().getId(), orderProduct.getProduct().getId()));
             orderProductRepository.save(orderProduct);
+            Product product = productRepository.findById(orderProduct.getProduct().getId()).get();
+            if(product.isUnity()){
+                product.setQuantity(product.getQuantity()-orderProduct.getQuantity());
+            } else {
+                product.setWeight(product.getWeight()-orderProduct.getQuantity());
+            }
+            productRepository.save(product);
+
         }
 
         return orders;
