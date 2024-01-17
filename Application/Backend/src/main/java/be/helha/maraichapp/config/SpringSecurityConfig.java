@@ -104,7 +104,7 @@ public class SpringSecurityConfig {
                                     authorize.requestMatchers(POST, "/users/newUser").hasRole("ADMINISTRATOR");
                                     authorize.requestMatchers(PUT, "/users/update/admin").hasRole("ADMINISTRATOR");
                                     authorize.requestMatchers(PUT, "/users/update/restricted").hasAnyRole("CUSTOMER", "MARAICHER", "ADMINISTRATOR");
-                                    authorize.requestMatchers(DELETE, "/users/delete/{id}}").hasRole("ADMINISTRATOR");
+                                    authorize.requestMatchers(DELETE, "/users/delete/{id}").hasRole("ADMINISTRATOR");
                                 }
                         )
                         .sessionManagement(httpSecuritySessionManagementConfigurer ->
