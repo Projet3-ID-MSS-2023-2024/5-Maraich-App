@@ -5,6 +5,7 @@
       <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
       <button pButton pRipple icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedShops()" [disabled]="!selectedShops || !selectedShops.length"></button>
     </ng-template>
+
   </p-toolbar>
   <p-table
     #dt

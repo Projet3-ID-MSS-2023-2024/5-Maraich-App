@@ -25,6 +25,7 @@ import {KeyFilterModule} from "primeng/keyfilter";
 import {forkJoin} from "rxjs";
 import {RadioButtonModule} from "primeng/radiobutton";
 import {Rank} from "../../../models/rank";
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-user-management',
@@ -49,13 +50,15 @@ export class UserManagementComponent implements OnInit{
   items: MenuItem[] | any; //pour les etapes d'ajout/edit user
   currentStepIndex: number | any;
 
+  idUser!:number; // id du user récupérer dans le token
 
-//regex
+
+//----> Les différents regex
   nameRegex : RegExp = /^[a-zA-ZÀ-ÿ-]+$/;
-  roadRegex = /^[a-zA-Z0-9\s\-.,'()&]+$/;
+  roadRegex = /^[a-zA-Z0-9\s\-.,'()&àâäéèêëîïôöùûüçÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ]+$/;
   postCodeRegex = /^[a-zA-Z0-9\s\-]+$/;
   numberRegex = /^[a-zA-Z0-9\s\-.,'()&]+$/;
-  cityRegex = /^[a-zA-Z\s\-.,'()&]+$/;
+  cityRegex = /^[a-zA-Z\s\-.,'()&àâäéèêëîïôöùûüçÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ]+$/;
   passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
 
 
@@ -63,14 +66,16 @@ export class UserManagementComponent implements OnInit{
   constructor(
     private userService: UserService,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private cookieService:CookieService
   ) {}
 
   ngOnInit() {
     this.getAllUsers(); //récupérer les users
     this.getAllRanks(); // récupérer les ranks
     this.formStep(); //etape du formulaire
-
+    const jwtToken = this.cookieService.get('access_token');
+    this.extractIdUserData(jwtToken);
   }
 
   /**
@@ -95,48 +100,46 @@ export class UserManagementComponent implements OnInit{
       header: 'Confirmer',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        // Vérifie s'il y a des utilisateurs sélectionnés
         if (this.selectedUsers && this.selectedUsers.length > 0) {
-          // Récupère les identifiants des utilisateurs sélectionnés
           const userIds = this.selectedUsers.map((user) => user.idUser);
 
-          //  tableau d'Observables pour suivre les appels de suppression
-          const deleteObservables = userIds.map((userId) => {
-            // Appelle le service pour supprimer l'id
-            return this.userService.deleteUserById(userId);
-          });
+          // Exclure l'utilisateur actuellement connecté de la liste d'identifiants à supprimer
+          const userIdsToExclude = this.idUser ? [this.idUser] : [];
+          const userIdsToDelete = userIds.filter((id) => !userIdsToExclude.includes(id));
 
-          //  forkJoin pour attendre que tous les appels soient terminés
-          forkJoin(deleteObservables).subscribe(
-            () => {
-              // Supprime les id de la liste
-              this.users = this.users.filter((u) => !userIds.includes(u.idUser));
+          if (userIdsToDelete.length > 0) {
+            const deleteObservables = userIdsToDelete.map((userId) => {
+              return this.userService.deleteUserById(userId);
+            });
 
-              // Message de succès une fois que toutes les suppressions sont terminées
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Succès',
-                detail: 'Utilisateurs supprimés avec succès',
-                life: 3000,
-              });
-            },
-            (error) => {
-              // En cas d'erreur
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Erreur',
-                detail: 'Une erreur est survenue lors de la suppression des utilisateurs',
-                life: 3000,
-              });
-            }
-          );
+            forkJoin(deleteObservables).subscribe(
+                () => {
+                  this.users = this.users.filter((u) => !userIdsToDelete.includes(u.idUser));
 
-          // Réinitialise la liste des utilisateurs sélectionnés
-          this.selectedUsers = null;
+                  this.messageService.add({
+                    severity: 'success',
+                    summary: 'Succès',
+                    detail: 'Utilisateurs supprimés avec succès',
+                    life: 3000,
+                  });
+                },
+                (error) => {
+                  this.messageService.add({
+                    severity: 'error',
+                    summary: 'Erreur',
+                    detail: 'Une erreur est survenue lors de la suppression des utilisateurs',
+                    life: 3000,
+                  });
+                }
+            );
+
+            this.selectedUsers = null;
+          }
         }
       }
     });
   }
+
 
 
 
@@ -461,6 +464,28 @@ export class UserManagementComponent implements OnInit{
     }
   }
 
+    /**
+     * Récupérer l'id du user connecté
+     * @param token
+     */
+    extractIdUserData(token: string): void {
+        if (token) {
+            const tokenParts = token.split('.');
+            const payload = tokenParts[1];
 
-  protected readonly RankEnum = RankEnum;
+            // Decode the payload using base64 decoding
+            const decodedPayload = atob(payload);
+
+            // Parse the decoded payload as JSON
+            const payloadData = JSON.parse(decodedPayload);
+            this.idUser = payloadData.idUser;
+
+        }
+    }
+
+
+
+
+
+    protected readonly RankEnum = RankEnum;
 }
