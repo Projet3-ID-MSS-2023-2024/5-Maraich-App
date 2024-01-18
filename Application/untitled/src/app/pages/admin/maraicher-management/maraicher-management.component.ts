@@ -184,7 +184,8 @@ export class MaraicherManagementComponent implements OnInit{
                 life: 3000,
               });
             }
-          )
+          );
+          this.selectedShops = null;
         }
       }
     })

@@ -113,10 +113,13 @@
 
       <div class="field">
         <label for="picture">Image</label>
+        <br>
 
         <!-- Afficher l'image actuelle -->
         <img *ngIf="showCurrentImage && shop.pictureUrl" [src]="shop.pictureUrl" [alt]="shop.name" style="max-width: 100%;" />
 
+        <br>
+        <br>
         <!-- Afficher le bouton "Modifier image" ou "Annuler" en fonction de showCurrentImage -->
         <button pButton type="button" pRipple class="p-button" (click)="toggleImageUpload()">
           {{ showCurrentImage ? 'Modifier Image' : 'Annuler' }}
