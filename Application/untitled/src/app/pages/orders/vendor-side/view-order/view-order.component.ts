@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {error} from "@angular/compiler-cli/src/transformers/util";
 import {compareSegments} from "@angular/compiler-cli/src/ngtsc/sourcemaps/src/segment_marker";
@@ -7,7 +7,7 @@ import {Order} from "../../../../models/order";
 import {OrderService} from "../../../../services/order.service";
 import {ButtonModule} from "primeng/button";
 import {DataViewModule} from "primeng/dataview";
-import {NgClass, NgForOf} from "@angular/common";
+import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {ImageService} from "../../../../services/image.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import {ToggleButtonModule} from "primeng/togglebutton";
@@ -21,22 +21,27 @@ import {ToggleButtonModule} from "primeng/togglebutton";
     DataViewModule,
     NgForOf,
     NgClass,
-    ToggleButtonModule
+    ToggleButtonModule,
+    NgIf
   ],
   templateUrl: './view-order.component.html',
   styleUrl: './view-order.component.css'
 })
-export class ViewOrderComponent {
+export class ViewOrderComponent implements OnInit{
 
   idOrder: number = -1;
   order!: Order;
   constructor(private sanitizer: DomSanitizer, private imageService: ImageService, private orderService: OrderService, private route: ActivatedRoute, private router: Router) {
+  }
+
+  ngOnInit() {
     this.route.paramMap.subscribe(params =>{
       this.idOrder = Number(params.get('id'));
     });
     this.orderService.getOrderById(this.idOrder).subscribe({
       next: response => {
         this.order = response;
+        this.loadImages()
       },
       error: error => {
         console.error("Error : ", error);
@@ -71,7 +76,7 @@ export class ViewOrderComponent {
   }
 
   toList() {
-    this.router.navigate(['/commande/client/liste'])
+    this.router.navigate(['/maraicher/commande/liste'])
   }
 
   loadImages(): void {

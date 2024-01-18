@@ -33,6 +33,7 @@ export const routes: Routes = [
       {path: 'maraichers', component: MaraicherManagementComponent},
       {path: 'categories', component: ListCategoriesComponent},
       {path: 'requetes', component: ListRequestsComponent},
+      {path: '**', redirectTo: 'utilisateurs', pathMatch: 'full'}
     ]
   },
 

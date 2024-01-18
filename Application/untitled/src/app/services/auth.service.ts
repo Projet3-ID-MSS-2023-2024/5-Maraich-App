@@ -35,10 +35,10 @@ export class AuthService {
   }
 
    logout(){ // Delete the token on the cookie
+     this.route.navigate(["/redirection"]);
      this.cookieService.deleteAll()
      this.userRank = undefined;
-     this.route.navigate(["/redirection"]);
-  }
+   }
 
   getTokenFromCookie(): string | null {
     const accessToken = this.cookieService.get('access_token');

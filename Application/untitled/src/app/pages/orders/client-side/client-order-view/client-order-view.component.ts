@@ -31,22 +31,22 @@ export class ClientOrderViewComponent implements OnInit{
   order!: Order;
 
   constructor(private orderService: OrderService, private route: ActivatedRoute, private router: Router, private imageService: ImageService, private sanitizer:DomSanitizer) {
+
+  }
+
+  ngOnInit() {
     this.route.paramMap.subscribe(params =>{
       this.idOrder = Number(params.get('id'));
     });
     this.orderService.getOrderById(this.idOrder).subscribe({
       next: response => {
         this.order = response;
-        // console.log("Success : ", response);
+        this.loadImages();
       },
       error: error => {
         console.error("Error : ", error);
       }
     });
-  }
-
-  ngOnInit() {
-    this.loadImages()
   }
 
   toList() {
