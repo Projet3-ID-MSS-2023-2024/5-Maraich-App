@@ -51,6 +51,6 @@ export class ListOrderComponent implements OnInit{
   }
 
   viewOrder(id: number) {
-    this.router.navigate(['/commande/consulter', id]);
+    this.router.navigate(['/maraicher/commande/consulter', id]);
   }
 }

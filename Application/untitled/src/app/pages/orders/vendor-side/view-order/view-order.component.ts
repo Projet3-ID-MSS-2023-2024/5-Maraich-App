@@ -10,6 +10,7 @@ import {DataViewModule} from "primeng/dataview";
 import {NgClass, NgForOf} from "@angular/common";
 import {ImageService} from "../../../../services/image.service";
 import {DomSanitizer} from "@angular/platform-browser";
+import {ToggleButtonModule} from "primeng/togglebutton";
 
 @Component({
   selector: 'app-view-order',
@@ -19,7 +20,8 @@ import {DomSanitizer} from "@angular/platform-browser";
     ButtonModule,
     DataViewModule,
     NgForOf,
-    NgClass
+    NgClass,
+    ToggleButtonModule
   ],
   templateUrl: './view-order.component.html',
   styleUrl: './view-order.component.css'
@@ -35,7 +37,6 @@ export class ViewOrderComponent {
     this.orderService.getOrderById(this.idOrder).subscribe({
       next: response => {
         this.order = response;
-        // console.log("Success : ", response);
       },
       error: error => {
         console.error("Error : ", error);
@@ -43,12 +44,13 @@ export class ViewOrderComponent {
     });
   }
 
-  ReadyOrder() {
+  readyOrder() {
     let updatedOrder = this.order;
+    updatedOrder.readyDate = new Date()
     updatedOrder.orderIsReady = true;
+    console.log("Test :", updatedOrder);
     this.orderService.updateOrder(updatedOrder).subscribe({
       next: response => {
-        // console.log("Success : " ,response);
       },
       error: error => {
         console.error("Error : ", error);
@@ -56,12 +58,11 @@ export class ViewOrderComponent {
     })
   }
 
-  ArchiveOrder() {
+  archiveOrder() {
     let updatedOrder = this.order;
     updatedOrder.isArchived = true;
     this.orderService.updateOrder(updatedOrder).subscribe({
       next: response => {
-        // console.log("Success : ", response);
       },
       error: error => {
         console.error("Error : ", error);

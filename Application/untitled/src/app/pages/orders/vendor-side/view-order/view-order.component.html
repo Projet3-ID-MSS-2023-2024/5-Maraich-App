@@ -1,5 +1,5 @@
 <div>
-  <h3>Commande n° :  {{order.id}}</h3>
+  <h3>Commande n° : {{order.id}}</h3>
   <p-dataView #dv [value]="order.orderProducts" emptyMessage="Aucun produit dans votre panier !">
     <ng-template pTemplate="list">
       <div class="grid grid-nogutter">
@@ -25,5 +25,9 @@
       </div>
     </ng-template>
   </p-dataView>
-  <p-button (click)="toList()" label="Retour à la liste"></p-button>
+  <div class="card flex justify-content-between mr-5 ml-5 mb-2">
+    <p-button severity="success" class="mr-1" label="Valider la commande" (click)="readyOrder()"></p-button>
+    <p-button severity="warning" class="mr-1" label="Archiver la commande" (click)="archiveOrder()"></p-button>
+    <p-button (click)="toList()" label="Retour à la liste"></p-button>
+  </div>
 </div>
