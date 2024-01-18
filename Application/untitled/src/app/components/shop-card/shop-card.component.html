@@ -1,5 +1,5 @@
 <div class="card">
-  <p-dataView [value]="shops" layout="grid" emptyMessage="Aucun boutique disponible !">
+  <p-dataView [value]="shops" layout="grid" emptyMessage="Aucune boutique disponible !">
     <ng-template let-shop pTemplate="grid" let-shops>
       <div class="grid grid-nogutter">
         <div class="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" *ngFor="let shop of shops">
@@ -8,7 +8,8 @@
               <p-tag [value]="'Ouvert'" severity="success"></p-tag>
             </div>
             <div class="flex flex-column align-items-center gap-3 py-5">
-              <img class="w-9 shadow-2 border-round" [src]="shop.pictureUrl" [alt]="shop.owner.surname" />
+              <!-- Ajoutez la classe fixed-image à l'image -->
+              <img class="w-9 shadow-2 border-round fixed-image" [src]="shop.pictureUrl" [alt]="shop.owner.surname" />
               <div class="text-2xl font-bold">{{ shop.name }}</div>
             </div>
             <div class="flex align-items-center justify-content-between">
