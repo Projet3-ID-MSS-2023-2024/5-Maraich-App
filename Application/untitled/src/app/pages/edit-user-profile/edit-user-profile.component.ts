@@ -13,6 +13,7 @@ import {error} from "@angular/compiler-cli/src/transformers/util";
 import {RankEnum} from "../../models/rankEnum";
 import {AddRequestComponent} from "../requests/add-request/add-request.component";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-edit-user-profile',
@@ -32,7 +33,7 @@ import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 })
 export class EditUserProfileComponent implements OnInit{
 
-  constructor(private cookieService: CookieService, private userService : UserService, private route: Router, private ref: DynamicDialogRef, private dialogService: DialogService) {
+  constructor(private authService : AuthService, private cookieService: CookieService, private userService : UserService, private route: Router, private ref: DynamicDialogRef, private dialogService: DialogService) {
     this.user = {
       idUser: 0, // or any default value
       firstName: "",
@@ -63,7 +64,7 @@ export class EditUserProfileComponent implements OnInit{
   passwordFeatIsOk : boolean = true;
 
   ngOnInit(): void {
-    this.extractIdUserData();
+    this.idUser = this.authService.getIdUserFromCookie();
     this.userService.getUserById(this.idUser).subscribe({
       next: (user) => {
         this.user = user;
@@ -104,21 +105,6 @@ export class EditUserProfileComponent implements OnInit{
     return !(this.addressEmailIsNotOk || this.firstNameIsNotOk || this.surnameIsNotOk || this.passwordIsNotOk || this.addressRoadIsNotOk || this.addressPostCodeIsNotOk
       || this.addressNumberIsNotOk || this.addressCityIsNotOk || this.phoneNumberIsNotOk);
 
-  }
-
-  extractIdUserData() {
-    const token = this.cookieService.get('access_token');
-    if (token) {
-      const tokenParts = token.split('.');
-      const payload = tokenParts[1];
-
-      // Decode the payload using base64 decoding
-      const decodedPayload = atob(payload);
-
-      // Parse the decoded payload as JSON
-      const payloadData = JSON.parse(decodedPayload);
-      this.idUser = payloadData.idUser;
-    }
   }
 
   // Check if password and password confirmation match

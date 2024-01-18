@@ -21,7 +21,6 @@ public class RequestsServiceImpl implements RequestsService{
 
     @Override
     public Requests addRequests(Requests requests) {
-        ExampleMatcher userMatcher = ExampleMatcher.matching();
         // Verify if the customer already exists in the database
         Users user = userRepository.findById(requests.getUser().getIdUser()).orElseThrow(() -> new RuntimeException("User doesn't exist"));
         requests.setUser(user);
