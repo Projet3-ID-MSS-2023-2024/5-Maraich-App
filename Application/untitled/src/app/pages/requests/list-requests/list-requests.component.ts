@@ -19,7 +19,8 @@ import {GetRequestComponent} from "../get-request/get-request.component";
     CommonModule
   ],
   templateUrl: './list-requests.component.html',
-  styleUrl: './list-requests.component.css'
+  styleUrl: './list-requests.component.css',
+  providers: [DialogService]
 })
 export class ListRequestsComponent implements OnInit{
   requests: Requests[] = [];

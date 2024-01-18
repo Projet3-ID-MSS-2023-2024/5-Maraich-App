@@ -32,7 +32,7 @@ export const routes: Routes = [
       {path: 'utilisateurs', component: UserManagementComponent},
       {path: 'maraichers', component: MaraicherManagementComponent},
       {path: 'categories', component: ListCategoriesComponent},
-      {path: 'requêtes', component: ListRequestsComponent},
+      {path: 'requetes', component: ListRequestsComponent},
     ]
   },
 

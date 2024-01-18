@@ -1,6 +1,5 @@
 package be.helha.maraichapp.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,8 +13,8 @@ import lombok.NoArgsConstructor;
 public class Requests {
 
     @Id
-    @GeneratedValue
-    private int Id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int idRequest;
 
 
     @OneToOne(mappedBy = "requests")

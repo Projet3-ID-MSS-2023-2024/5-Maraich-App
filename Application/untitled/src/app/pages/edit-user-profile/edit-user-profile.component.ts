@@ -27,7 +27,8 @@ import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
     RouterLink
   ],
   templateUrl: './edit-user-profile.component.html',
-  styleUrl: './edit-user-profile.component.css'
+  styleUrl: './edit-user-profile.component.css',
+  providers: [DialogService, DynamicDialogRef]
 })
 export class EditUserProfileComponent implements OnInit{
 
@@ -151,7 +152,8 @@ export class EditUserProfileComponent implements OnInit{
   showAdd() {
     this.ref = this.dialogService.open(AddRequestComponent, {
       header: 'Créer une requête',
-      data: {ref : this.ref,}
+      data: {ref : this.ref,},
+      width: '70%',
     });
   }
 }

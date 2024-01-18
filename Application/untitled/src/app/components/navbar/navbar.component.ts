@@ -144,6 +144,11 @@ export class NavbarComponent implements OnInit{
         icon: 'pi pi-fw pi-shopping-cart',
         routerLink: "/admin/maraichers"
       },
+      {
+        label: 'Gérer les requêtes',
+        icon: 'pi pi-fw pi-file',
+        routerLink: "/admin/requetes"
+      }
 
     ];
   }
