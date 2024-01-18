@@ -5,6 +5,7 @@
         <div class="flex-left">
           <h1>Votre commande</h1>
           <p>Votre commande coûte : {{totalPrice}} €</p>
+          <button pButton icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="createOrder()"></button>
         </div>
       </div>
     </ng-template>
@@ -28,14 +29,14 @@
                 <p>Côut : {{item.product.price * item.reserveQuantity}} €</p>
               </div>
 
-<!--              <div class="flex align-items-center justify-content-between">-->
-<!--                <div class="flex align-items-center gap-2">-->
-<!--                  <p-inputNumber [(ngModel)]="inputValues[item.idReservation]" [min]="1" [max]="item.reserveQuantity" *ngIf="item.product.unity" size="3"></p-inputNumber>-->
-<!--                  <p-inputNumber [(ngModel)]="inputValues[item.idReservation]" [min]="1" [max]="item.reserveQuantity" *ngIf="!item.product.unity" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" size="3"></p-inputNumber>-->
-<!--                  <button pButton icon="pi pi-minus" class="p-button-rounded p-button-info" (click)="updateReservation(item.idReservation, item.reserveQuantity)"></button>-->
-<!--                  <button pButton icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="deleteReservation(item.idReservation)"></button>-->
-<!--                </div>-->
-<!--              </div>-->
+              <!--              <div class="flex align-items-center justify-content-between">-->
+              <!--                <div class="flex align-items-center gap-2">-->
+              <!--                  <p-inputNumber [(ngModel)]="inputValues[item.idReservation]" [min]="1" [max]="item.reserveQuantity" *ngIf="item.product.unity" size="3"></p-inputNumber>-->
+              <!--                  <p-inputNumber [(ngModel)]="inputValues[item.idReservation]" [min]="1" [max]="item.reserveQuantity" *ngIf="!item.product.unity" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" size="3"></p-inputNumber>-->
+              <!--                  <button pButton icon="pi pi-minus" class="p-button-rounded p-button-info" (click)="updateReservation(item.idReservation, item.reserveQuantity)"></button>-->
+              <!--                  <button pButton icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="deleteReservation(item.idReservation)"></button>-->
+              <!--                </div>-->
+              <!--              </div>-->
 
             </div>
           </div>

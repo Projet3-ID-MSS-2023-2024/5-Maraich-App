@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ButtonModule} from "primeng/button";
 import {DataViewModule} from "primeng/dataview";
 import {InputNumberModule} from "primeng/inputnumber";
-import {NgForOf, NgIf} from "@angular/common";
+import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {SharedModule} from "primeng/api";
 import {Reservation} from "../../models/reservation";
 import {Router} from "@angular/router";
@@ -31,6 +31,7 @@ import {OrderProduct} from "../../models/orderProduct";
     NgIf,
     SharedModule,
     NgxPayPalModule,
+    NgClass,
   ],
   templateUrl: './order.component.html',
   styleUrl: './order.component.css'
@@ -181,7 +182,7 @@ export class OrderComponent implements OnInit, OnDestroy {
       });
     });
     let order: Order = {
-      idOrder: -1,
+      id: -1,
       orderDate: orderDate,
       totalPrice: this.totalPrice,
       redeemDate: redeemDate,

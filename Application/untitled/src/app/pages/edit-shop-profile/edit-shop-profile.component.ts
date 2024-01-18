@@ -165,6 +165,10 @@ export class EditShopProfileComponent implements OnInit{
     this.route.navigate(["shop/" + this.shop.idShop])
   }
 
+  redirectToOrders() {
+    this.route.navigate(["maraicher/commande/liste"])
+  }
+
   turnOnOff() {
     this.shopService.turnOnOff(this.shop.idShop).subscribe({
       next: (response : boolean) => {

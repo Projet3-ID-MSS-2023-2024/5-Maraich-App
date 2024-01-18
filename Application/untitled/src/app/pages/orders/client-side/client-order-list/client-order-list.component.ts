@@ -6,11 +6,12 @@ import {TableModule} from "primeng/table";
 import {AuthService} from "../../../../services/auth.service";
 import {UserService} from "../../../../services/user.service";
 import {User} from "../../../../models/user";
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-client-order-list',
   standalone: true,
-  imports: [TableModule],
+  imports: [TableModule, DatePipe],
   templateUrl: './client-order-list.component.html',
   styleUrl: './client-order-list.component.css'
 })
@@ -50,6 +51,7 @@ export class ClientOrderListComponent implements OnInit{
   }
 
   viewOrder(id: number) {
-    this.router.navigate(['/order/client/view', id]);
+
+    this.router.navigate(['/commande/client/consulter', id]);
   }
 }

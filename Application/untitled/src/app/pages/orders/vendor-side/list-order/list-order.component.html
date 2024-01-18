@@ -1,7 +1,14 @@
 <div>
   <h3>Mes Commandes</h3>
-  <table>
-    <thead>
+  <p-table
+    [value]="orders"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10,15,20]"
+    [tableStyle]="{'min-width' : '50rem'}"
+    class="cursor-pointer"
+  >
+    <ng-template pTemplate="header">
       <tr>
         <th scope="col">Id</th>
         <th scope="col">Date</th>
@@ -10,22 +17,29 @@
         <th scope="col">Archivé</th>
         <th scope="col">Client</th>
       </tr>
-    </thead>
-    <tbody>
-      @for (order of orders; track order.idOrder) {
-        <tr (click)="viewOrder(order.idOrder)">
-          <th>{{order.idOrder}}</th>
-          <td>{{order.orderDate}}</td>
-          <td>{{order.totalPrice}}</td>
-          <td>{{order.orderIsReady}}</td>
-          <td>{{order.isArchived}}</td>
-          <td>{{order.customer}}</td>
-        </tr>
-      } @empty {
-        <tr>
-          <td colspan="4">Pas encore de commande</td>
-        </tr>
-      }
-    </tbody>
-  </table>
+    </ng-template>
+    <ng-template pTemplate="body" let-order class="cursor-pointer">
+      <tr (click)="viewOrder(order.id)">
+        <td>{{order.id}}</td>
+        <td>{{order.orderDate | date:'dd/MM/yyyy'}}</td>
+        <td>{{order.totalPrice}}€</td>
+        @if (order.orderIsReady == false) {
+          <td>Pas encore prête</td>
+        } @else {
+          <td>Prête</td>
+        }
+        @if (order.archived == false) {
+          <td>Non</td>
+        } @else {
+          <td>Oui</td>
+        }
+        <td>{{order.customer.firstName}} {{order.customer.firstName}}</td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="4">Pas encore de commande</td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>

@@ -98,9 +98,9 @@ export class NavbarComponent implements OnInit{
         routerLink: "/accueil"
       },
       {
-        label: 'Navbar client connecter',
-        icon: 'pi pi-fw pi-home',
-        routerLink: "/"
+        label: 'Mes commandes',
+        icon: 'pi pi-fw pi-shopping-bag',
+        routerLink: "/commande/client/liste"
 
       }
     ];

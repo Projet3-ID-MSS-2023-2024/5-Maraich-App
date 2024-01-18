@@ -37,7 +37,7 @@ export const routes: Routes = [
   },
 
   {path: 'accueil', canActivate: [authGuard], component: HomePageComponent},
-  {path: 'ajouterRequête', canActivate: [authGuard], component: AddRequestComponent},
+  {path: 'ajouterRequete', canActivate: [authGuard], component: AddRequestComponent},
   {path: 'panier', canActivate: [authGuard],component: PanierComponent},
   {path: 'order', canActivate: [authGuard],component: OrderComponent},
   {path: 'shop/:shopId', canActivate: [authGuard], component:ListProductsComponent},
