@@ -2,6 +2,7 @@ package be.helha.maraichapp.services;
 
 import be.helha.maraichapp.models.Requests;
 import be.helha.maraichapp.models.Users;
+import be.helha.maraichapp.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
@@ -18,19 +19,21 @@ public class RequestServiceTest {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
 
     private static Users testUser;
 
     @BeforeEach
     public void setUp() {
-        Users testUser = userService.addUser(new Users("Bilal",  "Maachi", "0456212365","HELHa123", "1","Rue des potiers", "6200","Châtelet", "bilal@test.be", null, null));
+        testUser = userService.addUser(new Users("Bilal",  "Maachi", "0456212365","HELHa123", "1","Rue des potiers", "6200","Châtelet", "bilal@test.be", null, null));
     }
 
     @Test
     @Order(1)
     @Transactional
     public void addRequestTest() {
-
+        userRepository.save(testUser);
         Requests testRequests = new Requests(testUser, "Test Request Create");
 
         // Adding the request to the databse
