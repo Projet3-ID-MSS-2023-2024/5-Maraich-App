@@ -67,7 +67,7 @@
           <div *ngIf="addressPostCodeIsNotOk" class="text-red-500 mt-2">Le code postal est invalide.</div>
         </div>
       </div>
-
+      <p-button (click)="showAdd()" icon="pi pi-plus" label="Faire un demande de passage à maraicher" styleClass="p-button-text"></p-button>
       <button (click)="onSubmitForm()" pButton pRipple type="submit" label="Sauvegarder" icon="pi pi-save" class="w-full"></button>
     </div>
   </div>

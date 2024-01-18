@@ -17,6 +17,7 @@ import {EditUserProfileComponent} from "./pages/edit-user-profile/edit-user-prof
 import {EditShopProfileComponent} from "./pages/edit-shop-profile/edit-shop-profile.component";
 import {OrderComponent} from "./pages/order/order.component";
 import {AddRequestComponent} from "./pages/requests/add-request/add-request.component";
+import {ListRequestsComponent} from "./pages/requests/list-requests/list-requests.component";
 
 export const routes: Routes = [
   {
@@ -30,7 +31,8 @@ export const routes: Routes = [
     path: 'admin', canActivate: [authGuard], children: [
       {path: 'utilisateurs', component: UserManagementComponent},
       {path: 'maraichers', component: MaraicherManagementComponent},
-      {path: 'categories', component: ListCategoriesComponent}
+      {path: 'categories', component: ListCategoriesComponent},
+      {path: 'requêtes', component: ListRequestsComponent},
     ]
   },
 

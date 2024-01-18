@@ -49,13 +49,6 @@ export class ListRequestsComponent implements OnInit{
     })
   }
 
-  showAdd() {
-    this.ref = this.dialogService.open(AddRequestComponent, {
-      header: 'Créer une requête',
-      data: {ref : this.ref, refreshRequests: this.refreshRequests.bind(this)}
-    });
-  }
-
   showDelete(id: number) {
     this.ref = this.dialogService.open(DeleteRequestComponent, {
       header: 'Supprimer la requête',

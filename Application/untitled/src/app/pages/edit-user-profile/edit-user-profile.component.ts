@@ -11,6 +11,8 @@ import {CookieService} from "ngx-cookie-service";
 import {UserService} from "../../services/user.service";
 import {error} from "@angular/compiler-cli/src/transformers/util";
 import {RankEnum} from "../../models/rankEnum";
+import {AddRequestComponent} from "../requests/add-request/add-request.component";
+import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 
 @Component({
   selector: 'app-edit-user-profile',
@@ -29,7 +31,7 @@ import {RankEnum} from "../../models/rankEnum";
 })
 export class EditUserProfileComponent implements OnInit{
 
-  constructor(private cookieService: CookieService, private userService : UserService, private route: Router) {
+  constructor(private cookieService: CookieService, private userService : UserService, private route: Router, private ref: DynamicDialogRef, private dialogService: DialogService) {
     this.user = {
       idUser: 0, // or any default value
       firstName: "",
@@ -144,5 +146,12 @@ export class EditUserProfileComponent implements OnInit{
     this.wantChangePassword = true;
     this.passwordConfirmation = "";
     this.user.password = "";
+  }
+
+  showAdd() {
+    this.ref = this.dialogService.open(AddRequestComponent, {
+      header: 'Créer une requête',
+      data: {ref : this.ref,}
+    });
   }
 }
