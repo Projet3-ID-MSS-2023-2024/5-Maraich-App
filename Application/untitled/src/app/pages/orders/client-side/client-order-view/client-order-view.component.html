@@ -9,11 +9,11 @@
     </tr>
     </thead>
     <tbody>
-      @for (product of order.orderProducts; track product.id) {
+      @for (orderProduct of order.orderProducts; track orderProduct.id) {
         <tr>
-<!--          <th>{{product.name}}</th>-->
-<!--          <td>{{product.price}}</td>-->
-<!--          <td>{{product.quantity}}</td>-->
+          <th>{{orderProduct.product.name}}</th>
+          <td>{{orderProduct.product.price}}</td>
+          <td>{{orderProduct.quantity}}</td>
         </tr>
       } @empty {
         <tr>

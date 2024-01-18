@@ -47,16 +47,26 @@ public class EmailSender {
         sendEmail(users.getEmail(), subject, message);
     }
 
-    // Envoi du mail à l'admin lorsqu'un client fait une demande de passage à marraicher
-    public void sendRequestEmail(Users users){
-        String subject = "Nouvelle Requête";
-        String message = String.format("Un nouvel utilisateur a formulé une requête de passage à maraicher \n\n"
-                         + "Accédez à la liste des requêtes pour la traiter");
+    // Envoi d'un mail au maraicher lorsqu'une commande a été effectuée sur son shop
+    public void sendNewOrderEmail(Users users){
+        String subject = "Nouvelle commande";
+        String message = String.format( "Bonjour %s %s, \n\n"
+                        + "Nous sommes ravis de vous informer qu'une nouvelle commande a été passée sur votre magasin en ligne.\n\n"
+                        + "Pour voir les détails complets et gérer la commande, veuillez vous connecter à votre compte et accéder à l'onglet \"Gérer mes commandes\" depuis votre tableau de bord."
+                        + "Merci de votre attention et bonne préparation !\n\n"
+                        + "Cordialement,\nL'équipe Maraich'App",
+                users.getFirstName(), users.getSurname()
+        );
         sendEmail(users.getEmail(), subject, message);
     }
 
-    // Envoi du mail au maraicher lorsqu'une commande a été effectuée sur son shop
-    public void sendNewOrderEmail(Users users){
+    public void sendOrderReadyEmail(Users users){
         String subject = "Nouvelle commande";
+        String message = String.format( "Cher(e) %s %s, \n\n"
+                        +"Nous sommes heureux de vous informer que votre commande est maintenant prête pour récupération."
+                        + "Cordialement,\nL'équipe Maraich'App",
+                users.getFirstName(), users.getSurname()
+        );
+        sendEmail(users.getEmail(), subject, message);
     }
 }
