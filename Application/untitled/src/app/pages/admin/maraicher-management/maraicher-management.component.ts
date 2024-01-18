@@ -109,9 +109,6 @@ export class MaraicherManagementComponent implements OnInit{
     );
   }
 
-  openNew(){
-
-  }
 
   editShop(shop: Shop) {
     this.shop = { ...shop }; // ... créé une copie
