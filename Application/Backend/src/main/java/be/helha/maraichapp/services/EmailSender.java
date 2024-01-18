@@ -26,10 +26,10 @@ public class EmailSender {
         String subject = "Activation de votre compte";
         String body = String.format("Bonjour %s %s,\n\n"
                         + "Nous espérons que ce message vous trouve bien. Pour finaliser l'activation de votre compte, veuillez utiliser le code suivant : %s.\n\n"
-                        + "Cliquez ici pour activer votre compte : http://localhost:4200/activation/%s\n\n"
+                        + "Cliquez ici pour activer votre compte : https://localhost:4200/activation/%s\n\n"
                         + "Nous sommes impatients de vous accueillir au sein de notre communauté. Si vous avez la moindre question ou rencontrez des difficultés, n'hésitez pas à nous contacter.\n\n"
                         + "À bientôt !\n\n"
-                        + "Cordialement,\nMairch'App\n5MaraichApp@gmail.com",
+                        + "Cordialement,\nMaraich'App\n5MaraichApp@gmail.com",
                 validation.getUsers().getFirstName(), validation.getUsers().getSurname(), validation.getCode(), validation.getCode());
 
         sendEmail(validation.getUsers().getEmail(), subject, body);
