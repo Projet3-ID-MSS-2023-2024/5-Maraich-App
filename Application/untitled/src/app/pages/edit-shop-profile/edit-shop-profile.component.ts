@@ -21,6 +21,7 @@ import {ImageService} from "../../services/image.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import {SelectButtonModule} from "primeng/selectbutton";
 import {ToggleButtonModule} from "primeng/togglebutton";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-edit-shop-profile',
@@ -56,11 +57,11 @@ export class EditShopProfileComponent implements OnInit{
   addressNumberIsNotOk : boolean = false;
   addressEmailIsNotOk : boolean = false;
   addressEmailIsAlreadyUse : boolean = false;
-  constructor(private imageService : ImageService, private sanitizer:DomSanitizer, private cookieService: CookieService, private userService : UserService, private route: Router, private shopService : ShopService, private productService : ProductService) {
+  constructor(private imageService : ImageService, private sanitizer:DomSanitizer, private cookieService: CookieService, private authService : AuthService, private route: Router, private shopService : ShopService, private productService : ProductService) {
   }
 
   ngOnInit(): void {
-    this.extractIdUserData();
+    this.idUser = this.authService.getIdUserFromCookie();
     this.shopService.getShopByOwnerId(this.idUser).subscribe({
       next: (shop) => {
         this.shop = shop;
@@ -95,20 +96,6 @@ export class EditShopProfileComponent implements OnInit{
 
   }
 
-  extractIdUserData() {
-    const token = this.cookieService.get('access_token');
-    if (token) {
-      const tokenParts = token.split('.');
-      const payload = tokenParts[1];
-
-      // Decode the payload using base64 decoding
-      const decodedPayload = atob(payload);
-
-      // Parse the decoded payload as JSON
-      const payloadData = JSON.parse(decodedPayload);
-      this.idUser = payloadData.idUser;
-    }
-  }
 
   onSubmitForm() {
     this.nameIsNotOk = false;
@@ -176,6 +163,10 @@ export class EditShopProfileComponent implements OnInit{
 
   redirectToShop() {
     this.route.navigate(["shop/" + this.shop.idShop])
+  }
+
+  redirectToOrders() {
+    this.route.navigate(["maraicher/commande/liste"])
   }
 
   turnOnOff() {

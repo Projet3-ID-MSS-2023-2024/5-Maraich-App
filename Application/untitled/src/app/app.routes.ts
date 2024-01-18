@@ -17,6 +17,7 @@ import {EditUserProfileComponent} from "./pages/edit-user-profile/edit-user-prof
 import {EditShopProfileComponent} from "./pages/edit-shop-profile/edit-shop-profile.component";
 import {OrderComponent} from "./pages/order/order.component";
 import {AddRequestComponent} from "./pages/requests/add-request/add-request.component";
+import {ListRequestsComponent} from "./pages/requests/list-requests/list-requests.component";
 
 export const routes: Routes = [
   {
@@ -30,12 +31,14 @@ export const routes: Routes = [
     path: 'admin', canActivate: [authGuard], children: [
       {path: 'utilisateurs', component: UserManagementComponent},
       {path: 'maraichers', component: MaraicherManagementComponent},
-      {path: 'categories', component: ListCategoriesComponent}
+      {path: 'categories', component: ListCategoriesComponent},
+      {path: 'requetes', component: ListRequestsComponent},
+      {path: '**', redirectTo: 'utilisateurs', pathMatch: 'full'}
     ]
   },
 
   {path: 'accueil', canActivate: [authGuard], component: HomePageComponent},
-  {path: 'ajouterRequête', canActivate: [authGuard], component: AddRequestComponent},
+  {path: 'ajouterRequete', canActivate: [authGuard], component: AddRequestComponent},
   {path: 'panier', canActivate: [authGuard],component: PanierComponent},
   {path: 'order', canActivate: [authGuard],component: OrderComponent},
   {path: 'shop/:shopId', canActivate: [authGuard], component:ListProductsComponent},

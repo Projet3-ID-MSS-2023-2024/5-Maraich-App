@@ -19,7 +19,8 @@ import {GetRequestComponent} from "../get-request/get-request.component";
     CommonModule
   ],
   templateUrl: './list-requests.component.html',
-  styleUrl: './list-requests.component.css'
+  styleUrl: './list-requests.component.css',
+  providers: [DialogService]
 })
 export class ListRequestsComponent implements OnInit{
   requests: Requests[] = [];
@@ -35,6 +36,7 @@ export class ListRequestsComponent implements OnInit{
     this.requestService.getRequests().subscribe({
       next: (response) => {
         this.requests = response;
+        console.log("Succès : ", response);
       },
       error: (error) => {
         console.error('Erreur: ', error);
@@ -45,28 +47,16 @@ export class ListRequestsComponent implements OnInit{
   showGet(id: number) {
     this.ref = this.dialogService.open(GetRequestComponent, {
       header: 'Consulter une requête',
-      data: {ref : this.ref, id: id, refreshRequest: this.refreshRequests.bind(this)}
+      data: {ref : this.ref, id: id, refreshRequest: this.refreshRequests.bind(this)},
+      width: '70%'
     })
-  }
-
-  showAdd() {
-    this.ref = this.dialogService.open(AddRequestComponent, {
-      header: 'Créer une requête',
-      data: {ref : this.ref, refreshRequests: this.refreshRequests.bind(this)}
-    });
   }
 
   showDelete(id: number) {
     this.ref = this.dialogService.open(DeleteRequestComponent, {
       header: 'Supprimer la requête',
-      data: {ref: this.ref, id: id, refreshRequests: this.refreshRequests.bind(this)}
+      data: {ref: this.ref, id: id, refreshRequests: this.refreshRequests.bind(this)},
+      width: '50%'
     });
-  }
-
-  showEdit(id: number) {
-    this.ref = this.dialogService.open(UpdateRequestComponent, {
-      header: 'Modifiez la requête',
-      data: {ref: this, id : id, refreshRequests: this.refreshRequests.bind(this)}
-    })
   }
 }

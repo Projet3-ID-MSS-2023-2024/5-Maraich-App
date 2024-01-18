@@ -3,17 +3,14 @@ package be.helha.maraichapp.services;
 import be.helha.maraichapp.models.Requests;
 import be.helha.maraichapp.models.Users;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
-@SpringBootTest
+@SpringBootTest(properties = "spring.config.location=classpath:application-test.properties")
 public class RequestServiceTest {
 
     @Autowired
@@ -29,15 +26,6 @@ public class RequestServiceTest {
         Users testUser = userService.addUser(new Users("Bilal",  "Maachi", "0456212365","HELHa123", "1","Rue des potiers", "6200","Châtelet", "bilal@test.be", null, null));
     }
 
-    @AfterEach
-    public void cleanUp() {
-        List<Requests> allRequests = requestsService.getAllRequests();
-        for (Requests requests : allRequests) {
-            requestsService.deleteRequestsById(requests.getId());
-        }
-        userService.deleteUserById(testUser.getIdUser());
-    }
-
     @Test
     @Order(1)
     @Transactional
@@ -49,7 +37,7 @@ public class RequestServiceTest {
         Requests savedRequests = requestsService.addRequests(testRequests);
 
         // Retrieve the request from the database
-        Requests retrievedRequests = requestsService.getRequestsById(savedRequests.getId());
+        Requests retrievedRequests = requestsService.getRequestsById(savedRequests.getIdRequest());
 
         // Verify if the request is not null
         assertNotNull(retrievedRequests);
@@ -75,7 +63,7 @@ public class RequestServiceTest {
         Requests updatedRequests = requestsService.updateRequests(savedRequests);
 
         // Retrieve the updated request from the database
-        Requests retrievedRequests = requestsService.getRequestsById(updatedRequests.getId());
+        Requests retrievedRequests = requestsService.getRequestsById(updatedRequests.getIdRequest());
 
         // Verify if the request has been correctly updated
         assertNotNull(retrievedRequests);

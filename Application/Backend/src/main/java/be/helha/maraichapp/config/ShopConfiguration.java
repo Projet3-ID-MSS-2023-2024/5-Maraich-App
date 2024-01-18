@@ -39,10 +39,10 @@ public class ShopConfiguration {
     public List<Users> initializeUsers(List<Rank> ranks) {
         List<Users> users = new ArrayList<>(3);
         Map<String, String> mapString = new HashMap<>();
-        users.add(new Users("admin",  "admin", "0464966942",passwordEncoder.encode("Admin123"), "3","Rue des potiers", "6200","Châtelet", "admin@admin.be", ranks.get(2)));
+        users.add(new Users("admin",  "admin", "0464966942",passwordEncoder.encode("Admin123"), "3","Rue des potiers", "6200","Châtelet", "admin@admin.be", ranks.get(0)));
         users.add(new Users("clientun",  "clientun", "0464966942",passwordEncoder.encode("Client123"), "3","Rue des potiers", "6200","Châtelet", "client1@client.be", ranks.get(0)));
         users.add(new Users("clientdeux",  "clientdeux", "0464966942",passwordEncoder.encode("Client123"), "3","Rue des potiers", "6200","Châtelet", "client2@client.be", ranks.get(0)));
-        users.add(new Users("maraicherdeux",  "maraicherdeux", "0464966942",passwordEncoder.encode("Maraicher123"), "3","Rue des potiers", "6200","Châtelet", "maraicher1@client.be", ranks.get(0)));
+        users.add(new Users("maraicherun",  "maraicherun", "0464966942",passwordEncoder.encode("Maraicher123"), "3","Rue des potiers", "6200","Châtelet", "maraicher1@client.be", ranks.get(0)));
         users.add(new Users("maraicherdeux",  "maraicherdeux", "0464966942",passwordEncoder.encode("Maraicher123"), "3","Rue des potiers", "6200","Châtelet", "maraicher2@client.be", ranks.get(0)));
         users.add(new Users("maraichertrois",  "maraichertrois", "0464966942",passwordEncoder.encode("Maraicher123"), "3","Rue des potiers", "6200","Châtelet", "maraicher3@client.be", ranks.get(0)));
 
@@ -67,18 +67,25 @@ public class ShopConfiguration {
         users.get(3).setRank(ranks.get(1));
         users.get(4).setRank(ranks.get(1));
         users.get(5).setRank(ranks.get(1));
+        users.get(0).setRank(ranks.get(1));
         userService.updateUserAdmin(users.get(3));
         userService.updateUserAdmin(users.get(4));
         userService.updateUserAdmin(users.get(5));
+        userService.updateUserAdmin(users.get(0));
+        users.get(0).setRank(ranks.get(2));
+        userRepository.save(users.get(0));
         users.remove(5);
         users.remove(4);
         users.remove(3);
+        users.remove(0);
         users.add(userRepository.findByEmail("maraicher1@client.be").get());
         users.add(userRepository.findByEmail("maraicher2@client.be").get());
         users.add(userRepository.findByEmail("maraicher3@client.be").get());
-        shops.add(new Shop(users.get(3).getShop().getIdShop(), "Marché n°1", "maraicher1@maraicher.be", new Address("Rue des potiers", "6200", "Châtelet", "3"), "maraicher1.jpeg", "Marché numéro 1", true, true, users.get(3)));
-        shops.add(new Shop(users.get(4).getShop().getIdShop(), "Marché n°2", "maraicher2@maraicher.be", new Address("Rue des potiers", "6200", "Châtelet", "3"), "maraicher2.jpeg", "Marché numéro 2", true, true, users.get(4)));
-        shops.add(new Shop(users.get(5).getShop().getIdShop(), "Marché n°3", "maraicher3@maraicher.be", new Address("Rue des potiers", "6200", "Châtelet", "3"), "maraicher3.jpeg", "Marché numéro 2", true, true, users.get(5)));
+        users.add(userRepository.findByEmail("admin@admin.be").get());
+        shops.add(new Shop(users.get(2).getShop().getIdShop(), "Marché n°1", "maraicher1@maraicher.be", new Address("Rue des potiers", "6200", "Châtelet", "1"), "maraicher1.jpeg", "Marché numéro 1", true, true, users.get(2)));
+        shops.add(new Shop(users.get(3).getShop().getIdShop(), "Marché n°2", "maraicher2@maraicher.be", new Address("Rue des potiers", "6200", "Châtelet", "2"), "maraicher2.jpeg", "Marché numéro 2", true, true, users.get(3)));
+        shops.add(new Shop(users.get(4).getShop().getIdShop(), "Marché n°3", "maraicher3@maraicher.be", new Address("Rue des potiers", "6200", "Châtelet", "3"), "maraicher3.jpeg", "Marché numéro 3", true, true, users.get(4)));
+        shops.add(new Shop(users.get(5).getShop().getIdShop(), "Marché admin", "admin@maraicher.be", new Address("Rue des potiers", "6200", "Châtelet", "4"), "maraicher3.jpeg", "Marché admin", true, false, users.get(5)));
         shops.forEach(s -> shopService.updateShop(s));
         return shops;
     }

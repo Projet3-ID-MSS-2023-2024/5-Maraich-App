@@ -4,7 +4,7 @@ import {Product} from "./product";
 import {OrderProduct} from "./orderProduct";
 
 export interface Order {
-  idOrder: number;
+  id: number;
   orderDate: Date;
   totalPrice: number;
   redeemDate: Date;

@@ -11,6 +11,9 @@ import {CookieService} from "ngx-cookie-service";
 import {UserService} from "../../services/user.service";
 import {error} from "@angular/compiler-cli/src/transformers/util";
 import {RankEnum} from "../../models/rankEnum";
+import {AddRequestComponent} from "../requests/add-request/add-request.component";
+import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-edit-user-profile',
@@ -25,11 +28,12 @@ import {RankEnum} from "../../models/rankEnum";
     RouterLink
   ],
   templateUrl: './edit-user-profile.component.html',
-  styleUrl: './edit-user-profile.component.css'
+  styleUrl: './edit-user-profile.component.css',
+  providers: [DialogService, DynamicDialogRef]
 })
 export class EditUserProfileComponent implements OnInit{
 
-  constructor(private cookieService: CookieService, private userService : UserService, private route: Router) {
+  constructor(private authService : AuthService, private cookieService: CookieService, private userService : UserService, private route: Router, private ref: DynamicDialogRef, private dialogService: DialogService) {
     this.user = {
       idUser: 0, // or any default value
       firstName: "",
@@ -60,7 +64,7 @@ export class EditUserProfileComponent implements OnInit{
   passwordFeatIsOk : boolean = true;
 
   ngOnInit(): void {
-    this.extractIdUserData();
+    this.idUser = this.authService.getIdUserFromCookie();
     this.userService.getUserById(this.idUser).subscribe({
       next: (user) => {
         this.user = user;
@@ -103,21 +107,6 @@ export class EditUserProfileComponent implements OnInit{
 
   }
 
-  extractIdUserData() {
-    const token = this.cookieService.get('access_token');
-    if (token) {
-      const tokenParts = token.split('.');
-      const payload = tokenParts[1];
-
-      // Decode the payload using base64 decoding
-      const decodedPayload = atob(payload);
-
-      // Parse the decoded payload as JSON
-      const payloadData = JSON.parse(decodedPayload);
-      this.idUser = payloadData.idUser;
-    }
-  }
-
   // Check if password and password confirmation match
   passwordFeat(): void{
     this.passwordFeatIsOk = this.passwordConfirmation == this.user.password;
@@ -144,5 +133,13 @@ export class EditUserProfileComponent implements OnInit{
     this.wantChangePassword = true;
     this.passwordConfirmation = "";
     this.user.password = "";
+  }
+
+  showAdd() {
+    this.ref = this.dialogService.open(AddRequestComponent, {
+      header: 'Créer une requête',
+      data: {ref : this.ref,},
+      width: '70%',
+    });
   }
 }

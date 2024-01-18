@@ -5,7 +5,6 @@ import be.helha.maraichapp.models.Users;
 import be.helha.maraichapp.repositories.RequestsRepository;
 import be.helha.maraichapp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +21,6 @@ public class RequestsServiceImpl implements RequestsService{
 
     @Override
     public Requests addRequests(Requests requests) {
-        ExampleMatcher userMatcher = ExampleMatcher.matching();
         // Verify if the customer already exists in the database
         Users user = userRepository.findById(requests.getUser().getIdUser()).orElseThrow(() -> new RuntimeException("User doesn't exist"));
         requests.setUser(user);
@@ -45,7 +43,7 @@ public class RequestsServiceImpl implements RequestsService{
 
     @Override
     public Requests updateRequests(Requests requests) {
-        if (this.requestsRepository.existsById(requests.getId())) {
+        if (this.requestsRepository.existsById(requests.getIdRequest())) {
             return this.requestsRepository.save(requests);
         }
         return null;

@@ -62,7 +62,7 @@ public class SpringSecurityConfig {
                                     authorize.requestMatchers(GET, "/orders/get/customer/{customerId}").hasAnyRole("CUSTOMER", "MARAICHER", "ADMINISTRATOR");
                                     authorize.requestMatchers(GET, "/orders/get/shop/{shopId}").hasAnyRole("MARAICHER", "ADMINISTRATOR");
                                     authorize.requestMatchers(POST, "/orders/addOrder").hasAnyRole("CUSTOMER", "MARAICHER", "ADMINISTRATOR");
-                                    authorize.requestMatchers(PUT, "/orders/update/order").hasRole("ADMINISTRATOR");
+                                    authorize.requestMatchers(PUT, "/orders/update/order").hasAnyRole("ADMINISTRATOR", "MARAICHER");
                                     authorize.requestMatchers(DELETE, "/orders/delete/{id}").hasRole("ADMINISTRATOR");
                                     //.Product Controller
                                     authorize.requestMatchers(GET, "/products/get-all").hasRole("ADMINISTRATOR");

@@ -8,7 +8,8 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {AdressFormatPipe} from "./pipe/adress-format.pipe";
 import {MessageService} from "primeng/api";
 import {DialogModule} from "primeng/dialog";
+import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 
 export const appConfig: ApplicationConfig = {
-  providers: [MessageService, DialogModule, importProvidersFrom([BrowserAnimationsModule]),provideRouter(routes), provideHttpClient(withInterceptors([authInterceptor])), AdressFormatPipe]
+  providers: [MessageService, DialogService, DynamicDialogRef,  DialogModule, importProvidersFrom([BrowserAnimationsModule]),provideRouter(routes), provideHttpClient(withInterceptors([authInterceptor])), AdressFormatPipe]
 };

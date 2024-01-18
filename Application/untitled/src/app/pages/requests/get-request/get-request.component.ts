@@ -21,14 +21,21 @@ import {RankEnum} from "../../../models/rankEnum";
   templateUrl: './get-request.component.html',
   styleUrl: './get-request.component.css'
 })
-export class GetRequestComponent {
+export class GetRequestComponent implements OnInit{
   user!: User;
   request!: Requests;
   constructor(private requestService: RequestService, private userService: UserService, private ref: DynamicDialogRef, private config: DynamicDialogConfig) {
+
+  }
+
+  ngOnInit() {
     this.requestService.getRequestById(this.config.data.id).subscribe({
       next: (response) => {
         // console.log('Succes : ', response);
         this.request = response;
+        this.requestForm.patchValue({
+          requestBody: response.requestBody
+        })
       },
       error: (error) => {
         console.error('Error: ', error)

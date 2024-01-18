@@ -182,7 +182,7 @@ export class OrderComponent implements OnInit, OnDestroy {
       });
     });
     let order: Order = {
-      idOrder: -1,
+      id: -1,
       orderDate: orderDate,
       totalPrice: this.totalPrice,
       redeemDate: redeemDate,

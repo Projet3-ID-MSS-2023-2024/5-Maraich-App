@@ -76,6 +76,7 @@
 <div *ngIf="shopIsOkay && !wantModify">
   <div class="card flex justify-content-between mr-5 ml-5 mb-2">
     <p-button class="mr-1" label="Modifier les informations de ma boutique" (click)="wantModify = true"></p-button>
+    <p-button class="mr-1" label="Gérer mes commandes" (click)="redirectToOrders()"></p-button>
     <p-button class="mr-1" label="Gérer mes produits" (click)="redirectToShop()"></p-button>
     <p-toggleButton [(ngModel)]="shop.enable" onLabel="Ouvert" offLabel="Fermer" (onChange)="turnOnOff()"></p-toggleButton>
   </div>

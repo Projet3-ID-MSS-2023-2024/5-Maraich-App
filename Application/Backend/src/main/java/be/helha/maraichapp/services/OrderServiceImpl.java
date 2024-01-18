@@ -30,6 +30,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderProductRepository orderProductRepository;
 
+    @Autowired
+    private EmailSender emailSender;
+
     @Override
     public Orders addOrder(Orders orders) {
         // Vérifier si le client existe déjà dans la base de données
@@ -76,6 +79,9 @@ public class OrderServiceImpl implements OrderService {
 
         }
 
+        // Envoyer un mail au maraicher lui informant qu'une commande a été créée
+        this.emailSender.sendNewOrderEmail(orders.getShopSeller().getOwner());
+
         return orders;
     }
 
@@ -107,6 +113,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Orders updateOrder(Orders orders) {
         if (this.orderRepository.existsById(orders.getId())){
+            if (orders.isOrderIsReady()) this.emailSender.sendOrderReadyEmail(orders.getCustomer());
             return this.orderRepository.save(orders);
         }
         return null;

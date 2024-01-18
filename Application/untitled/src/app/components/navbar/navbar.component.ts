@@ -96,6 +96,11 @@ export class NavbarComponent implements OnInit{
         label: 'Accueil',
         icon: 'pi pi-fw pi-home',
         routerLink: "/accueil"
+      },
+      {
+        label: 'Mes commandes',
+        icon: 'pi pi-fw pi-shopping-bag',
+        routerLink: "/commande/client/liste"
       }
     ];
   }
@@ -132,6 +137,11 @@ export class NavbarComponent implements OnInit{
         icon: 'pi pi-fw pi-shopping-cart',
         routerLink: "/admin/maraichers"
       },
+      {
+        label: 'Gérer les requêtes',
+        icon: 'pi pi-fw pi-file',
+        routerLink: "/admin/requetes"
+      }
 
     ];
   }
