@@ -8,6 +8,7 @@ import {RequestService} from "../../../services/request.service";
 import {DynamicDialogRef} from "primeng/dynamicdialog";
 import {AuthService} from "../../../services/auth.service";
 import {UserService} from "../../../services/user.service";
+import {Router} from "@angular/router";
 @Component({
   selector: 'app-add-request',
   standalone: true,
@@ -18,12 +19,12 @@ import {UserService} from "../../../services/user.service";
 export class AddRequestComponent {
   idUser!: number;
   newRequest: Requests = {
-    idRequest: -1,
+    idRequest: 0,
     requestBody: ""
   };
   user!: User;
 
-  constructor(private requestService: RequestService, private ref: DynamicDialogRef, private authService: AuthService, private userService: UserService) {
+  constructor(private route : Router, private requestService: RequestService, private ref: DynamicDialogRef, private authService: AuthService, private userService: UserService) {
   }
 
 
@@ -43,6 +44,7 @@ export class AddRequestComponent {
             next: (response) => {
               console.log('Succès', response);
               this.ref?.close();
+              this.route.navigate(["/accueil"]);
             },
             error: (error) => {
               console.error('Error :', error)
