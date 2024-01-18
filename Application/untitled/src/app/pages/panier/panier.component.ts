@@ -112,8 +112,9 @@ export class PanierComponent implements OnInit, OnDestroy{
 
   updateReservation(idReservation: number, reserveQuantity: number){
     if(this.inputValues[idReservation] != null) {
+      console.log(this.inputValues[idReservation]);
       let newQuantity = reserveQuantity - this.inputValues[idReservation];
-      if (newQuantity < 1) {
+      if (newQuantity <= 0) {
         this.deleteReservation(idReservation);
       } else {
         this.reservationService.updateReservation(idReservation, newQuantity).subscribe({

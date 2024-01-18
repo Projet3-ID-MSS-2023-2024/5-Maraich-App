@@ -4,7 +4,7 @@
       <div class="flex-container">
         <div class="flex-left">
           <h1>Votre panier</h1>
-          <p>Votre panier coûte : {{totalPrice}} €</p>
+          <p>Votre panier coûte : {{totalPrice.toFixed(2)}} €</p>
         </div>
         <p-button *ngIf="currentShop" class="mr-1" label="Votre maraicher : {{currentShop.name}}" (click)="goToShopPage()"></p-button>
         <p-button label="Finaliser le panier" class="mr-1" (click)="goToOrderPage()" [disabled]="reservations.length<1"></p-button>
@@ -27,13 +27,22 @@
                 </div>
               </div>
               <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
-                <p>{{ item.product.unity ? (item.reserveQuantity > 1 ? item.reserveQuantity + ' unités' : item.reserveQuantity + ' unité') : item.reserveQuantity + ' kg' }} réservé</p>
-                <p>Côut : {{item.product.price * item.reserveQuantity}} €</p>
+                <p>
+                  {{ item.product.unity
+                  ? (item.reserveQuantity > 1
+                    ? item.reserveQuantity + ' unités'
+                    : item.reserveQuantity + ' unité')
+                  : item.reserveQuantity.toFixed(2) + ' kg'
+                  }} réservé
+                </p>
+
+                <p>Côut : {{ (item.product.price * item.reserveQuantity).toFixed(2) }} €</p>
+
               </div>
               <div class="flex align-items-center justify-content-between">
                 <div class="flex align-items-center gap-2">
                   <p-inputNumber [(ngModel)]="inputValues[item.idReservation]" [min]="1" [max]="item.reserveQuantity" *ngIf="item.product.unity" size="3"></p-inputNumber>
-                  <p-inputNumber [(ngModel)]="inputValues[item.idReservation]" [min]="1" [max]="item.reserveQuantity" *ngIf="!item.product.unity" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" size="3"></p-inputNumber>
+                  <p-inputNumber [(ngModel)]="inputValues[item.idReservation]" [min]="0.1" [max]="item.reserveQuantity" *ngIf="!item.product.unity" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" size="3"></p-inputNumber>
                   <button pButton icon="pi pi-minus" class="p-button-rounded p-button-info" (click)="updateReservation(item.idReservation, item.reserveQuantity)"></button>
                   <button pButton icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="deleteReservation(item.idReservation)"></button>
                 </div>
