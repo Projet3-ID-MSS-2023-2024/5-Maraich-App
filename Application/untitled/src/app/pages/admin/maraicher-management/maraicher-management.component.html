@@ -142,7 +142,7 @@
 
     <div *ngIf="currentStepIndex === 1">
       <div class="field">
-        <label for="addressRoad">Adresse</label>
+        <label for="addressRoad">Rue</label>
         <input type="text" pInputText id="addressRoad" [(ngModel)]="shop.address.road" #road="ngModel" [pKeyFilter]="roadRegex" required />
         <small class="p-error" *ngIf=" road.touched && !shop.address.road">La rue est requise.</small>
       </div>
@@ -157,7 +157,7 @@
         <small class="p-error" *ngIf=" city.touched && !shop.address.road">La ville est requise.</small>
       </div>
       <div class="field">
-        <label for="addressNumber">Numéro d'adresse</label>
+        <label for="addressNumber">Numéro</label>
         <input type="text" pInputText id="addressNumber" [(ngModel)]="shop.address.number" #number="ngModel" [pKeyFilter]="numberRegex" required />
         <small class="p-error" *ngIf=" number.touched && !shop.address.road">Le numéro d'adresse est requis.</small>
       </div>
@@ -200,7 +200,7 @@
             class="p-button-text" (click)="nextStep()" [disabled]="!shop.name || !shop.email || !shop.address.road || !shop.address.postCode || !shop.address.city || !shop.address.number || emailExist(shop.idShop, shop.email) || !isEmailValid()" >
     </button>
 
-    <button *ngIf="isLastStep()" pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveShop()" ></button>
+    <button *ngIf="isLastStep()" [loading]="loading" pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveShop()" ></button>
   </ng-template>
 </p-dialog>
 

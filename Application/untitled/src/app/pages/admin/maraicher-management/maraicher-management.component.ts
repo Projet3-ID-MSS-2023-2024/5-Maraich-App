@@ -77,6 +77,8 @@ export class MaraicherManagementComponent implements OnInit{
   items: MenuItem[] | any; //pour les étapes edit du shop
   currentStepIndex: number | any;
 
+  loading: boolean = false; //éviter plusieurs click
+
   constructor(
     private shopService : ShopService,
     private messageService : MessageService,
@@ -291,6 +293,11 @@ export class MaraicherManagementComponent implements OnInit{
     // console.log(this.shop);
 
     if (this.selectedFile) {
+      this.loading = true;
+
+      setTimeout(() => {
+        this.loading = false;
+      }, 5000);
       // Si un fichier est sélectionné, téléchargez l'image.
       this.shopService.postImage(this.selectedFile).subscribe(
           (response) => {

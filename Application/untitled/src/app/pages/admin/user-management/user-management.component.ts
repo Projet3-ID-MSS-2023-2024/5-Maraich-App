@@ -52,6 +52,8 @@ export class UserManagementComponent implements OnInit{
 
   idUser!:number; // id du user récupérer dans le token
 
+  loading: boolean = false; //éviter plusieurs click
+
 
 //----> Les différents regex
   nameRegex : RegExp = /^[a-zA-ZÀ-ÿ-]+$/;
@@ -211,32 +213,71 @@ export class UserManagementComponent implements OnInit{
 
     if (this.user.surname?.trim()) {
       if (this.user.idUser) {
-        this.userService.updateUserAdmin(this.user).subscribe(updatedUser => {
-          this.users[this.findIndexById(updatedUser.idUser)] = updatedUser;
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Succès',
-            detail: 'Utilisateur mis à jour',
-            life: 3000
-          });
-          this.users = [...this.users];
-          this.userDialog = false;
-          this.user = {};
-          this.confirmPassword =null;
-        });
+        this.loading = true;
+
+        setTimeout(() => {
+          this.loading = false;
+        }, 5000);
+
+        this.userService.updateUserAdmin(this.user).subscribe(
+          updatedUser => {
+            this.users[this.findIndexById(updatedUser.idUser)] = updatedUser;
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Succès',
+              detail: 'Utilisateur mis à jour',
+              life: 3000
+            });
+            this.users = [...this.users];
+            this.userDialog = false;
+            this.user = {};
+            this.confirmPassword = null;
+          },
+          error => {
+            console.error(error);
+            this.loading = false;
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erreur',
+              detail: 'Une erreur est survenue lors de la mise à jour de l\'utilisateur. Veuillez réessayer.',
+              life: 3000
+            });
+          }
+        );
       } else {
-        this.userService.addUser(this.user).subscribe(newUser => {
-          //newUser.image = 'user-placeholder.svg';
-          this.users.push(newUser);
-          this.messageService.add({severity: 'success', summary: 'Succès', detail: 'Utilisateur créé', life: 3000});
-          this.users = [...this.users];
-          this.userDialog = false;
-          this.user = {};
-          this.confirmPassword =null;
-        });
+        this.loading = true;
+        setTimeout(() => {
+          this.loading = false;
+        }, 5000);
+
+        this.userService.addUser(this.user).subscribe(
+          newUser => {
+            //newUser.image = 'user-placeholder.svg';
+            this.users.push(newUser);
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Succès',
+              detail: 'Utilisateur créé',
+              life: 3000
+            });
+            this.users = [...this.users];
+            this.userDialog = false;
+            this.user = {};
+            this.confirmPassword = null;
+          },
+          error => {
+            console.error(error);
+            this.loading = false;
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erreur',
+              detail: 'Une erreur est survenue lors de la création de l\'utilisateur. Veuillez réessayer.',
+              life: 3000
+            });
+          }
+        );
       }
     }
-
   }
 
   findIndexById(id: number): number {
