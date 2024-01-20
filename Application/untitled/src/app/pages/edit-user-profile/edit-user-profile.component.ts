@@ -142,4 +142,6 @@ export class EditUserProfileComponent implements OnInit{
       width: '70%',
     });
   }
+
+  protected readonly RankEnum = RankEnum;
 }

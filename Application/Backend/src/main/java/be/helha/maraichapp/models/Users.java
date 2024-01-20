@@ -47,7 +47,7 @@ public class Users implements UserDetails {
     @JoinColumn(name = "rankId")
     private Rank rank;
     @JsonIgnore
-    @OneToOne(cascade = {CascadeType.REMOVE})
+    @OneToOne(mappedBy = "user", cascade = {CascadeType.REMOVE})
     @JoinColumn(name="requestId")
     private Requests requests;
     @JsonIgnore

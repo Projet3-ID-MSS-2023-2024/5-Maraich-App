@@ -1,3 +1,4 @@
+<div *ngIf="requests">
 <p-table
         [value]="requests"
         [paginator]="true"
@@ -29,3 +30,12 @@
       </tr>
     </ng-template>
 </p-table>
+
+<app-get-request
+  [request]="requestForDialog"
+  [user]="userForDialog"
+  [visible]="visible"
+  (refreshTheList)="refreshRequests()">
+
+</app-get-request>
+</div>

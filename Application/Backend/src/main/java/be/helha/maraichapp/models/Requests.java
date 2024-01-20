@@ -17,7 +17,7 @@ public class Requests {
     private int idRequest;
 
 
-    @OneToOne(mappedBy = "requests")
+    @OneToOne(cascade = {CascadeType.MERGE})
     private Users user;
 
     @Column (nullable = false)

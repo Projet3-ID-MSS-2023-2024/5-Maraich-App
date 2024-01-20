@@ -1,13 +1,15 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ButtonModule} from "primeng/button";
 import {EditorModule} from "primeng/editor";
 import {User} from "../../../models/user";
 import {Requests} from "../../../models/requests";
 import {RequestService} from "../../../services/request.service";
-import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {UserService} from "../../../services/user.service";
 import {RankEnum} from "../../../models/rankEnum";
+import {DialogModule} from "primeng/dialog";
+import {InputTextareaModule} from "primeng/inputtextarea";
+import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-get-request',
@@ -16,44 +18,34 @@ import {RankEnum} from "../../../models/rankEnum";
     ButtonModule,
     EditorModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    DialogModule,
+    InputTextareaModule,
+    NgIf
   ],
   templateUrl: './get-request.component.html',
   styleUrl: './get-request.component.css'
 })
 export class GetRequestComponent implements OnInit{
-  user!: User;
-  request!: Requests;
-  constructor(private requestService: RequestService, private userService: UserService, private ref: DynamicDialogRef, private config: DynamicDialogConfig) {
-
+  @Input() user!: User;
+  @Input() request! : Requests;
+  @Input() visible!: boolean;
+  @Output() refreshTheList = new EventEmitter<void>();
+  constructor(private requestService: RequestService, private userService: UserService) {
   }
 
   ngOnInit() {
-    this.requestService.getRequestById(this.config.data.id).subscribe({
-      next: (response) => {
-        // console.log('Succes : ', response);
-        this.request = response;
-        this.requestForm.patchValue({
-          requestBody: response.requestBody
-        })
-      },
-      error: (error) => {
-        console.error('Error: ', error)
-      }
-    })
   }
-
-  requestForm = new FormGroup({
-    requestBody: new FormControl('')
-  })
 
   validateRequest() {
-    this.user.rank.name = RankEnum.MARAICHER;
-    this.userService.updateUserRestricted(this.user).subscribe({
+    this.user!.rank = {
+      name: RankEnum.MARAICHER,
+      idRank:2,
+      priorityLevel:2
+    };
+    this.userService.updateUserAdmin(this.user!).subscribe({
       next: response => {
-        // console.log("Success : ", response);
-        this.ref?.close();
-        this.updateRequestsList();
+        this.deleteARequest();
       },
       error: err => {
         console.error("Error : ", err);
@@ -61,23 +53,14 @@ export class GetRequestComponent implements OnInit{
     })
   }
 
-  declineRequest() {
+  deleteARequest() {
     this.requestService.deleteRequestById(this.request.idRequest).subscribe({
       next: response => {
-        // console.log("Success : ", response);
-        this.ref?.close();
-        this.updateRequestsList();
+        this.refreshTheList.emit();
       },
       error: err => {
         console.error("Error : ", err);
       }
     })
-  }
-
-  private updateRequestsList() {
-    const refreshRequests = this.config?.data?.refreshRequests;
-    if (refreshRequests){
-      refreshRequests();
-    }
   }
 }

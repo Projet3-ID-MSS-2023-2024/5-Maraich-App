@@ -9,11 +9,12 @@ import {User} from "../../../models/user";
 import {PasswordModule} from "primeng/password";
 import {AuthService} from "../../../services/auth.service";
 import {RankEnum} from "../../../models/rankEnum";
+import {DividerModule} from "primeng/divider";
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [CommonModule, ButtonModule, InputTextModule, ReactiveFormsModule, RippleModule, RouterLink, FormsModule, PasswordModule, NgOptimizedImage],
+  imports: [CommonModule, ButtonModule, InputTextModule, ReactiveFormsModule, RippleModule, RouterLink, FormsModule, PasswordModule, NgOptimizedImage, DividerModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })

@@ -214,11 +214,8 @@ public class UserService implements UserDetailsService, UserServiceInterface {
 
              if(user.getRank().getName() == RankEnum.MARAICHER &&
                     existingUser.getRank().getName() == RankEnum.CUSTOMER){
-                if(shopRepository.existsByOwnerId(user.getIdUser())){
-                    Shop shop = existingUser.getShop();
-                    shopRepository.save(shop);
-                    user.setShop(shop);
-                }else{
+                if(!shopRepository.existsByOwnerId(user.getIdUser())){
+
                     shopService.addShopMinimal(user);
                 }
             } else if(user.getRank().getName() == RankEnum.CUSTOMER &&
