@@ -35,7 +35,7 @@ export class AuthService {
   }
 
    logout(){ // Delete the token on the cookie
-     this.route.navigate(["/redirection"]);
+     this.route.navigate(["/accueil"]);
      this.cookieService.deleteAll()
      this.userRank = undefined;
    }

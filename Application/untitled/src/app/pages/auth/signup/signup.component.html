@@ -71,16 +71,6 @@
                   [weakLabel]="'Faible'"
                   styleClass="w-full" [class.ng-invalid]="!passwordFeatIsOk" [class.ng-dirty]="!passwordFeatIsOk"
                   [inputStyle]="{'width':'100%'}">
-        <ng-template pTemplate="footer">
-          <p-divider></p-divider>
-          <p class="mt-2">Suggestions</p>
-          <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
-            <li>Au moins une minuscule</li>
-            <li>Au moins une majuscule</li>
-            <li>Au moins un chiffre</li>
-            <li>Minimum 8 caractères</li>
-          </ul>
-        </ng-template>
       </p-password>
       <div *ngIf="!passwordFeatIsOk" class="text-red-500 mt-2">Le mot de passe ne correspond pas.</div>
 
