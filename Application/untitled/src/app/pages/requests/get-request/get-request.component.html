@@ -13,13 +13,7 @@
           <p class="text-xl">{{ user?.firstName }} {{user?.surname}}</p>
       </div>
     </ng-template>
-    <textarea
-      [(ngModel)]="request.requestBody"
-      readonly
-      class="w-full mt-1"
-      pInputTextarea
-      rows="5"
-    ></textarea>
+    <p class="w-full mt-1">{{ request.requestBody }}</p>
     <br>
     <p-button label="Accepter la requête" severity="success" (click)="validateRequest()"></p-button>
     <p-button label="Refuser la requête" severity="danger" (click)="deleteARequest()"></p-button>

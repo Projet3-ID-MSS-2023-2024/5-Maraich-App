@@ -16,7 +16,9 @@
               <span class="block"><strong>Localisation: </strong>{{ shop.address | adressFormat }}</span>
             </div>
             <div class="flex align-items-center justify-content-between">
-              <span class="block"><strong>Description: </strong>{{ shop.description }}</span>
+              <p><strong>Description: </strong>
+                {{ (shop.description | slice:0:50) }}...
+                <a class="text-blue-500 underline cursor-pointer" (click)="voirPlus($event, shop)" *ngIf="shop.description.length > 50">Voir plus</a></p>
             </div>
           </div>
         </div>
@@ -24,3 +26,11 @@
     </ng-template>
   </p-dataView>
 </div>
+
+<app-show-full-description-shop
+  (cancelBack)="visible = false"
+  [visible]="visible"
+  [shop]="shop"
+></app-show-full-description-shop>
+
+

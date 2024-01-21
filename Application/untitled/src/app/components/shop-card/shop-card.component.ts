@@ -11,17 +11,20 @@ import {DomSanitizer} from "@angular/platform-browser";
 import {DataViewModule} from "primeng/dataview";
 import {TagModule} from "primeng/tag";
 import {AdressFormatPipe} from "../../pipe/adress-format.pipe";
+import {ShowFullDescriptionShopComponent} from "../show-full-description-shop/show-full-description-shop.component";
 
 @Component({
   selector: 'app-shop-card',
   standalone: true,
-  imports: [CommonModule, ButtonModule, CardModule, SharedModule, DataViewModule, TagModule, AdressFormatPipe],
+  imports: [CommonModule, ButtonModule, CardModule, SharedModule, DataViewModule, TagModule, AdressFormatPipe, ShowFullDescriptionShopComponent],
   templateUrl: './shop-card.component.html',
   styleUrl: './shop-card.component.css'
 })
 export class ShopCardComponent implements OnInit{
 
   shops! : Shop[];
+  shop! : Shop;
+  visible : boolean = false;
 
   constructor(
     private shopService: ShopService,
@@ -69,6 +72,12 @@ export class ShopCardComponent implements OnInit{
     // Ensure that all images are loaded before calling updateFilteredProducts
     Promise.all(loadImagePromises).then(() => {
     });
+  }
+
+  voirPlus(event: Event, shop : Shop) {
+    event.stopPropagation();
+    this.shop = shop;
+    this.visible = true;
   }
 
 }

@@ -27,8 +27,8 @@ import {NgIf} from "@angular/common";
   styleUrl: './get-request.component.css'
 })
 export class GetRequestComponent implements OnInit{
-  @Input() user!: User;
   @Input() request! : Requests;
+  @Input() user!: User;
   @Input() visible!: boolean;
   @Output() refreshTheList = new EventEmitter<void>();
   constructor(private requestService: RequestService, private userService: UserService) {

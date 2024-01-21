@@ -1,0 +1,22 @@
+<div *ngIf="shop">
+  <p-dialog
+    (onHide)="cancelBack.emit()"
+    [(visible)]="visible"
+    [breakpoints]="{ '960px': '75vw' }"
+    [draggable]="false"
+    [resizable]="false"
+    [style]="{ width: '50vw' }"
+    header="Header"
+  >
+
+    <ng-template pTemplate="header">
+      <div class="inline-flex align-items-center justify-content-center gap-2">
+        <p class="text-xl">{{ shop.name }}</p>
+      </div>
+    </ng-template>
+    <p
+      class="w-full mt-1"
+    >{{ shop.description }}</p>
+  </p-dialog>
+</div>
+
