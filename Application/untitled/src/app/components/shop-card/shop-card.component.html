@@ -17,7 +17,7 @@
             </div>
             <div class="flex align-items-center justify-content-between">
               <p><strong>Description: </strong>
-                {{ (shop.description | slice:0:50) }}...
+                {{ (shop.description | slice:0:50).trim() }}...
                 <a class="text-blue-500 underline cursor-pointer" (click)="voirPlus($event, shop)" *ngIf="shop.description.length > 50">Voir plus</a></p>
             </div>
           </div>
