@@ -50,7 +50,8 @@
           <p-tableCheckbox [value]="shop"></p-tableCheckbox>
         </td>
         <td>{{ shop.name }}</td>
-        <td><img [src]="shop.pictureUrl" [alt]="shop.name" width="50" class="shadow-4" /></td>
+        <td *ngIf="shop.pictureUrl"><img  [src]="shop.pictureUrl" [alt]="shop.name" width="50" class="shadow-4" /></td>
+        <td><img *ngIf="!shop.pictureUrl" [src]="'/assets/images/logos/vegetables.svg'" [alt]="shop.name" width="50" class="shadow-4" /></td>
         <td>{{ shop.email }}</td>
         <td>{{ shop.address | adressFormat }}</td>
         <td>{{ shop.description }}</td>

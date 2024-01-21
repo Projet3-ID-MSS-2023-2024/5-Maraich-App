@@ -40,7 +40,7 @@ public class ShopConfiguration {
         List<Users> users = new ArrayList<>(3);
         Map<String, String> mapString = new HashMap<>();
         users.add(new Users("admin",  "admin", "0464966942",passwordEncoder.encode("Admin123"), "33","Rue de la Tulipe", "4567","Jardinville", "admin@admin.be", ranks.get(0)));
-        users.add(new Users("Dubois",  "Marie", "0498123456",passwordEncoder.encode("Client123"), "3","Rue de la Pomme,", "1234","Jardinville", "client1@client.be", ranks.get(0)));
+        users.add(new Users("Dubois",  "Marie", "0498123456",passwordEncoder.encode("Client123"), "3","Rue de la Pomme", "1234","Jardinville", "client1@client.be", ranks.get(0)));
         users.add(new Users("Leroy",  "Jean", "0486123456",passwordEncoder.encode("Client123"), "12","Avenue des Poires", "7890","Fruitbourg", "client2@client.be", ranks.get(0)));
         users.add(new Users("Lambert",  "Sophie", "0464966942",passwordEncoder.encode("Maraicher123"), "7","Chemin de la Pomme", "2345","Verger-sur-Mer", "maraicher1@client.be", ranks.get(0)));
         users.add(new Users("Dupont",  "Pierre", "0479123456",passwordEncoder.encode("Maraicher123"), "45","Rue de la Courgette", "8901","Potagerville", "maraicher2@client.be", ranks.get(0)));
