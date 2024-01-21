@@ -208,9 +208,11 @@ public class UserService implements UserDetailsService, UserServiceInterface {
                 user.setPassword(hashedPassword);  // Update the crypted password in the user
             }
 
-//             user.setValidation(existingUser.getValidation());
-//             user.setShop(existingUser.getShop());
-//             user.setRequests(existingUser.getRequests());
+             user.setValidation(existingUser.getValidation());
+             user.setOrders(existingUser.getOrders());
+             user.setReservations(existingUser.getReservations());
+             user.setShop(existingUser.getShop());
+             user.setRequests(existingUser.getRequests());
 
              if(user.getRank().getName() == RankEnum.MARAICHER &&
                     existingUser.getRank().getName() == RankEnum.CUSTOMER){

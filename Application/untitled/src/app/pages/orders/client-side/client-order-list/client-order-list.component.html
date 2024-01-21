@@ -14,7 +14,7 @@
       <th scope="col">Total</th>
       <th scope="col">Status</th>
       <th scope="col">Archivé</th>
-      <th scope="col">Client</th>
+      <th scope="col">Maraicher</th>
     </tr>
     </ng-template>
     <ng-template pTemplate="body" let-order>
@@ -31,7 +31,7 @@
           } @else {
             <td>Oui</td>
           }
-          <td>{{order.customer.firstName}} {{order.customer.firstName}}</td>
+          <td>{{order.shopSeller.name}}</td>
         </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">

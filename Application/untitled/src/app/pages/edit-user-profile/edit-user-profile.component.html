@@ -33,7 +33,13 @@
       <button *ngIf="!wantChangePassword" (click)="activeForChangePassword()" pButton pRipple type="submit" label="Modifier mon mot de passe" class="w-full mt-3"></button>
       <div *ngIf="wantChangePassword">
         <label class="block text-900 font-medium mb-2 mt-3">Mot de passe</label>
-        <p-password [(ngModel)]="user.password" placeholder="Mot de passe" [toggleMask]="true" styleClass="w-full" [class.ng-invalid]="passwordIsNotOk || !passwordFeatIsOk" [class.ng-dirty]="passwordIsNotOk || !passwordFeatIsOk" [inputStyle]="{'width':'100%'}"></p-password>
+        <p-password [(ngModel)]="user.password"
+                    [mediumLabel]="'Moyen'"
+                    [promptLabel]="'Entrez un mot de passe !'"
+                    [strongLabel]="'Fort'"
+                    [toggleMask]="true"
+                    [weakLabel]="'Faible'"
+                    placeholder="Mot de passe" styleClass="w-full" [class.ng-invalid]="passwordIsNotOk || !passwordFeatIsOk" [class.ng-dirty]="passwordIsNotOk || !passwordFeatIsOk" [inputStyle]="{'width':'100%'}"></p-password>
         <div *ngIf="passwordIsNotOk" class="text-red-500 mt-2">Le mot de passe doit contenir 1 majuscule, 1 chiffre et minimum 8 caractères.</div>
 
         <label class="block text-900 font-medium mb-2 mt-3">Confirmer le mot de passe</label>
