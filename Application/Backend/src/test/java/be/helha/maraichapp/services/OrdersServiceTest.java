@@ -17,31 +17,41 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(properties = "spring.config.location=classpath:application-test.properties")
 public class OrdersServiceTest {
-//    @Autowired
-//    private OrderService orderService;
-//    @Autowired
-//    private ShopService shopService;
-//    @Autowired
-//    private UserService userService;
-//
-//    @Test
-//    @Order(1)
-//    @Transactional
-//    public void addOrderTest() {
-//        Users testUser = new Users("Bilal",  "Maachi", "0456212365","HELHa123", "1","Rue des potiers", "6200","Châtelet", "bilal@test.be");
-//        Shop testShop = new Shop("Chez Robert", "robert@gmail.com", "Rue de potier", "3", "6200", "Châtelet", "carrot.jpg", "des bon légumes bien frais", testUser);
-//        Orders testOrders = new Orders(Instant.now(), 50, Instant.now(),testUser, testShop);
-//        // Adding Users and Shop to the database
-//        userService.addUser(testUser);
-//        shopService.addShop(testShop);
-//        Orders savedOrders = orderService.addOrder(testOrders);
-//
-//        // We verify if the retrieved order from the database is the same order as the saved one before :
-//        Orders retrievedOrders = orderService.getOrderById(savedOrders.getId());
-//        assertNotNull(retrievedOrders);
-//        assertEquals(testOrders.getCustomer(), retrievedOrders.getCustomer());
-//    }
-//
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private ShopService shopService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private CategoryService categoryService;
+    @Autowired
+    private ProductService productService;
+
+    @Test
+    @Order(1)
+    @Transactional
+    public void addOrderTest() {
+        Users testUser = new Users("Bilal",  "Maachi", "0456212365","HELHa123", "1","Rue des potiers", "6200","Châtelet", "bilal@test.be");
+        Shop testShop = new Shop("Chez Robert", "robert@gmail.com", "Rue de potier", "3", "6200", "Châtelet", "carrot.jpg", "des bons légumes bien frais", testUser);
+        Category testCategory = new Category("Légumes");
+        Product testProduct = new Product("Carotte",15,"C'est des carottes","",20,40,false,testCategory,testShop);
+        Orders testOrders = new Orders(Instant.now(), 50, Instant.now(),testUser, testShop);
+        OrderProduct testOrderProduct = new OrderProduct(testOrders, testProduct, 1);
+        // Adding Attributes to the database
+
+        userService.addUser(testUser);
+        shopService.addShop(testShop);
+        categoryService.addCategory(testCategory);
+        productService.addProduct(testProduct);
+        Orders savedOrders = orderService.addOrder(testOrders);
+
+        // We verify if the retrieved order from the database is the same order as the saved one before :
+        Orders retrievedOrders = orderService.getOrderById(savedOrders.getId());
+        assertNotNull(retrievedOrders);
+        assertEquals(testOrders.getCustomer(), retrievedOrders.getCustomer());
+    }
+
 //    @Test
 //    @Order(2)
 //    @Transactional
