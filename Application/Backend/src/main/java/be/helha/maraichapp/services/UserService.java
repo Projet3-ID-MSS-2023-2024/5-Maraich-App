@@ -13,10 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Service
@@ -33,7 +30,10 @@ public class UserService implements UserDetailsService, UserServiceInterface {
     private ValidationRepository validationRepository;
     @Autowired
     private EmailSender emailSender;
-
+    @Autowired
+    private ShopService shopService;
+    @Autowired
+    private ShopRepository shopRepository;
     @Autowired
     private JwtRepository jwtRepository;
 
@@ -53,8 +53,11 @@ public class UserService implements UserDetailsService, UserServiceInterface {
 
             Rank rank = rankRepository.findByName(rankEnum).orElseThrow(() -> new RuntimeException("Back issue: Rank initialization issue"));
             users.setRank(rank);
+            users.setActif(false);
             users = this.userRepository.save(users);
-            this.validationService.createValidationProcess(users);
+            Validation validation = this.validationService.createValidationProcess(users);
+            users.setValidation(validation);
+            this.userRepository.save(users);
             mapError.put("message", "Well done!");
             return mapError;
         } catch (RuntimeException re) {
@@ -73,6 +76,7 @@ public class UserService implements UserDetailsService, UserServiceInterface {
                 }
                 Users usersActiver = this.userRepository.findById(validation.getUsers().getIdUser()).orElseThrow(() -> new RuntimeException("Unknown user"));
                 usersActiver.setActif(true);
+                validation.setUsers(usersActiver);
                 this.userRepository.save(usersActiver);
                 validation.setActivationDate(Instant.now());
                 this.validationRepository.save(validation);
@@ -97,10 +101,10 @@ public class UserService implements UserDetailsService, UserServiceInterface {
         String emailRegex = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
         String nameRegex = "^[a-zA-ZÀ-ÿ-]+$";
         String passwordRegex = "^(?=.*[A-Z])(?=.*\\d).{8,}$";
-        String roadRegex = "^[a-zA-Z0-9\\s\\-.,'()&]+$";
+        String roadRegex = "^[a-zA-Z0-9\\s\\-.,'()&àâäéèêëîïôöùûüçÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ]+$";
         String postCodeRegex = "^[a-zA-Z0-9\\s\\-]+$";
         String numberRegex = "^[a-zA-Z0-9\\s\\-.,'()&]+$";
-        String cityRegex = "^[a-zA-Z\\s\\-.,'()&]+$";
+        String cityRegex = "^[a-zA-Z\\s\\-.,'()&àâäéèêëîïôöùûüçÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ]+$";
         String phoneNumberRegex = "^[0-9]+$";
 
         if (!Pattern.compile(emailRegex).matcher(users.getEmail()).matches()) {
@@ -112,7 +116,6 @@ public class UserService implements UserDetailsService, UserServiceInterface {
         if (checkMailUsed && usersOptional.isPresent() && !Integer.valueOf(usersOptional.get().getIdUser()).equals(users.getIdUser())) {
             throw new RuntimeException("Your email is already used !");
         }
-
 
         if (!Pattern.compile(passwordRegex).matcher(users.getPassword()).matches()) {
             throw new RuntimeException("The password must contain minimum: 8 characters, 1 uppercase and 1 digit !");
@@ -150,7 +153,12 @@ public class UserService implements UserDetailsService, UserServiceInterface {
     }
 
 
-    // Ajouter un nouvel user (niveau admin)
+    /**
+     * Add a new user
+     * (only the admin can add here)
+     * @param user
+     * @return
+     */
     @Override
     @Transactional
     public Users addUser(Users user) {
@@ -170,38 +178,69 @@ public class UserService implements UserDetailsService, UserServiceInterface {
         user.setRank(rank); //on set le role au user
         Users users = userRepository.save(user);
         this.validationService.createValidationProcess(users);
+        users = userRepository.save(user);
         return users;
     }
 
-    // Mettre à jour un user existant
+    /**
+     * Admin update users
+     * @param user
+     * @return
+     */
     @Override
     @Transactional
     public Users updateUserAdmin(Users user) {
-        // Vérifie si les données sont valides
+        // Verify if the data is valid
         boolean dataIsOk = dataUserVerification(user, false);
         if (!dataIsOk) {
             throw new RuntimeException("Invalid user data");
         }
 
-        // Vérifie si l'utilisateur existe
+        // Verify if the user exist
         Optional<Users> existingUserOptional = userRepository.findById(user.getIdUser());
         if (existingUserOptional.isPresent()) {
             Users existingUser = existingUserOptional.get();
 
-            // Vérifie si le mot de passe a changé
+            // Verify if the password was change
             if (!existingUser.getPassword().equals(user.getPassword())) {
-                // Hachez le nouveau mot de passe
+                // Hash the new password
                 String hashedPassword = passwordEncoder.encode(user.getPassword());
-                user.setPassword(hashedPassword);  // Met à jour le mot de passe chiffré dans l'objet user
+                user.setPassword(hashedPassword);  // Update the crypted password in the user
             }
 
-            // Met à jour l'utilisateur
+             user.setValidation(existingUser.getValidation());
+             user.setOrders(existingUser.getOrders());
+             user.setReservations(existingUser.getReservations());
+             user.setShop(existingUser.getShop());
+             user.setRequests(existingUser.getRequests());
+
+             if(user.getRank().getName() == RankEnum.MARAICHER &&
+                    existingUser.getRank().getName() == RankEnum.CUSTOMER){
+                if(!shopRepository.existsByOwnerId(user.getIdUser())){
+
+                    shopService.addShopMinimal(user);
+                }
+            } else if(user.getRank().getName() == RankEnum.CUSTOMER &&
+                    existingUser.getRank().getName() == RankEnum.MARAICHER){
+                Shop shop = existingUser.getShop();
+                shop.setEnable(false);
+                shopRepository.save(shop);
+                user.setShop(shop);
+            }
+
+            // Update the user
             return userRepository.save(user);
         } else {
             throw new EntityNotFoundException("User not found with ID: " + user.getIdUser());
         }
     }
 
+    /**
+     * customer and market gardener level user update
+     * (for example : their user profile)
+     * @param updatedUser
+     * @return
+     */
     @Override
     @Transactional
     public Users updateUserRestricted(Users updatedUser) {
@@ -211,33 +250,37 @@ public class UserService implements UserDetailsService, UserServiceInterface {
             throw new RuntimeException("Invalid user data");
         }
 
-        // Vérifie si l'utilisateur existe
+        // Verify if the user exist
         Optional<Users> existingUserOptional = userRepository.findById(updatedUser.getIdUser());
 
         if (existingUserOptional.isPresent()) {
             Users existingUser = existingUserOptional.get();
 
-            // Restreint les modifications autorisées
+            // Modify authorize things
             existingUser.setFirstName(updatedUser.getFirstName());
             existingUser.setSurname(updatedUser.getSurname());
             existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
             existingUser.setAddress(updatedUser.getAddress());
 
-            // Vérifie si le mot de passe a changé
+            // Verify if the password was change
             if (!existingUser.getPassword().equals(updatedUser.getPassword())) {
-                // Hachez le nouveau mot de passe
+                // Hash the new password
                 String hashedPassword = passwordEncoder.encode(updatedUser.getPassword());
                 existingUser.setPassword(hashedPassword);
             }
 
-            // Met à jour l'utilisateur
+            // Update the user
             return userRepository.save(existingUser);
         } else {
             throw new EntityNotFoundException("User not found with ID: " + updatedUser.getIdUser());
         }
     }
 
-    //rechercher un user avec un id
+    /**
+     * get a user by id
+     * @param id
+     * @return
+     */
     @Override
     @Transactional
     public Users getUserById(int id) {
@@ -245,6 +288,11 @@ public class UserService implements UserDetailsService, UserServiceInterface {
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + id));//on lève une exception si pas trouvé
     }
 
+    /**
+     * return users by rank name
+     * @param rankEnum
+     * @return
+     */
     @Override
     @Transactional
     public Optional<List<Users>> getUsersByRank(RankEnum rankEnum) {
@@ -260,26 +308,37 @@ public class UserService implements UserDetailsService, UserServiceInterface {
         return Optional.of(usersList);
     }
 
-    //retourne tout les users
+    /**
+     * Return all users
+     * @return
+     */
     @Override
     public List<Users> getAllUsers() {
         return userRepository.findAll();
     }
 
-    // Supprimer un utilisateur depuis son ID
+    /**
+     *
+     * Delete a user by id
+     * @param id
+     */
     @Override
     @Transactional
     public void deleteUserById(int id) {
         if (userRepository.existsById(id)) {
-            jwtRepository.deleteByUserId(id);//pour eviter les erreur clé étrangère
-            validationRepository.deleteByUserId(id);
-
             userRepository.deleteById(id);
         } else {
             throw new EntityNotFoundException("User not found with ID: " + id);
         }
     }
 
-
+    /**
+     * Return all ranks
+     * @return
+     */
+    @Override
+    public List<Rank> getAllRanks() {
+        return rankRepository.findAll();
+    }
 }
 

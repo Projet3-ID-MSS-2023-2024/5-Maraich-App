@@ -1,0 +1,254 @@
+<div class="card" >
+    <p-toast></p-toast>
+    <p-toolbar styleClass="mb-4 gap-2">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="Ajouter" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+            <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedUsers()" [disabled]="!selectedUsers || !selectedUsers.length"></button>
+        </ng-template>
+    </p-toolbar>
+
+
+    <p-table
+        #dt
+        [value]="users"
+        [rows]="10"
+        [paginator]="true"
+        [globalFilterFields]="['surname', 'email','phoneNumber', 'address','rank', 'actif']"
+        [tableStyle]="{ 'min-width': '75rem' }"
+        [(selection)]="selectedUsers"
+        [rowHover]="true"
+        dataKey="idUser"
+        currentPageReportTemplate="Page {currentPage} sur {totalPages}"
+        [showCurrentPageReport]="true"
+    >
+        <ng-template pTemplate="caption">
+            <div class="flex align-items-center justify-content-between">
+                <h5 class="m-0">Gestion des utilisateurs</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Rechercher..." />`
+
+                </span>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 4rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th pSortableColumn="surname" style="min-width:15rem">Nom <p-sortIcon field="surname"></p-sortIcon></th>
+                <th pSortableColumn="email" style="min-width:10rem">Email <p-sortIcon field="email"></p-sortIcon></th>
+                <th pSortableColumn="phoneNumber">Numéro de téléphone <p-sortIcon field="phoneNumber"></p-sortIcon></th>
+                <th pSortableColumn="address">Adresse <p-sortIcon field="address"></p-sortIcon></th>
+                <th>Rôle</th>
+                <th pSortableColumn="actif" style="min-width:10rem">Status <p-sortIcon field="actif"></p-sortIcon></th>
+                <th></th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-user>
+            <tr>
+                <td *ngIf="user.idUser !== idUser">
+                    <p-tableCheckbox [value]="user"></p-tableCheckbox>
+                </td>
+                <td *ngIf="user.idUser == idUser"></td>
+                <td>{{ user.surname + ' ' + user.firstName}}</td>
+                <td>{{ user.email}}</td>
+                <td>{{ user.phoneNumber}}</td>
+                <td>{{ user.address | adressFormat}}</td>
+                <td>
+                    <p-tag *ngIf="user.rank" [value]="user.rank.name | rankFormat" [severity]="getRankSeverity(user.rank.name)"></p-tag>
+                </td>
+                <td>
+                    <p-tag [value]="user.actif ? 'Actif' : 'Inactif'" [severity]="getStatusSeverity(user.actif)"></p-tag>
+                </td>
+                <td>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editUser(user)"></button>
+                    <button *ngIf="user.idUser != idUser" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteUser(user)"></button>
+                </td>
+            </tr>
+        </ng-template>
+
+
+
+      <ng-template pTemplate="summary">
+        <div class="flex align-items-center justify-content-between">
+          Il {{ users && users.length !== 1 ? 'y a au total ' + users.length + ' utilisateurs.' : (users && users.length === 1 ? 'y a un seul utilisateur.' : 'n\'y a aucun utilisateur.') }}
+        </div>
+      </ng-template>
+
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="userDialog" [style]="{ width: '600px' }" header="Détails de l'utilisateur" [modal]="true" styleClass="p-fluid">
+
+  <ng-template pTemplate="content">
+    <p-toast></p-toast>
+    <p-steps [model]="items" [activeIndex]="currentStepIndex" [readonly]="false"></p-steps>
+    <br>
+
+    <div *ngIf="currentStepIndex === 0">
+      <div class="field">
+        <label for="surname">Nom</label>
+        <input type="text" pInputText id="surname" [(ngModel)]="user.surname" [pKeyFilter]="nameRegex" required autofocus />
+        <small class="p-error" *ngIf="submitted && !user.surname">Le nom est requis.</small>
+      </div>
+      <div class="field">
+        <label for="firstName">Prénom</label>
+        <input type="text" pInputText id="firstName" [(ngModel)]="user.firstName" [pKeyFilter]="nameRegex" required autofocus />
+        <small class="p-error" *ngIf="submitted && !user.firstName">Le prénom est requis.</small>
+      </div>
+      <div class="field" *ngIf="!isEditMode()">
+        <label for="email">Email</label>
+        <input  type="email" pInputText id="email" [(ngModel)]="user.email" #email="ngModel" [disabled]="isEditMode()" pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"  required autofocus />
+          <small class="p-error" *ngIf="!user.email && email.touched">L'email est requis.<br> </small>
+          <small class="p-error" *ngIf="email.touched && !email.valid">Format d'email incorrect.<br></small>
+          <small class="p-error" *ngIf="email.touched && emailExist(user.idUser, user.email)" >Cette adresse mail existe déjà.<br></small>
+      </div>
+
+      <div class="field">
+        <label for="phone">Numéro de téléphone</label>
+        <p-inputMask mask="0999999999" [(ngModel)]="user.phoneNumber" placeholder="09 99 99 99 99" id="phone"></p-inputMask>
+        <small class="p-error" *ngIf="submitted && !user.phoneNumber">Le numéro de téléphone est requis.</small>
+      </div>
+
+        <div class="field" *ngIf="isEditMode()">
+            <label class="mb-3">Rôle</label>
+            <div class="formgrid grid">
+                <div *ngFor="let rank of ranks" class="field-radiobutton col-6">
+                    <p-radioButton [id]="'rank' + rank.idRank" name="rank" [value]="rank" [(ngModel)]="user.rank"></p-radioButton>
+                    <label [for]="'rank' + rank.idRank">{{ rank.name | rankFormat }}</label>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="field">
+            <label for="password">Mot de passe</label>
+
+            <ng-container *ngIf="!isEditMode() || showPasswordInputField; else editModeTemplate">
+                <p-password [(ngModel)]="user.password" #password="ngModel" [promptLabel]="'Entrez le mot de passe'" id="password"
+                            [weakLabel]="'Faible'" [mediumLabel]="'Moyen'" [strongLabel]="'Fort'" [toggleMask]="true"
+                            (ngModelChange)="onPasswordChange()">
+
+                    <ng-template pTemplate="footer">
+                        <p-divider></p-divider>
+                        <p class="mt-2">Suggestions</p>
+                        <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
+                            <li>Au moins une minuscule</li>
+                            <li>Au moins une majuscule</li>
+                            <li>Au moins un chiffre</li>
+                            <li>Minimum 8 caractères</li>
+                        </ul>
+                    </ng-template>
+
+                </p-password>
+                <small class="p-error" *ngIf="password.touched && user.password && !isPasswordValid">
+                    Le mot de passe ne respecte pas les critères requis.<br>
+                </small>
+
+                <div class="field">
+                    <label for="confirmPassword">Répéter le mot de passe</label>
+                    <p-password id="confirmPassword" [(ngModel)]="confirmPassword" #confirmPwd="ngModel" [toggleMask]="true" [feedback]="false"></p-password>
+                    <small class="p-error" *ngIf="confirmPwd.touched && confirmPassword !== user.password">
+                        Les mots de passe ne correspondent pas.
+                    </small>
+                </div>
+            </ng-container>
+
+
+        <ng-template #editModeTemplate>
+                <button *ngIf="!showPasswordInputField" pButton pRipple label="Modifier mot de passe" class="p-button"
+                        (click)="btnPwdSubmitted()"></button>
+            </ng-template>
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+
+    <div *ngIf="currentStepIndex === 1">
+      <div class="field">
+        <label for="addressRoad">Rue</label>
+        <input type="text" pInputText id="addressRoad" [(ngModel)]="user.address.road" [pKeyFilter]="roadRegex" required />
+        <small class="p-error" *ngIf="submitted && !user.address.road">La rue est requise.</small>
+      </div>
+      <div class="field">
+        <label for="addressPostCode">Code postal</label>
+        <input type="text" pInputText id="addressPostCode" [(ngModel)]="user.address.postCode" [pKeyFilter]="postCodeRegex" required />
+        <small class="p-error" *ngIf="submitted && !user.address.postCode">Le code postal est requis.</small>
+      </div>
+      <div class="field">
+        <label for="addressCity">Ville</label>
+        <input type="text" pInputText id="addressCity" [(ngModel)]="user.address.city" [pKeyFilter]="cityRegex" required />
+        <small class="p-error" *ngIf="submitted && !user.address.city">La ville est requise.</small>
+      </div>
+      <div class="field">
+        <label for="addressNumber">Numéro</label>
+        <input type="text" pInputText id="addressNumber" [(ngModel)]="user.address.number" [pKeyFilter]="numberRegex" required />
+        <small class="p-error" *ngIf="submitted && !user.address.number">Le numéro d'adresse est requis.</small>
+      </div>
+    </div>
+
+    <div *ngIf="currentStepIndex === 2" class="text-center d-flex align-items-center justify-content-center">
+      <br>
+      <div class="field">
+        <label class="label"><b>Nom:</b></label>
+        <div class="info">{{ user.surname }}</div>
+      </div>
+      <div class="field">
+        <label class="label"><b>Prénom:</b></label>
+        <div class="info">{{ user.firstName }}</div>
+      </div>
+      <div class="field">
+        <label class="label"><b>Email:</b></label>
+        <div class="info">{{ user.email }}</div>
+      </div>
+      <div class="field">
+        <label class="label"><b>Numéro de téléphone:</b></label>
+        <div class="info">{{ user.phoneNumber }}</div>
+      </div>
+      <div class="field">
+        <label class="label"><b>Adresse:</b></label>
+        <div class="info">{{ user.address | adressFormat }}</div>
+      </div>
+        <div *ngIf="isEditMode()" class="field">
+        <label class="label"><b>Rôle:</b></label>
+        <br>
+        <p-tag *ngIf="user.rank" [value]="user.rank.name | rankFormat" [severity]="getRankSeverity(user.rank.name)"></p-tag>
+      </div>
+    </div>
+
+
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button *ngIf="currentStepIndex > 0" pButton pRipple label="Précédent" icon="pi pi-chevron-left" class="p-button-text" (click)="previousStep()"></button>
+    <button *ngIf="!isLastStep()" pButton pRipple label="Suivant" icon="pi pi-check"
+            class="p-button-text" (click)="validatePersonalStep()" >
+    </button>
+
+    <button *ngIf="isLastStep()" pButton [loading]="loading" pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveUser()" ></button>
+  </ng-template>
+
+
+
+</p-dialog>
+
+
+
+
+<p-confirmDialog [style]="{ width: '450px' }" acceptLabel="Confirmer" rejectLabel="Annuler"></p-confirmDialog>

@@ -1,0 +1,36 @@
+<div class="card cursor-pointer">
+  <p-dataView [value]="shops" layout="grid" emptyMessage="Aucune boutique disponible !">
+    <ng-template let-shop pTemplate="grid" let-shops>
+      <div class="grid grid-nogutter">
+        <div class="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" *ngFor="let shop of shops">
+          <div (click)="goToShopPage(shop.idShop)" class="p-4 border-1 surface-border surface-card border-round shadow-6">
+            <div class="flex flex-wrap align-items-center justify-content-between gap-2">
+              <p-tag [value]="'Ouvert'" severity="success"></p-tag>
+            </div>
+            <div class="flex flex-column align-items-center gap-3 py-5">
+              <!-- Ajoutez la classe fixed-image à l'image -->
+              <img class="w-9 shadow-2 border-round fixed-image" [src]="shop.pictureUrl" [alt]="shop.owner.surname" />
+              <div class="text-2xl font-bold">{{ shop.name }}</div>
+            </div>
+            <div class="flex align-items-center justify-content-between">
+              <span class="block"><strong>Localisation: </strong>{{ shop.address | adressFormat }}</span>
+            </div>
+            <div class="flex align-items-center justify-content-between">
+              <p><strong>Description: </strong>
+                {{ (shop.description | slice:0:50).trim() }}...
+                <a class="text-blue-500 underline cursor-pointer" (click)="voirPlus($event, shop)" *ngIf="shop.description.length > 50">Voir plus</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-dataView>
+</div>
+
+<app-show-full-description-shop
+  (cancelBack)="visible = false"
+  [visible]="visible"
+  [shop]="shop"
+></app-show-full-description-shop>
+
+

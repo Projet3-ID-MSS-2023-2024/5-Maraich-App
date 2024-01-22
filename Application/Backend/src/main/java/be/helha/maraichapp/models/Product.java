@@ -1,5 +1,6 @@
 package be.helha.maraichapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,11 +33,15 @@ public class Product {
     @ManyToOne
     @JoinColumn(name="categoryId")
     private Category category;
+    @JsonIgnore
     @OneToMany(mappedBy = "product")
     private List<OrderProduct> orderProducts;
     @ManyToOne
     @JoinColumn(name = "shopId")
     private Shop shop;
+    @JsonIgnore
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "product")
+    private List<Reservation> reservations;
 
     public Product(String name, double price, String description, String picturePath, int quantity, double weight, boolean isUnity, Category category, Shop shop) {
         this.name = name;
@@ -49,6 +54,8 @@ public class Product {
         this.category = category;
         this.shop = shop;
     }
+
+
 
     @Override
     public boolean equals(Object o) {

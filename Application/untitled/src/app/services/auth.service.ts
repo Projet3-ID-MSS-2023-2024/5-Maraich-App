@@ -5,6 +5,8 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import {environment} from "../../environments/environment";
 import {User} from "../models/user";
 import {CookieService} from "ngx-cookie-service";
+import {Router} from "@angular/router";
+import {RankEnum} from "../models/rankEnum";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,8 @@ export class AuthService {
 
 
   private jwtHelper: JwtHelperService = new JwtHelperService(); // Instanciez le JwtHelperService
-  constructor(private http: HttpClient, private cookieService : CookieService) {}
+  userRank : RankEnum | undefined;
+  constructor(private http: HttpClient, private cookieService : CookieService, private route: Router) {}
 
   login(email: string, password: string): Observable<any> { // Appel API pour le login
     const credentials = { email, password };
@@ -31,21 +34,44 @@ export class AuthService {
     return this.http.post(`${environment.apiUrl}/activation`, credentials);
   }
 
-   logout(){ // Supprimez le cookie du token en l'expirant
-    let returnObservable = this.http.get(`${environment.apiUrl}/disconnection`);
-    setTimeout(() => {this.cookieService.deleteAll()}, 2000)
-    return returnObservable;
-  }
+   logout(){ // Delete the token on the cookie
+     this.route.navigate(["/accueil"]);
+     this.cookieService.delete("access_token")
+     this.userRank = undefined;
+   }
 
   getTokenFromCookie(): string | null {
-    const cookies = document.cookie.split(';');
-    for (const cookie of cookies) {
-      const [name, value] = cookie.split('=').map(part => part.trim());
-      if (name.toLowerCase() === 'access_token') {
-        return value.replace(/^"(.*)"$/, '$1') || null;
+    const accessToken = this.cookieService.get('access_token');
+
+    // Verify if the value is present or not
+    return accessToken ? accessToken : null;
+  }
+
+  getRankFromCookie() {
+    const token = this.getTokenFromCookie()
+    if(token)
+    {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace('-', '+').replace('_', '/');
+      const decodedPayload = JSON.parse(atob(base64));
+      let isValidRank = Object.values(RankEnum).includes(decodedPayload.rank as RankEnum);
+      if (isValidRank) {
+        this.userRank = decodedPayload.rank as RankEnum
       }
     }
-    return null;
+  }
+
+  getIdUserFromCookie() {
+    const token = this.getTokenFromCookie();
+    if (token) {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace('-', '+').replace('_', '/');
+      const decodedPayload = JSON.parse(atob(base64));
+      const userId = decodedPayload.idUser;
+      if (userId) {
+        return userId;
+      }
+    }
   }
 
   isTokenExpired() {

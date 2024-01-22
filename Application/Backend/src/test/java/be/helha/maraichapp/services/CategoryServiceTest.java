@@ -2,11 +2,8 @@ package be.helha.maraichapp.services;
 
 import be.helha.maraichapp.models.Category;
 import be.helha.maraichapp.repositories.CategoryRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -14,7 +11,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@SpringBootTest(properties = "spring.config.location=classpath:application-test.properties")
 public class CategoryServiceTest {
 
     @Autowired

@@ -4,6 +4,7 @@ import {catchError, map, Observable} from "rxjs";
 import {User} from "../models/user";
 import {environment} from "../../environments/environment";
 import {RankEnum} from "../models/rankEnum";
+import {Rank} from "../models/rank";
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +29,11 @@ export class UserService {
         return this.http.get<any[]>(url).pipe(
             map(usersData => usersData.map(user => this.mapToUserModel(user)))
         );
+    }
+
+    getAllRanks(): Observable<Rank[]>{
+      const url = `${environment.apiUrl}/users/getAllRanks`;
+      return this.http.get<Rank[]>(url);
     }
 
     private mapToUserModel(data: any): User {
@@ -65,6 +71,9 @@ export class UserService {
 
 
   updateUserRestricted(updatedUser: User): Observable<User> {
+    // Map the user data before making the PUT request
+    const mappedUser = this.mapToUserModel(updatedUser);
+
     return this.http.put<User>(`${environment.apiUrl}/users/update/restricted`, updatedUser);
   }
 

@@ -1,5 +1,6 @@
 package be.helha.maraichapp.services;
 
+import be.helha.maraichapp.models.Rank;
 import be.helha.maraichapp.models.RankEnum;
 import be.helha.maraichapp.models.Users;
 
@@ -21,4 +22,6 @@ public interface UserServiceInterface {
     List<Users> getAllUsers();
 
     void deleteUserById(int id);
+
+    List<Rank> getAllRanks();
 }

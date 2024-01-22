@@ -1,4 +1,6 @@
 import {Category} from "./category";
+import {Shop} from "./shop";
+import {SafeUrl} from "@angular/platform-browser";
 
 export interface Product {
   id: number;
@@ -8,6 +10,10 @@ export interface Product {
   picturePath: string;
   quantity: number;
   weight: number;
-  isUnity: boolean;
-  category: Category;
+  unity: boolean;
+  category?: Category;
+  shop?: Shop;
+  imageUrl?:SafeUrl;
+  quantityUnity?: number;
+  quantityWeight?: number;
 }

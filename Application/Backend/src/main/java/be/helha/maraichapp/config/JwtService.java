@@ -98,10 +98,11 @@ public class JwtService {
 
     private Map<String, String> generateJwt(Users users){
         final long currentTime = System.currentTimeMillis();
-        final long expirationTime = currentTime + (30 * 60 * 1000);
+        final long expirationTime = currentTime + (60 * 60 * 1000);
         final Map<String, Object> claims = Map.of(
                 "name", users.getFirstName(),
-                "idIUser", users.getIdUser(),
+                "idUser", users.getIdUser(),
+                "rank", users.getRank().getName(),
                 Claims.EXPIRATION,new Date(expirationTime),
                 Claims.SUBJECT, users.getEmail()
         );
@@ -118,15 +119,6 @@ public class JwtService {
     private Key getKey() {
         final byte[] decoder = Decoders.BASE64.decode(ENCRYPTION_KEY);
         return Keys.hmacShaKeyFor(decoder);
-    }
-
-    public void disconnection() {
-        Users users = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Jwt jwt = this.jwtRepository.findByUsersValidToken(users.getEmail(), false, false)
-                .orElseThrow(() -> new RuntimeException("Invalid token"));
-        jwt.setExpired(true);
-        jwt.setDisable(true);
-        this.jwtRepository.save(jwt);
     }
 
     @Scheduled(cron = "0 */10 * * * *")

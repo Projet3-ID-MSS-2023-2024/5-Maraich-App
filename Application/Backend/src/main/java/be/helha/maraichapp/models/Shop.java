@@ -1,5 +1,6 @@
 package be.helha.maraichapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,17 +31,19 @@ public class Shop {
     @Column(nullable = false)
     private boolean shopIsOkay;
     @Column(nullable = false)
-    private boolean enable = false;
-    @OneToOne(cascade = {CascadeType.MERGE})
+    private boolean enable;
+    @OneToOne(mappedBy = "shop")
     @JoinColumn(name = "ownerId")
     private Users owner;
-    @OneToMany (mappedBy = "shopSeller")
-    private List<Order> orders;
-    @OneToMany(mappedBy = "shop", cascade = {CascadeType.ALL})
+    @JsonIgnore
+    @OneToMany (mappedBy = "shopSeller", cascade = {CascadeType.REMOVE})
+    private List<Orders> orders;
+    @JsonIgnore
+    @OneToMany(mappedBy = "shop", cascade = {CascadeType.REMOVE})
     private List<Product> products;
 
 
-    public Shop(String name, String email, Address address, String picture, String description, boolean shopIsOkay, boolean enable, Users owner, List<Order> orders, List<Product> products) {
+    public Shop(String name, String email, Address address, String picture, String description, boolean shopIsOkay, boolean enable, Users owner, List<Orders> orders, List<Product> products) {
         this.name = name;
         this.email = email;
         this.address = address;
@@ -62,5 +65,17 @@ public class Shop {
         this.owner = owner;
         this.shopIsOkay = false;
         this.enable = false;
+    }
+
+    public Shop(int idShop, String name, String email, Address address, String picture, String description, boolean shopIsOkay, boolean enable, Users owner) {
+        this.idShop = idShop;
+        this.name = name;
+        this.email = email;
+        this.address = address;
+        this.picture = picture;
+        this.description = description;
+        this.shopIsOkay = shopIsOkay;
+        this.enable = enable;
+        this.owner = owner;
     }
 }

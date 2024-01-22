@@ -1,5 +1,7 @@
 package be.helha.maraichapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,6 +19,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Getter
 @Setter
+@JsonIgnoreProperties(value = {"authorities", "credentialsNonExpired", "accountNonLocked", "accountNonExpired","username","enabled"})
 
 public class Users implements UserDetails {
     @Id
@@ -37,11 +40,31 @@ public class Users implements UserDetails {
     private String email;
     @Column(nullable = false)
     private boolean isActif = false;
-    @OneToMany(mappedBy = "customer")
-    private List<Order> orders;
+    @JsonIgnore
+    @OneToMany(mappedBy = "customer", cascade = {CascadeType.REMOVE})
+    private List<Orders> orders;
     @ManyToOne(cascade={CascadeType.MERGE})
     @JoinColumn(name = "rankId")
     private Rank rank;
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", cascade = {CascadeType.REMOVE})
+    @JoinColumn(name="requestId")
+    private Requests requests;
+    @JsonIgnore
+    @OneToMany(mappedBy = "users", cascade = {CascadeType.REMOVE})
+    private List<Jwt> jwts;
+    @JsonIgnore
+    @OneToOne(cascade = {CascadeType.REMOVE})
+    @JoinColumn(name="validationId")
+    private Validation validation;
+    @JsonIgnore
+    @OneToOne(cascade = {CascadeType.REMOVE})
+    @JoinColumn(name = "shopId")
+    private Shop shop;
+    @JsonIgnore
+    @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "users")
+    private List<Reservation> reservations;
+
 
     @Override
     public boolean equals(Object o) {
@@ -56,7 +79,7 @@ public class Users implements UserDetails {
         return Objects.hash(idUser, firstName, surname, phoneNumber, password, address, email, isActif, rank);
     }
 
-    public Users(String firstName, String surname, String phoneNumber, String password, String number, String road, String postCode, String city, String email, Rank rank, List<Order> orders) {
+    public Users(String firstName, String surname, String phoneNumber, String password, String number, String road, String postCode, String city, String email, Rank rank, List<Orders> orders) {
         this.firstName = firstName;
         this.surname = surname;
         this.isActif = false;
@@ -76,6 +99,17 @@ public class Users implements UserDetails {
         this.phoneNumber = phoneNumber;
         this.address = new Address(road,postCode,city, number);
         this.email = email;
+    }
+
+    public Users(String firstName, String surname, String phoneNumber, String password, String number, String road, String postCode, String city, String email, Rank rank) {
+        this.firstName = firstName;
+        this.surname = surname;
+        this.isActif = false;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.address = new Address(road,postCode,city, number);
+        this.email = email;
+        this.rank = rank;
     }
 
 

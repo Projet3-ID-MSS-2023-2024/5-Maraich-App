@@ -1,0 +1,55 @@
+<div class="card mb-4">
+  <p-menubar [model]="items">
+    <ng-template pTemplate="start">
+      <img ngSrc="assets/images/logos/vegetables.svg" width="40" height="40" class="mr-2" alt="Logo du site web"/>
+    </ng-template>
+    <ng-template pTemplate="end">
+
+      <img *ngIf="isLogged"
+           ngSrc="assets/images/logos/disconnection-icon.svg"
+           (click)="logout()"
+           width="29"
+           height="29"
+           class="mr-3 cursor-pointer"
+           alt="Déconnexion"
+      />
+
+      <img *ngIf="isLogged"
+           ngSrc="assets/images/logos/shopping-cart-icon.svg"
+           (click)="redirectToShoppingCart()"
+           width="34"
+           height="34"
+           class="mr-3 cursor-pointer"
+           alt="Profil maraicher"
+      />
+
+      <img
+        ngSrc="assets/images/logos/user-profile-icon.svg"
+        (click)="redirectToEditProfilUser()"
+        width="34"
+        height="34"
+        class="border-circle mr-3 cursor-pointer"
+        alt="Profil utilisateur"
+      />
+
+      <img *ngIf="isLogged && (userRank == RankEnum.MARAICHER || userRank == RankEnum.ADMINISTRATOR)"
+           ngSrc="assets/images/logos/maraicher-profile-icon.svg"
+           (click)="redirectToPanelMaraicher()"
+           width="34"
+           height="34"
+           class="border-circle mr-3 cursor-pointer"
+           alt="Profil maraicher"
+      />
+
+      <img *ngIf="isLogged && userRank == RankEnum.ADMINISTRATOR"
+           ngSrc="../../../assets/images/logos/admin-place-icon.svg"
+           (click)="redirectToPanelAdmin()"
+           width="34"
+           height="34"
+           class="border-circle mr-3 cursor-pointer"
+           alt="Vers panel administrateur"
+      />
+
+    </ng-template>
+  </p-menubar>
+</div>

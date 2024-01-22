@@ -1,5 +1,6 @@
 package be.helha.maraichapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,6 +21,7 @@ public class Category {
     private int idCategory;
     @Column(nullable = false)
     private String nomCategory;
+    @JsonIgnore
     @OneToMany(mappedBy = "category")
     private List<Product> products;
 
@@ -29,11 +31,12 @@ public class Category {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Category category = (Category) o;
-        return idCategory == category.idCategory && Objects.equals(nomCategory, category.nomCategory);
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Category category = (Category) obj;
+        return idCategory == category.idCategory &&
+                Objects.equals(nomCategory, category.nomCategory);
     }
 
     @Override

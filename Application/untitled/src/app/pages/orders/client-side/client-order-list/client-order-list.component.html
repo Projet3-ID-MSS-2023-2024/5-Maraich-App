@@ -1,0 +1,43 @@
+<div>
+  <h3>Mes Commandes</h3>
+  <p-table
+          [value]="orders"
+          [paginator]="true"
+          [rows]="10"
+          [rowsPerPageOptions]="[10,15,20]"
+          [tableStyle]="{'min-width' : '50rem'}"
+          class="cursor-pointer"
+  >
+    <ng-template pTemplate="header">
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Total</th>
+      <th scope="col">Status</th>
+      <th scope="col">Archivé</th>
+      <th scope="col">Maraicher</th>
+    </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-order>
+        <tr (click)="viewOrder(order.id)">
+          <td>{{order.orderDate | date:'dd/MM/yyyy'}}</td>
+          <td>{{order.totalPrice}}€</td>
+          @if (order.orderIsReady == false) {
+            <td>Pas encore prête</td>
+          } @else {
+            <td>Prête</td>
+          }
+          @if (order.archived == false) {
+            <td>Non</td>
+          } @else {
+            <td>Oui</td>
+          }
+          <td>{{order.shopSeller.name}}</td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="4">Pas encore de commande</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
